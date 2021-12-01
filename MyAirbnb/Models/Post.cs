@@ -15,9 +15,8 @@ namespace MyAirbnb.Models
 
     public class Post
     {
-        [Key]
         public int Id { get; set; }
-        public int OwnerId { get; set; }
+        public int ManagerId { get; set; }
 
         public string Name { get; set; }
         public string Address { get; set; }
@@ -27,11 +26,10 @@ namespace MyAirbnb.Models
         public int NBeds { get; set; }
         public int NBedrooms { get; set; }
         public float Rating { get; set; }
-
-
-        public IEnumerable<string> Images { get; set; }
         public PropertyType Type { get; set; }
-        public IEnumerable<ComodityType> Comodities { get; set; }
         public AvailabilityType Availability { get; set; }
+
+        public virtual ICollection<string> PostImages { get; set; }
+        public virtual ICollection<ComodityType> Comodities { get; set; }
     }
 }
