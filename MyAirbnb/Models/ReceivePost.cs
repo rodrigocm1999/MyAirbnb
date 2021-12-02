@@ -18,6 +18,6 @@ namespace MyAirbnb.Models
         public AvailabilityType Availability { get; set; }
 
         //public virtual ICollection<PostImage> PostImages { get; set; }
-        public virtual ICollection<int> Comodities { get; set; }
+        public virtual ICollection<int> Comodities { get; set; } // Esta classe existe para conseguir receber os ids das comodities
     }
 }

@@ -20,13 +20,18 @@ namespace MyAirbnb.Models
         public int Id { get; set; }
         public int ManagerId { get; set; }
 
+        [Required]
+        [MinLength(10, ErrorMessage = "Title is too short (min 10)")]
+        [MaxLength(100, ErrorMessage = "Title is too long (max 100)")]
         public string Title { get; set; }
+        [Required]
         public string Address { get; set; }
         public string Description { get; set; }
         public string Html { get; set; }
         public float Price { get; set; }
         public int NBeds { get; set; }
         public int NBedrooms { get; set; }
+
         public float Rating { get; set; }
         public PropertyType Type { get; set; }
         public AvailabilityType Availability { get; set; }
