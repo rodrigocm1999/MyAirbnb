@@ -2,7 +2,26 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@model IEnumerable<Post>
+
+
+<div class="container">
+    @foreach (var m in Model)
+    {
+        <div class="container border-bottom pb-2">
+
+            <h3>@m.Title</h3>
+            <h5>@m.Address</h5>
+            <h5>@m.Description</h5>
+
+            <div>
+                @foreach (var c in m.Comodities)
+                {
+                    <span>@c.Name</span>
+                }
+            </div>
+
+        </div>
+    }
+
 </div>

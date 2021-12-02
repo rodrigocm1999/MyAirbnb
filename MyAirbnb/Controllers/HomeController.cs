@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MyAirbnb.Data;
 using MyAirbnb.Models;
@@ -13,29 +14,31 @@ namespace MyAirbnb.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        private readonly ApplicationDbContext _db;
+        private readonly ApplicationDbContext _context;
 
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext dbContext)
         {
             _logger = logger;
-            _db = dbContext;
+            _context = dbContext;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var posts = _context.Posts.Include(p => p.Comodities).Take(App.ItemsPerPage);
+            return View(posts);
         }
 
-        public IActionResult Details(int id)
+        public IActionResult Details(int? id)
         {
-            var post = _db.Posts.FirstOrDefault(p => p.Id == id);
+            if (id == null) return NotFound();
+            var post = _context.Posts.FirstOrDefault(p => p.Id == id);
+            if (post == null) return NotFound();
             return View(post);
         }
 
         public IActionResult Fill()
         {
-            var context = _db;
+            var context = _context;
             var comodities = new List<Comodity>
             {
                 new Comodity{Name = "Wifi" },
