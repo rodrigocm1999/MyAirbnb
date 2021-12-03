@@ -59,8 +59,8 @@ namespace MyAirbnb.Controllers
 
             var posts = new List<Post>
             {
-                new Post{Address="Rua do aço",Availability=AvailabilityType.Available,Description="Este apartamente tem aço",Html="<h1>Conteudo teste</h1>",Title="Casa para 3 nabos",NBedrooms=1,NBeds=3,Price=400.99f,Rating=0,Type=PropertyType.Apartment},
-                new Post{Address="Rua ao lado da rua do aço",Availability=AvailabilityType.AlreadyRented,Description="Esta casa não vale nada",Html="<h2>Conteudo teste numero 2</h2>",Title="Casa a cair aos bocados",NBedrooms=2,NBeds=1,Price=20.99f,Rating=3,Type=PropertyType.Home},
+                new Post{Address="Rua do aço",Availability=AvailabilityType.Available,Description="Este apartamente tem aço",Title="Casa para 3 nabos",NBedrooms=1,NBeds=3,Price=400.99f,Rating=0,Type=PropertyType.Apartment},
+                new Post{Address="Rua ao lado da rua do aço",Availability=AvailabilityType.AlreadyRented,Description="Esta casa não vale nada",Title="Casa a cair aos bocados",NBedrooms=2,NBeds=1,Price=20.99f,Rating=3,Type=PropertyType.Home},
             };
 
             Random rand = new Random(4321);

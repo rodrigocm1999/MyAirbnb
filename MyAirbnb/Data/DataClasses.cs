@@ -26,14 +26,23 @@ namespace MyAirbnb.Models
         public string Title { get; set; }
         [Required]
         public string Address { get; set; }
+
+        [DataType(DataType.MultilineText)]
         public string Description { get; set; }
-        public string Html { get; set; }
+
+        [DataType(DataType.Currency)] // TODO mudar para euros
         public float Price { get; set; }
+
+        [Required]
         public int NBeds { get; set; }
+        [Required]
         public int NBedrooms { get; set; }
 
         public float Rating { get; set; }
+
+        [Required]
         public PropertyType Type { get; set; }
+        [Required]
         public AvailabilityType Availability { get; set; }
 
         public virtual ICollection<PostImage> PostImages { get; set; }
@@ -44,6 +53,7 @@ namespace MyAirbnb.Models
     {
         [Key]
         public int Id { get; set; }
+        [Required]
         public string Name { get; set; }
 
         public virtual ICollection<Post> Posts { get; set; }

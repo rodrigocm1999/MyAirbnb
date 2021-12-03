@@ -63,7 +63,6 @@ namespace MyAirbnb.Controllers
                     Title = post.Title,
                     Address = post.Address,
                     Description = post.Description,
-                    Html = post.Html,
                     Price = post.Price,
                     NBeds = post.NBeds,
                     NBedrooms = post.NBedrooms,
