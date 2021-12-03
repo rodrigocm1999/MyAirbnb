@@ -30,7 +30,7 @@ namespace MyAirbnb.Models
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
-        [DataType(DataType.Currency)] // TODO mudar para euros
+        [DataType(DataType.Currency)]
         public float Price { get; set; }
 
         [Required]
