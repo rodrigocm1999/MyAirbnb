@@ -7,7 +7,7 @@ namespace MyAirbnb.Models
 {
     public class App
     {
-        public static int ItemsPerPage { get; } = 25;
+        public static int ItemsPerPage { get; } = 15;
 
     }
 }

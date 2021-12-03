@@ -10,7 +10,7 @@ using MyAirbnb.Data;
 namespace MyAirbnb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211202175426_one")]
+    [Migration("20211203171909_one")]
     partial class one
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -244,6 +244,7 @@ namespace MyAirbnb.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -266,9 +267,6 @@ namespace MyAirbnb.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Html")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ManagerId")

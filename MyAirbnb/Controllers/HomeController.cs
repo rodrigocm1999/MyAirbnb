@@ -22,9 +22,14 @@ namespace MyAirbnb.Controllers
             _context = dbContext;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int? id)
         {
-            var posts = _context.Posts.Include(p => p.Comodities).Take(App.ItemsPerPage);
+            var page = id;
+            int amountToSkip = 0;
+            if (page != null)
+                amountToSkip = (page.Value - 1) * App.ItemsPerPage;
+
+            var posts = _context.Posts.Include(p => p.Comodities).Skip(amountToSkip).Take(App.ItemsPerPage);
             return View(posts);
         }
 
@@ -36,26 +41,29 @@ namespace MyAirbnb.Controllers
             return View(post);
         }
 
-        public IActionResult Fill()
+        public async Task<IActionResult> FillAsync()
         {
             var context = _context;
-            var comodities = new List<Comodity>
-            {
+            var comodities = new List<Comodity>(){
                 new Comodity{Name = "Wifi" },
                 new Comodity{Name = "Dryer" },
                 new Comodity{Name = "Dishwasher" },
-                new Comodity{Name = "WashingMachine" },
-                new Comodity{Name = "CoffeeMachine" },
+                new Comodity{Name = "Washing Machine" },
+                new Comodity{Name = "Coffee Machine" },
                 new Comodity{Name = "TV" },
                 new Comodity{Name = "Fridge" },
-                new Comodity{Name = "AirConditioning" },
+                new Comodity{Name = "Air Conditioning" },
                 new Comodity{Name = "Bedsheets" },
                 new Comodity{Name = "Vaccum" },
                 new Comodity{Name = "Microwave" },
                 new Comodity{Name = "Balcony" },
                 new Comodity{Name = "Garage" },
             };
-            context.Comodities.AddRange(comodities);
+
+            if (_context.Posts.FirstOrDefault() == null)
+            {
+                context.Comodities.AddRange(comodities);
+            }
 
             var posts = new List<Post>
             {
@@ -65,21 +73,24 @@ namespace MyAirbnb.Controllers
 
             Random rand = new Random(4321);
 
-            foreach (var p in posts)
+
+            if (_context.Posts.FirstOrDefault() == null)
             {
-                p.Comodities = new List<Comodity>();
-                var amount = rand.Next(10);
-                for (int i = 0; i < amount; i++)
+                foreach (var p in posts)
                 {
-                    var randIndex = rand.Next(comodities.Count);
-                    p.Comodities.Add(comodities[randIndex]);
+                    p.Comodities = new List<Comodity>();
+                    var amount = rand.Next(10);
+                    for (int i = 0; i < amount; i++)
+                    {
+                        var randIndex = rand.Next(comodities.Count);
+                        p.Comodities.Add(comodities[randIndex]);
+                    }
                 }
+
+                context.Posts.AddRange(posts);
             }
-
-            context.Posts.AddRange(posts);
-
-            context.SaveChanges();
-            return View();
+            await context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Privacy()
