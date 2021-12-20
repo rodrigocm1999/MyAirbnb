@@ -31,18 +31,18 @@ namespace MyAirbnb.Models
         public string Description { get; set; }
 
         [DataType(DataType.Currency)]
+        [Display(Name = "Price per Night")]
         public float Price { get; set; }
 
-        [Required]
+        [Display(Name = "Number of Beds")]
         public int NBeds { get; set; }
-        [Required]
+
+        [Display(Name = "Number of Bedrooms")]
         public int NBedrooms { get; set; }
 
         public float Rating { get; set; }
 
-        [Required]
         public PropertyType Type { get; set; }
-        [Required]
         public AvailabilityType Availability { get; set; }
 
         public virtual ICollection<PostImage> PostImages { get; set; }

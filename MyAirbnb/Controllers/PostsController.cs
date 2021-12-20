@@ -44,7 +44,7 @@ namespace MyAirbnb.Controllers
         {
             var editPost = new EditPost()
             {
-                Comodities = _context.Comodities.ToList()
+                Comodities = _context.Comodities
             };
             return View(editPost);
         }
