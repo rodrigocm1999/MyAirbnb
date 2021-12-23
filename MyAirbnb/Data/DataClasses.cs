@@ -32,12 +32,15 @@ namespace MyAirbnb.Models
 
         [DataType(DataType.Currency)]
         [Display(Name = "Price per Night")]
+        [Range(1, int.MaxValue, ErrorMessage = "Invalid Price, cannot be 0")]
         public float Price { get; set; }
 
         [Display(Name = "Number of Beds")]
+        [Range(1, 50, ErrorMessage = "Invalid number of Bedrooms (1 - 50)")]
         public int NBeds { get; set; }
 
         [Display(Name = "Number of Bedrooms")]
+        [Range(1, 50, ErrorMessage = "Invalid number of Bedrooms (1 - 50)")]
         public int NBedrooms { get; set; }
 
         public float Rating { get; set; }
@@ -45,8 +48,8 @@ namespace MyAirbnb.Models
         public PropertyType Type { get; set; }
         public AvailabilityType Availability { get; set; }
 
-        public virtual ICollection<PostImage> PostImages { get; set; }
-        public virtual ICollection<Comodity> Comodities { get; set; }
+        public virtual IList<PostImage> PostImages { get; set; }
+        public virtual IList<Comodity> Comodities { get; set; }
     }
 
     public class Comodity

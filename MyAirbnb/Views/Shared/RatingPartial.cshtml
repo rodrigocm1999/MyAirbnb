@@ -1,0 +1,13 @@
+﻿@model float
+@{
+    var roundRating = Math.Round(Model);
+    for (int i = 0; i < 5; i++)
+    {
+        var color = "#CBC050";
+        if (i >= roundRating)
+            color = "black";
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon-sm" fill="@color">
+            <use href="#svg-star" />
+        </svg>
+    }
+}

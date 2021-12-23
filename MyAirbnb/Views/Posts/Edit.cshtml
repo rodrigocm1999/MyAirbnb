@@ -1,78 +1,111 @@
-﻿@model MyAirbnb.Models.Post
+﻿@model MyAirbnb.Models.EditPost
 
 @{
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
-<h4>Post</h4>
+<h1>Edit Post</h1>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="ManagerId" class="control-label"></label>
-                <input asp-for="ManagerId" class="form-control" />
-                <span asp-validation-for="ManagerId" class="text-danger"></span>
+
+<div class="container">
+    <form asp-action="Edit">
+        <div class="position-relative d-flex">
+
+            <div class="mx-3 position-relative w-50">
+                <label asp-for="Post.Title" class="control-label"></label>
+                <input asp-for="Post.Title" class="form-control" value="@Model.Post.Title" />
+                <span asp-validation-for="Post.Title" class="text-danger"></span>
+                <br />
+                <label asp-for="Post.Address" class="control-label"></label>
+                <input asp-for="Post.Address" class="form-control" value="@Model.Post.Address" />
+                <span asp-validation-for="Post.Address" class="text-danger"></span>
+
             </div>
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+
+            <div class="position-absolute" style="min-width:100px;right:0px;">
+                <div class="d-flex">
+                    <input asp-for="Post.Price" value="@Model.Post.Price" class="form-control" style="width:100px;" /><span class="w-auto">€/night</span>
+                </div>
+                <span asp-validation-for="Post.Price" class="text-danger"></span>
+                <br />
+                <div class="d-flex">
+                    <img src="/icon/room-icon.png" class="icon-m mr-2" />
+                    <input asp-for="Post.NBedrooms" class="form-control input-sm" value="@Model.Post.NBedrooms" />
+                </div>
+                <span asp-validation-for="Post.NBedrooms" class="text-danger"></span>
+                <br />
+                <div class="d-flex">
+                    <img src="/icon/bed-icon.png" class="icon-m mr-2" />
+                    <input asp-for="Post.NBeds" class="form-control input-sm" value="@Model.Post.NBeds" />
+                </div>
+                <span asp-validation-for="Post.NBeds" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
+
+        </div>
+
+
+        <h4 class="my-5">TODO upload the images</h4>
+        @{
+            //TODO upload das imagens
+        }
+
+        <div class="container mt-5">
+            <label asp-for="Post.Description" class="control-label"></label>
+            <textarea asp-for="Post.Description" class="form-control" value="@Model.Post.Description" rows="5"></textarea>
+            <span asp-validation-for="Post.Description" class="text-danger"></span>
+        </div>
+
+        <div class="container">
+            <label asp-for="Post.Comodities" class="control-label"></label>
+            <div class="container">
+                @foreach (var c in Model.Comodities)
+                {
+                    var isChecked = Model.Post.Comodities != null && Model.Post.Comodities.Contains(c);
+                    var checkedExtra = "";
+                    if (isChecked)
+                        checkedExtra = "checked";
+                    <div class="form-check d-block float-left" style="width:20%;">
+                        <input class="form-check-input" type="checkbox" value="@c.Id" name="Post.Comodities[]" @checkedExtra>
+                        <label class="form-check-label" for="flexCheckDefault">@c.Name</label>
+                    </div>
+                }
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NBeds" class="control-label"></label>
-                <input asp-for="NBeds" class="form-control" />
-                <span asp-validation-for="NBeds" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NBedrooms" class="control-label"></label>
-                <input asp-for="NBedrooms" class="form-control" />
-                <span asp-validation-for="NBedrooms" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Rating" class="control-label"></label>
-                <input asp-for="Rating" class="form-control" />
-                <span asp-validation-for="Rating" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Type" class="control-label"></label>
-                <select asp-for="Type" class="form-control"></select>
-                <span asp-validation-for="Type" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Availability" class="control-label"></label>
-                <select asp-for="Availability" class="form-control"></select>
-                <span asp-validation-for="Availability" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+            @for (int i = 0; i < Model.Comodities.Count; i += 5)
+            {
+                <br />
+            }
+        </div>
+
+        <div class="container">
+            <label asp-for="Post.Type" class="control-label"></label>
+            <select asp-for="Post.Type" class="form-control w-auto">
+                @foreach (var e in Enum.GetNames(typeof(PropertyType)))
+                {
+                    <option value="@e">@e</option>
+                }
+            </select>
+            <span asp-validation-for="Post.Type" class="text-danger"></span>
+        </div>
+        <div class="container">
+            <label asp-for="Post.Availability" class="control-label"></label>
+            <select asp-for="Post.Availability" class="form-control w-auto">
+                @foreach (var e in Enum.GetNames(typeof(AvailabilityType)))
+                {
+                    <option value="@e">@e</option>
+                }
+            </select>
+            <span asp-validation-for="Post.Availability" class="text-danger"></span>
+        </div>
+        <div class="container mt-3">
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
+    </form>
 </div>
 
-<div>
+<div class="position-relative" style="right:0px;">
     <a asp-action="Index">Back to List</a>
 </div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

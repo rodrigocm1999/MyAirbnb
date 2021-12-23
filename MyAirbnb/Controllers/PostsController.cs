@@ -44,7 +44,8 @@ namespace MyAirbnb.Controllers
         {
             var editPost = new EditPost()
             {
-                Comodities = _context.Comodities
+                Post = new Post(),
+                Comodities = _context.Comodities.ToList()
             };
             return View(editPost);
         }
@@ -86,12 +87,21 @@ namespace MyAirbnb.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Posts.FindAsync(id);
+            var post = _context.Posts
+                .Include(p => p.Comodities)
+                .Include(p => p.PostImages)
+                .FirstOrDefault(p => p.Id == id.Value);
             if (post == null)
             {
                 return NotFound();
             }
-            return View(post);
+
+            var editPost = new EditPost()
+            {
+                Post = post,
+                Comodities = _context.Comodities.ToList()
+            };
+            return View(editPost);
         }
 
         // POST: Posts/Edit/5

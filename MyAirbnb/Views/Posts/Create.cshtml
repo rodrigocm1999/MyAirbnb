@@ -5,89 +5,106 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h4>Post</h4>
+<h1>Create Post</h1>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Post.ManagerId" class="control-label"></label>
-                <input asp-for="Post.ManagerId" class="form-control" />
-                <span asp-validation-for="Post.ManagerId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+
+<div class="container">
+    <form asp-action="Create">
+
+        <div class="position-relative d-flex">
+
+            <div class="mx-3 position-relative w-50">
                 <label asp-for="Post.Title" class="control-label"></label>
-                <input asp-for="Post.Title" class="form-control" />
+                <input asp-for="Post.Title" class="form-control" value="@Model.Post.Title" />
                 <span asp-validation-for="Post.Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+                <br />
                 <label asp-for="Post.Address" class="control-label"></label>
-                <input asp-for="Post.Address" class="form-control" />
+                <input asp-for="Post.Address" class="form-control" value="@Model.Post.Address" />
                 <span asp-validation-for="Post.Address" class="text-danger"></span>
+
             </div>
-            <div class="form-group">
-                <label asp-for="Post.Description" class="control-label"></label>
-                <textarea asp-for="Post.Description" class="form-control"></textarea>
-                <span asp-validation-for="Post.Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Post.Price" class="control-label"></label>
-                <input asp-for="Post.Price" class="form-control" />
+
+            <div class="position-absolute" style="min-width:100px;right:0px;">
+                <div class="d-flex">
+                    <input asp-for="Post.Price" value="@Model.Post.Price" class="form-control" style="width:100px;" /><span class="w-auto">€/night</span>
+                </div>
                 <span asp-validation-for="Post.Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Post.NBeds" class="control-label"></label>
-                <input asp-for="Post.NBeds" class="form-control" />
+                <br />
+                <div class="d-flex">
+                    <img src="/icon/room-icon.png" class="icon-m mr-2" />
+                    <input asp-for="Post.NBedrooms" class="form-control input-sm" value="@Model.Post.NBedrooms" />
+                </div>
+                <span asp-validation-for="Post.NBedrooms" class="text-danger"></span>
+                <br />
+                <div class="d-flex">
+                    <img src="/icon/bed-icon.png" class="icon-m mr-2" />
+                    <input asp-for="Post.NBeds" class="form-control input-sm" value="@Model.Post.NBeds" />
+                </div>
                 <span asp-validation-for="Post.NBeds" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Post.NBedrooms" class="control-label"></label>
-                <input asp-for="Post.NBedrooms" class="form-control" />
-                <span asp-validation-for="Post.NBedrooms" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Post.Comodities" class="control-label"></label>
-                @*@Html.DropDownListFor(model => model.Comodities, Model.Comodities)*@
+
+        </div>
+
+
+        <h4 class="my-5">TODO upload the images</h4>
+        @{
+            //TODO upload das imagens
+        }
+
+        <div class="container mt-5">
+            <label asp-for="Post.Description" class="control-label"></label>
+            <textarea asp-for="Post.Description" class="form-control" value="@Model.Post.Description" rows="5"></textarea>
+            <span asp-validation-for="Post.Description" class="text-danger"></span>
+        </div>
+
+        <div class="container">
+            <label asp-for="Post.Comodities" class="control-label"></label>
+            <div class="container">
                 @foreach (var c in Model.Comodities)
                 {
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="@c.Id" name="Post.Comodities[]">
-                    <label class="form-check-label" for="flexCheckDefault">@c.Name</label>
-                </div>
+                    var isChecked = Model.Post.Comodities != null && Model.Post.Comodities.Contains(c);
+                    var checkedExtra = "";
+                    if (isChecked)
+                        checkedExtra = "checked";
+                    <div class="form-check d-block float-left" style="width:20%;">
+                        <input class="form-check-input" type="checkbox" value="@c.Id" name="Post.Comodities[]" @checkedExtra>
+                        <label class="form-check-label" for="flexCheckDefault">@c.Name</label>
+                    </div>
                 }
-                @*<span asp-validation-for="Post.Comodities" class="text-danger"></span>*@
             </div>
-            <div class="form-group">
-                <label asp-for="Post.Type" class="control-label"></label>
-                <select asp-for="Post.Type" class="form-control">
-                    @foreach (var e in Enum.GetNames(typeof(PropertyType)))
-                    {
-                        <option value="@e">@e</option>
-                    }
-                </select>
-                <span asp-validation-for="Post.Type" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Post.Availability" class="control-label"></label>
-                <select asp-for="Post.Availability" class="form-control">
-                    @foreach (var e in Enum.GetNames(typeof(AvailabilityType)))
-                    {
-                        <option value="@e">@e</option>
-                    }
-                </select>
-                <span asp-validation-for="Post.Availability" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+            @for (int i = 0; i < Model.Comodities.Count; i += 5)
+            {
+                <br />
+            }
+        </div>
+
+        <div class="container">
+            <label asp-for="Post.Type" class="control-label"></label>
+            <select asp-for="Post.Type" class="form-control w-auto">
+                @foreach (var e in Enum.GetNames(typeof(PropertyType)))
+                {
+                    <option value="@e">@e</option>
+                }
+            </select>
+            <span asp-validation-for="Post.Type" class="text-danger"></span>
+        </div>
+        <div class="container">
+            <label asp-for="Post.Availability" class="control-label"></label>
+            <select asp-for="Post.Availability" class="form-control w-auto">
+                @foreach (var e in Enum.GetNames(typeof(AvailabilityType)))
+                {
+                    <option value="@e">@e</option>
+                }
+            </select>
+            <span asp-validation-for="Post.Availability" class="text-danger"></span>
+        </div>
+        <div class="container mt-3">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </form>
 </div>
 
-<div>
+<div class="position-relative" style="right:0px;">
     <a asp-action="Index">Back to List</a>
 </div>
 

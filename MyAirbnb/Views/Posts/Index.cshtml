@@ -13,34 +13,22 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ManagerId)
+               Title
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                Address
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Address)
+               Price
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+               Beds
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                Bedrooms
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.NBeds)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NBedrooms)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Rating)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Type)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Availability)
+                Rating
             </th>
             <th></th>
         </tr>
@@ -49,16 +37,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ManagerId)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
@@ -73,14 +55,7 @@
                 @Html.DisplayFor(modelItem => item.Rating)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Type)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Availability)
-            </td>
-            <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>

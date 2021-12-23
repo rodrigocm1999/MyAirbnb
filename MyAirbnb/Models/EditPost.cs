@@ -9,6 +9,6 @@ namespace MyAirbnb.Models
     public class EditPost
     {
         public Post Post { get; set; }
-        public IEnumerable<Comodity> Comodities { get; set; }
+        public IList<Comodity> Comodities { get; set; }
     }
 }

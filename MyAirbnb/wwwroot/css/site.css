@@ -74,8 +74,21 @@ body {
 }
 
 
-
 .car-img {
     width: 200px;
     height: 200px;
+}
+
+.icon-sm {
+    width: 16px;
+    height: 16px;
+}
+
+.icon-m {
+    width: 26px;
+    height: 26px;
+}
+
+.input-sm {
+    width: 70px;
 }

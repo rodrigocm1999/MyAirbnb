@@ -29,14 +29,21 @@ namespace MyAirbnb.Controllers
             if (page != null)
                 amountToSkip = (page.Value - 1) * App.ItemsPerPage;
 
-            var posts = _context.Posts.Include(p => p.Comodities).Skip(amountToSkip).Take(App.ItemsPerPage);
+            var posts = _context.Posts
+                .Include(p => p.Comodities)
+                .Include(p => p.PostImages)
+                .Skip(amountToSkip)
+                .Take(App.ItemsPerPage);
             return View(posts);
         }
 
         public IActionResult Details(int? id)
         {
             if (id == null) return NotFound();
-            var post = _context.Posts.FirstOrDefault(p => p.Id == id);
+            var post = _context.Posts
+                .Include(p => p.Comodities)
+                .Include(p => p.PostImages)
+                .FirstOrDefault(p => p.Id == id);
             if (post == null) return NotFound();
             return View(post);
         }
