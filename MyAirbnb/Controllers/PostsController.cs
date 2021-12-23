@@ -51,14 +51,17 @@ namespace MyAirbnb.Controllers
         }
 
         // POST: Posts/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Address,Description,Html,Price,NBeds,NBedrooms,Type,Availability,Comodities")] ReceivePost post)
+        public async Task<IActionResult> Create([Bind("Title,Address,Description,Html,Price,NBeds,NBedrooms,Type,Availability,Comodities")] ReceivePost post)
         {
             if (ModelState.IsValid)
             {
+
+                List<Comodity> comodities = null;
+                if (post.Comodities != null)
+                    comodities = _context.Comodities.Where(c => post.Comodities.Contains(c.Id)).ToList();
+
                 var finalPost = new Post
                 {
                     Title = post.Title,
@@ -69,7 +72,7 @@ namespace MyAirbnb.Controllers
                     NBedrooms = post.NBedrooms,
                     Type = post.Type,
                     Availability = post.Availability,
-                    Comodities = _context.Comodities.Where(c => post.Comodities.Contains(c.Id)).ToList(),
+                    Comodities = comodities,
                 };
 
                 _context.Add(finalPost);
@@ -80,7 +83,7 @@ namespace MyAirbnb.Controllers
         }
 
         // GET: Posts/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
@@ -105,27 +108,42 @@ namespace MyAirbnb.Controllers
         }
 
         // POST: Posts/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ManagerId,Title,Address,Description,Html,Price,NBeds,NBedrooms,Rating,Type,Availability")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Address,Description,Html,Price,NBeds,NBedrooms,Type,Availability,Comodities")] ReceivePost post)
         {
-            if (id != post.Id)
-            {
-                return NotFound();
-            }
+            //if (id != post.Id)
+            //    return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(post);
+                    List<Comodity> comodities = null;
+                    if (post.Comodities != null)
+                        comodities = _context.Comodities.Where(c => post.Comodities.Contains(c.Id)).ToList();
+
+                    var finalPost = new Post
+                    {
+                        Id = id,
+                        Title = post.Title,
+                        Address = post.Address,
+                        Description = post.Description,
+                        Price = post.Price,
+                        NBeds = post.NBeds,
+                        NBedrooms = post.NBedrooms,
+                        Type = post.Type,
+                        Availability = post.Availability,
+                        Comodities = comodities,
+                    };
+
+                    _context.Update(finalPost);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PostExists(post.Id))
+                    if (!PostExists(id))
                     {
                         return NotFound();
                     }
@@ -134,7 +152,6 @@ namespace MyAirbnb.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(post);
         }
