@@ -11,11 +11,11 @@ namespace MyAirbnb.Models
         public string Title { get; set; }
         public string Address { get; set; }
         public string Description { get; set; }
-        public float Price { get; set; }
+        public decimal Price { get; set; }
         public int NBeds { get; set; }
         public int NBedrooms { get; set; }
-        public PropertyType Type { get; set; }
-        public AvailabilityType Availability { get; set; }
+        public int PropertyType { get; set; }
+        public int AvailabilityType { get; set; }
 
         //public virtual ICollection<PostImage> PostImages { get; set; }
         public virtual ICollection<int> Comodities { get; set; } // Esta classe existe para conseguir receber os ids das comodities

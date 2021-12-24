@@ -3,16 +3,24 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using static MyAirbnb.Data.DataClassesHelper;
 
 namespace MyAirbnb.Models
 {
 
-    public enum PropertyType { Home, Apartment }
+    public class PropertyType
+    {
+        public static ValueName Home = new(0, "Home");
+        public static ValueName Apartment = new(1, "Apartment");
+        public static List<ValueName> Types = new() { Home, Apartment };
+    }
 
-    public enum AvailabilityType { Available, AlreadyRented }
-
-    // public enum ComodityType { Wifi, Dryer, Dishwasher, WashingMachine, CoffeeMachine, TV, Fridge, AirConditioning, Bedsheets, Vaccum, Microwave, Balcony, Garage }
-
+    public class AvailabilityType
+    {
+        public static ValueName Available = new(0, "Available");
+        public static ValueName AlreadyRented = new(1, "Already Rented");
+        public static List<ValueName> Types = new() { Available, AlreadyRented };
+    }
 
     public class Post
     {
@@ -32,8 +40,9 @@ namespace MyAirbnb.Models
 
         [DataType(DataType.Currency)]
         [Display(Name = "Price per Night")]
-        [Range(1, int.MaxValue, ErrorMessage = "Invalid Price, cannot be 0")]
-        public float Price { get; set; }
+        [DisplayFormat(DataFormatString = "{0:F2}", ApplyFormatInEditMode = true)]
+        [Range(1, float.MaxValue,ErrorMessage = "Invalid Price, cannot be 0")]
+        public decimal Price { get; set; }
 
         [Display(Name = "Number of Beds")]
         [Range(1, 50, ErrorMessage = "Invalid number of Bedrooms (1 - 50)")]
@@ -45,8 +54,8 @@ namespace MyAirbnb.Models
 
         public float Rating { get; set; }
 
-        public PropertyType Type { get; set; }
-        public AvailabilityType Availability { get; set; }
+        public int PropertyType { get; set; }
+        public int AvailabilityType { get; set; }
 
         public virtual IList<PostImage> PostImages { get; set; }
         public virtual IList<Comodity> Comodities { get; set; }

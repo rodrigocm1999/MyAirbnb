@@ -261,7 +261,7 @@ namespace MyAirbnb.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Availability")
+                    b.Property<int>("AvailabilityType")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -276,8 +276,11 @@ namespace MyAirbnb.Migrations
                     b.Property<int>("NBeds")
                         .HasColumnType("int");
 
-                    b.Property<float>("Price")
-                        .HasColumnType("real");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("PropertyType")
+                        .HasColumnType("int");
 
                     b.Property<float>("Rating")
                         .HasColumnType("real");
@@ -286,9 +289,6 @@ namespace MyAirbnb.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

@@ -53,7 +53,7 @@ namespace MyAirbnb.Controllers
         // POST: Posts/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Address,Description,Html,Price,NBeds,NBedrooms,Type,Availability,Comodities")] ReceivePost post)
+        public async Task<IActionResult> Create([Bind("Title,Address,Description,Html,Price,NBeds,NBedrooms,PropertyType,AvailabilityType,Comodities")] ReceivePost post)
         {
             if (ModelState.IsValid)
             {
@@ -70,8 +70,8 @@ namespace MyAirbnb.Controllers
                     Price = post.Price,
                     NBeds = post.NBeds,
                     NBedrooms = post.NBedrooms,
-                    Type = post.Type,
-                    Availability = post.Availability,
+                    PropertyType = post.PropertyType,
+                    AvailabilityType = post.AvailabilityType,
                     Comodities = comodities,
                 };
 
@@ -110,34 +110,34 @@ namespace MyAirbnb.Controllers
         // POST: Posts/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Address,Description,Html,Price,NBeds,NBedrooms,Type,Availability,Comodities")] ReceivePost post)
+        public async Task<IActionResult> Edit(int id, [Bind("Title,Address,Description,Html,Price,NBeds,NBedrooms,PropertyType,AvailabilityType,Comodities")] ReceivePost post)
         {
-            //if (id != post.Id)
-            //    return NotFound();
-
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var dbPost = _context.Posts
+                        .Include(e => e.Comodities)
+                        .Include(p => p.PostImages)
+                        .FirstOrDefault(e => e.Id == id);
+                    if (dbPost == null)
+                        return NotFound();
+
                     List<Comodity> comodities = null;
                     if (post.Comodities != null)
                         comodities = _context.Comodities.Where(c => post.Comodities.Contains(c.Id)).ToList();
 
-                    var finalPost = new Post
-                    {
-                        Id = id,
-                        Title = post.Title,
-                        Address = post.Address,
-                        Description = post.Description,
-                        Price = post.Price,
-                        NBeds = post.NBeds,
-                        NBedrooms = post.NBedrooms,
-                        Type = post.Type,
-                        Availability = post.Availability,
-                        Comodities = comodities,
-                    };
+                    dbPost.Title = post.Title;
+                    dbPost.Address = post.Address;
+                    dbPost.Description = post.Description;
+                    dbPost.Price = post.Price;
+                    dbPost.NBeds = post.NBeds;
+                    dbPost.NBedrooms = post.NBedrooms;
+                    dbPost.PropertyType = post.PropertyType;
+                    dbPost.AvailabilityType = post.AvailabilityType;
+                    dbPost.Comodities = comodities;
 
-                    _context.Update(finalPost);
+                    _context.Update(dbPost);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }

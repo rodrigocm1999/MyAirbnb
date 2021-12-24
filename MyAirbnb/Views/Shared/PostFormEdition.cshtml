@@ -20,6 +20,9 @@
     <div class="position-absolute" style="min-width:100px;right:0px;">
         <div class="d-flex">
             <input asp-for="Post.Price" value="@Model.Post.Price" class="form-control" style="width:100px;" /><span class="w-auto">€/night</span>
+            @{ 
+                //TODO arranjar problema de não deixarpor numeros com decimas/ponto
+            }
         </div>
         <span asp-validation-for="Post.Price" class="text-danger"></span>
         <br />
@@ -45,6 +48,9 @@
 }
 
 <div class="container mt-5">
+    @{
+        //TODO arranjar as mudanças de linha
+    }
     <label asp-for="Post.Description" class="control-label"></label>
     <textarea asp-for="Post.Description" class="form-control" value="@Model.Post.Description" rows="5"></textarea>
     <span asp-validation-for="Post.Description" class="text-danger"></span>
@@ -55,9 +61,8 @@
     <div class="container">
         @foreach (var c in Model.Comodities)
         {
-            var isChecked = Model.Post.Comodities != null && Model.Post.Comodities.Contains(c);
             var checkedExtra = "";
-            if (isChecked)
+            if (Model.Post.Comodities != null && Model.Post.Comodities.Contains(c))
                 checkedExtra = "checked";
             <div class="form-check d-block float-left" style="width:20%;">
                 <input class="form-check-input" type="checkbox" value="@c.Id" name="Post.Comodities[]" @checkedExtra>
@@ -72,26 +77,37 @@
 </div>
 
 <div class="container">
-    <label asp-for="Post.Type" class="control-label"></label>
-    <select asp-for="Post.Type" class="form-control w-auto">
-        @foreach (var e in Enum.GetNames(typeof(PropertyType)))
+    <label asp-for="Post.PropertyType" class="control-label"></label>
+    <select asp-for="Post.PropertyType" class="form-control w-auto">
+        @foreach (var e in PropertyType.Types)
         {
-            <option value="@e">@e</option>
+            if (Model.Post.PropertyType == e.Value)
+            {
+                <option value="@e.Value" selected>@e.Name</option>
+            }
+            else
+            {
+                <option value="@e.Value">@e.Name</option>
+            }
         }
     </select>
-    <span asp-validation-for="Post.Type" class="text-danger"></span>
+    <span asp-validation-for="Post.PropertyType" class="text-danger"></span>
 </div>
-@{
-    //TODO meter estes enums a mostrarem o certo a partir do modelo de entrada e se calhar mudar para uma lista de objetos ou outra cena
-}
 
 <div class="container">
-    <label asp-for="Post.Availability" class="control-label"></label>
-    <select asp-for="Post.Availability" class="form-control w-auto">
-        @foreach (var e in Enum.GetNames(typeof(AvailabilityType)))
+    <label asp-for="Post.AvailabilityType" class="control-label"></label>
+    <select asp-for="Post.AvailabilityType" class="form-control w-auto">
+        @foreach (var e in AvailabilityType.Types)
         {
-            <option value="@e">@e</option>
+            if (Model.Post.AvailabilityType == e.Value)
+            {
+                <option value="@e.Value" selected>@e.Name</option>
+            }
+            else
+            {
+                <option value="@e.Value">@e.Name</option>
+            }
         }
     </select>
-    <span asp-validation-for="Post.Availability" class="text-danger"></span>
+    <span asp-validation-for="Post.AvailabilityType" class="text-danger"></span>
 </div>
