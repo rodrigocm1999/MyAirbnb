@@ -10,7 +10,7 @@ using MyAirbnb.Data;
 namespace MyAirbnb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211224001428_one")]
+    [Migration("20211225233027_one")]
     partial class one
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -236,6 +236,32 @@ namespace MyAirbnb.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("MyAirbnb.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comment");
+                });
+
             modelBuilder.Entity("MyAirbnb.Models.Comodity", b =>
                 {
                     b.Property<int>("Id")
@@ -250,6 +276,16 @@ namespace MyAirbnb.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Comodities");
+                });
+
+            modelBuilder.Entity("MyAirbnb.Models.Manager", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Managers");
                 });
 
             modelBuilder.Entity("MyAirbnb.Models.Post", b =>
@@ -268,9 +304,6 @@ namespace MyAirbnb.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ManagerId")
-                        .HasColumnType("int");
 
                     b.Property<int>("NBedrooms")
                         .HasColumnType("int");
@@ -292,7 +325,12 @@ namespace MyAirbnb.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("WorkerId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("WorkerId");
 
                     b.ToTable("Posts");
                 });
@@ -305,6 +343,7 @@ namespace MyAirbnb.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("FilePath")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PostId")
@@ -315,6 +354,21 @@ namespace MyAirbnb.Migrations
                     b.HasIndex("PostId");
 
                     b.ToTable("PostImage");
+                });
+
+            modelBuilder.Entity("MyAirbnb.Models.Worker", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ManagerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ManagerId");
+
+                    b.ToTable("Workers");
                 });
 
             modelBuilder.Entity("ComodityPost", b =>
@@ -383,6 +437,28 @@ namespace MyAirbnb.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MyAirbnb.Models.Comment", b =>
+                {
+                    b.HasOne("MyAirbnb.Models.Post", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MyAirbnb.Models.Post", b =>
+                {
+                    b.HasOne("MyAirbnb.Models.Worker", null)
+                        .WithMany("Posts")
+                        .HasForeignKey("WorkerId");
+                });
+
             modelBuilder.Entity("MyAirbnb.Models.PostImage", b =>
                 {
                     b.HasOne("MyAirbnb.Models.Post", null)
@@ -392,9 +468,28 @@ namespace MyAirbnb.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MyAirbnb.Models.Worker", b =>
+                {
+                    b.HasOne("MyAirbnb.Models.Manager", null)
+                        .WithMany("Workers")
+                        .HasForeignKey("ManagerId");
+                });
+
+            modelBuilder.Entity("MyAirbnb.Models.Manager", b =>
+                {
+                    b.Navigation("Workers");
+                });
+
             modelBuilder.Entity("MyAirbnb.Models.Post", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("PostImages");
+                });
+
+            modelBuilder.Entity("MyAirbnb.Models.Worker", b =>
+                {
+                    b.Navigation("Posts");
                 });
 #pragma warning restore 612, 618
         }

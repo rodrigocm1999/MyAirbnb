@@ -37,6 +37,10 @@
                 <span class="mr-1">@m.NBeds</span>
                 <img src="/icon/bed-icon.png" class="icon-m" />
             </p>
+            <br />
+            <p class="d-inline-block">
+                <button class="btn btn-success" onclick="alert('TODO');">Reserve</button>
+            </p>
 
         </div>
 
@@ -74,7 +78,7 @@
         </div>
     }
 
-    @{ 
+    @{
         //TODO mostrar tipo de propriedade e estado
     }
     <div class="container mt-5">
@@ -91,5 +95,20 @@
             }
         </div>
     </div>
+
+
+    @if (m.Comments != null && m.Comments.Count > 0)
+    {
+        <div class="container mt-5">
+            <h4>Comments :</h4>
+
+            @foreach (var c in m.Comments)
+            {
+                <p>@c.User.UserName : @c.Text</p>
+            }
+
+
+        </div>
+    }
 
 </div>

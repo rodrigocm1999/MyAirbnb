@@ -12,12 +12,17 @@ namespace MyAirbnb.Data
 
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comodity> Comodities { get; set; }
+        public DbSet<Manager> Managers { get; set; }
+        public DbSet<Worker> Workers { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.Entity<Post>()
+                .Property(p => p.Price)
+                .HasColumnType("decimal(18,2)");
         }
     }
 }

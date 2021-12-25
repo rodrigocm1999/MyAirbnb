@@ -1,20 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyAirbnb.Data;
+using MyAirbnb.Extensions;
 using MyAirbnb.Models;
 
 namespace MyAirbnb.Controllers
 {
-    public class PostsController : Controller
+
+    [Authorize(Roles = "Worker, Manager")]
+    public class WorkerController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public PostsController(ApplicationDbContext context)
+        public WorkerController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -22,7 +24,9 @@ namespace MyAirbnb.Controllers
         // GET: Posts
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Posts.ToListAsync());
+            var userId = User.GetUserId();
+            var postsList = await _context.Posts.Where(e => e.WorkerId == userId).ToListAsync();
+            return View(postsList);
         }
 
         // GET: Posts/Details/5
@@ -31,8 +35,9 @@ namespace MyAirbnb.Controllers
             if (id == null)
                 return NotFound();
 
+            var userId = User.GetUserId();
             var post = await _context.Posts
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(e => e.Id == id && e.WorkerId == userId);
             if (post == null)
                 return NotFound();
 
@@ -57,13 +62,13 @@ namespace MyAirbnb.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 List<Comodity> comodities = null;
                 if (post.Comodities != null)
                     comodities = _context.Comodities.Where(c => post.Comodities.Contains(c.Id)).ToList();
 
                 var finalPost = new Post
                 {
+                    WorkerId = User.GetUserId(),
                     Title = post.Title,
                     Address = post.Address,
                     Description = post.Description,
@@ -86,18 +91,15 @@ namespace MyAirbnb.Controllers
         public IActionResult Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
+            var userId = User.GetUserId();
             var post = _context.Posts
-                .Include(p => p.Comodities)
-                .Include(p => p.PostImages)
-                .FirstOrDefault(p => p.Id == id.Value);
+                .Include(e => e.Comodities)
+                .Include(e => e.PostImages)
+                .FirstOrDefault(e => e.Id == id.Value && e.WorkerId == userId);
             if (post == null)
-            {
                 return NotFound();
-            }
 
             var editPost = new EditPost()
             {
@@ -116,16 +118,17 @@ namespace MyAirbnb.Controllers
             {
                 try
                 {
+                    var userId = User.GetUserId();
                     var dbPost = _context.Posts
                         .Include(e => e.Comodities)
-                        .Include(p => p.PostImages)
-                        .FirstOrDefault(e => e.Id == id);
+                        .Include(e => e.PostImages)
+                        .FirstOrDefault(e => e.Id == id && e.WorkerId == userId);
                     if (dbPost == null)
                         return NotFound();
 
                     List<Comodity> comodities = null;
                     if (post.Comodities != null)
-                        comodities = _context.Comodities.Where(c => post.Comodities.Contains(c.Id)).ToList();
+                        comodities = _context.Comodities.Where(e => post.Comodities.Contains(e.Id)).ToList();
 
                     dbPost.Title = post.Title;
                     dbPost.Address = post.Address;
@@ -144,13 +147,9 @@ namespace MyAirbnb.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!PostExists(id))
-                    {
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
             }
             return View(post);
@@ -160,16 +159,12 @@ namespace MyAirbnb.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var post = await _context.Posts
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(e => e.Id == id);
             if (post == null)
-            {
                 return NotFound();
-            }
 
             return View(post);
         }

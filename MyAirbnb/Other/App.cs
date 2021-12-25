@@ -7,7 +7,7 @@ namespace MyAirbnb.Models
 {
     public class App
     {
-        public static int ItemsPerPage { get; } = 15;
-
+        public static int ItemsPerPage { get; } = 5;
+        public static string ManagerRole { get; } = "Manager";
     }
 }
