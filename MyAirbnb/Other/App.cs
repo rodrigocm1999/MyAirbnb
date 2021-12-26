@@ -9,5 +9,6 @@ namespace MyAirbnb.Models
     {
         public static int ItemsPerPage { get; } = 5;
         public static string ManagerRole { get; } = "Manager";
+        public static string PostImagesFolderName { get; } = "postimages";
     }
 }

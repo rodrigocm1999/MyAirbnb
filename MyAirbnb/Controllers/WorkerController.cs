@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyAirbnb.Data;
@@ -15,10 +19,12 @@ namespace MyAirbnb.Controllers
     public class WorkerController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _environment;
 
-        public WorkerController(ApplicationDbContext context)
+        public WorkerController(ApplicationDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
 
         // GET: Posts
@@ -184,5 +190,72 @@ namespace MyAirbnb.Controllers
         {
             return _context.Posts.Any(e => e.Id == id);
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> RemovePostImage(int postId, int postImageId)
+        {
+            var userId = User.GetUserId();
+            var post = await _context.Posts
+                .Include(e => e.PostImages)
+                .FirstOrDefaultAsync(e => e.Id == postId && e.WorkerId == userId);
+            if (post == null) return NotFound();
+
+            var postImage = post.PostImages.FirstOrDefault(e => e.Id == postImageId);
+            if (postImage == null) return NotFound();
+
+            post.PostImages.Remove(postImage);
+            await _context.SaveChangesAsync();
+            //TODO talvez remover o ficheiro, talvez não, fazer tipo facebook e guardar tudo
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadPostImage(int id, IEnumerable<IFormFile> files)
+        {
+            var userId = User.GetUserId();
+            var post = await _context.Posts
+                .Include(e => e.PostImages)
+                .FirstOrDefaultAsync(e => e.Id == id && e.WorkerId == userId);
+            if (post == null) return NotFound();
+
+            var imagesPath = App.PostImagesFolderName;
+
+            var newImages = new List<PostImage>();
+
+            foreach (var formFile in files)
+            {
+                if (formFile.Length <= 0) continue;
+
+                var filePath = "/"+imagesPath + $@"/{Path.GetRandomFileName()}.jpg"; //so para mostrar no explorardor de ficheiros
+
+                using (var stream = System.IO.File.Create(_environment.WebRootPath + filePath))
+                {
+                    await formFile.CopyToAsync(stream);
+                }
+                var postImage = new PostImage
+                {
+                    FilePath = filePath
+                };
+                post.PostImages.Add(postImage);
+                newImages.Add(postImage);
+            }
+
+            await _context.SaveChangesAsync();
+
+            //var toSendBack = new List<PostImage>();
+            //foreach (var img in newImages)
+            //{
+            //    toSendBack.Add(new PostImage
+            //    {
+            //        Id = img.Id,
+            //        FilePath = img.FilePath
+            //    });
+            //}
+
+            //TODO talvez remover o ficheiro, talvez não, fazer tipo facebook e guardar 
+            return Ok(newImages);
+        }
+
     }
 }

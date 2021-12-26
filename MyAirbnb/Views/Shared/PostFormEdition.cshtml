@@ -20,7 +20,7 @@
     <div class="position-absolute" style="min-width:100px;right:0px;">
         <div class="d-flex">
             <input asp-for="Post.Price" value="@Model.Post.Price" class="form-control" style="width:100px;" /><span class="w-auto">€/night</span>
-            @{ 
+            @{
                 //TODO arranjar problema de não deixarpor numeros com decimas/ponto
             }
         </div>
@@ -41,11 +41,91 @@
 
 </div>
 
+<div class="container">
+    <style>
+        .xCorner {
+            position: absolute;
+            right: 0px;
+            left: 0px;
+        }
+    </style>
+    <h4 class="my-5">TODO upload the images</h4>
+    @{
+        //TODO upload das imagens
+    }
+    <div id="imagesParent">
+        @foreach (var img in Model.Post.PostImages)
+        {
+            <div class="position-relative">
+                <img src="@img.FilePath" class="car-img" />
+                <span class="xCorner" onclick="removeImgFromPost(@img.Id,this)">&#x274C;</span>
+            </div>
+        }
 
-<h4 class="my-5">TODO upload the images</h4>
-@{
-    //TODO upload das imagens
-}
+    </div>
+
+    <input name="" type="file" accept=".webp,.png,.jpeg,.jpg" multiple onchange="uploadPostImage(this)" />
+
+    <script>
+        function removeImgFromPost(imgId, element) {
+            var group = element.parentElement;
+            group.parentElement.removeChild(group);
+            $.ajax({
+                type: 'POST',
+                url: '/Worker/RemovePostImage',
+                data: {
+                    postId: @Model.Post.Id,
+                    postImageId: imgId
+                }
+            });
+        }
+
+        function uploadPostImage(element) {
+            let formData = new FormData();
+            //var d = $(element)[0].files;
+            //formData.append('files', d);
+            //formData.append('files', d);
+            console.log(element);
+            for (f of element.files) {
+                console.log(f);
+                formData.append('files',f);
+            }
+
+            console.log(formData);
+
+            $.ajax({
+                type: 'POST',
+                enctype: 'multipart/form-data',
+                url: '/Worker/UploadPostImage/' + @Model.Post.Id,
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    console.log(data);
+                    var parent = $('imagesParent');
+                    for (var f of data) {
+
+                        //var newImg = $(```<div class="position-relative">
+                        //    <img src="${f.filePath}" class="car-img" />
+                        //    <span class="xCorner" onclick="removeImgFromPost(${f.id},this)">&#x274C;</span>
+                        //</div>```);
+
+                        var el = document.createElement("div");
+                        el.classList.add("position-relative");
+                        el.innerHTML = ```<img src="${f.filePath}" class="car-img" />
+                            <span class="xCorner" onclick="removeImgFromPost(${f.id},this)">&#x274C;</span>```;
+                        //TODO falta conseguir mostrar as novas imagens e meter isso lindo, mas faz upload e remove
+                        parent.append(newImg);
+                    }
+                 }
+            });
+        }
+
+
+
+    </script>
+
+</div>
 
 <div class="container mt-5">
     @{

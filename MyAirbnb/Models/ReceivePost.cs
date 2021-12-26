@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,7 +18,9 @@ namespace MyAirbnb.Models
         public int PropertyType { get; set; }
         public int AvailabilityType { get; set; }
 
-        //public virtual ICollection<PostImage> PostImages { get; set; }
+
+        public virtual IList<IFormFile> PostImages { get; set; }
+        
         public virtual ICollection<int> Comodities { get; set; } // Esta classe existe para conseguir receber os ids das comodities
     }
 }
