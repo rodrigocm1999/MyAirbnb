@@ -54,14 +54,16 @@
         //TODO upload das imagens
     }
     <div id="imagesParent">
-        @foreach (var img in Model.Post.PostImages)
+        @if (Model.Post.PostImages != null)
         {
-            <div class="position-relative">
-                <img src="@img.FilePath" class="car-img" />
-                <span class="xCorner" onclick="removeImgFromPost(@img.Id,this)">&#x274C;</span>
-            </div>
+            @foreach (var img in Model.Post.PostImages)
+            {
+                <div class="position-relative">
+                    <img src="@img.FilePath" class="car-img" />
+                    <span class="xCorner" onclick="removeImgFromPost(@img.Id,this)">&#x274C;</span>
+                </div>
+            }
         }
-
     </div>
 
     <input name="" type="file" accept=".webp,.png,.jpeg,.jpg" multiple onchange="uploadPostImage(this)" />
@@ -82,12 +84,7 @@
 
         function uploadPostImage(element) {
             let formData = new FormData();
-            //var d = $(element)[0].files;
-            //formData.append('files', d);
-            //formData.append('files', d);
-            console.log(element);
             for (f of element.files) {
-                console.log(f);
                 formData.append('files',f);
             }
 

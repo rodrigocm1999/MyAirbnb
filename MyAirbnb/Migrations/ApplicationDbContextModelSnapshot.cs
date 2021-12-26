@@ -303,6 +303,9 @@ namespace MyAirbnb.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Hidden")
+                        .HasColumnType("bit");
+
                     b.Property<int>("NBedrooms")
                         .HasColumnType("int");
 

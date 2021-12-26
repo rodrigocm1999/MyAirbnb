@@ -34,12 +34,12 @@ namespace MyAirbnb.Models
         [Required]
         [MinLength(10, ErrorMessage = "Title is too short (min 10)")]
         [MaxLength(100, ErrorMessage = "Title is too long (max 100)")]
-        public string Title { get; set; }
+        public string Title { get; set; } = "";
         [Required]
-        public string Address { get; set; }
+        public string Address { get; set; } = "";
 
         [DataType(DataType.MultilineText)]
-        public string Description { get; set; }
+        public string Description { get; set; } = "";
 
         [Display(Name = "Price per Night")]
         [DisplayFormat(DataFormatString = "{0:F2}", ApplyFormatInEditMode = true)]
@@ -60,6 +60,8 @@ namespace MyAirbnb.Models
 
         public int PropertyType { get; set; }
         public int AvailabilityType { get; set; }
+
+        public bool Hidden { get; set; } = false;
 
         public virtual IList<PostImage> PostImages { get; set; }
         public virtual IList<Comodity> Comodities { get; set; }

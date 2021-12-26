@@ -29,7 +29,8 @@ namespace MyAirbnb.Controllers
                 .Include(p => p.Comodities)
                 .Include(p => p.PostImages)
                 .Skip(amountToSkip)
-                .Take(App.ItemsPerPage);
+                .Take(App.ItemsPerPage)
+                .Where(p => !p.Hidden);
 
             var currentLastPostNumber = posts.Count() + amountToSkip;
 
@@ -49,7 +50,7 @@ namespace MyAirbnb.Controllers
                 .Include(p => p.PostImages)
                 .Include(p => p.Comodities)
                 .Include(p => p.Comments)
-                .FirstOrDefault(p => p.Id == id);
+                .FirstOrDefault(p => p.Id == id && !p.Hidden);
             if (post == null) return NotFound();
             return View(post);
         }

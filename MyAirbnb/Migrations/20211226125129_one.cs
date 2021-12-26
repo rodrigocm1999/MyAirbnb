@@ -209,7 +209,8 @@ namespace MyAirbnb.Migrations
                     NBedrooms = table.Column<int>(type: "int", nullable: false),
                     Rating = table.Column<float>(type: "real", nullable: false),
                     PropertyType = table.Column<int>(type: "int", nullable: false),
-                    AvailabilityType = table.Column<int>(type: "int", nullable: false)
+                    AvailabilityType = table.Column<int>(type: "int", nullable: false),
+                    Hidden = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -10,7 +10,7 @@ using MyAirbnb.Data;
 namespace MyAirbnb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211225233027_one")]
+    [Migration("20211226125129_one")]
     partial class one
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -304,6 +304,9 @@ namespace MyAirbnb.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Hidden")
+                        .HasColumnType("bit");
 
                     b.Property<int>("NBedrooms")
                         .HasColumnType("int");

@@ -53,15 +53,22 @@ namespace MyAirbnb.Controllers
         // GET: Posts/Create
         public IActionResult Create()
         {
+            var post = new Post()
+            {
+                WorkerId = User.GetUserId(),
+            };
+            _context.Posts.Add(post);
+            _context.SaveChanges();
             var editPost = new EditPost()
             {
-                Post = new Post(),
+                Post = post,
                 Comodities = _context.Comodities.ToList()
             };
             return View(editPost);
         }
 
         // POST: Posts/Create
+        //NOT IN USE ANYMORE, Now post is created and inserted into database when entering the Create page
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,Address,Description,Html,Price,NBeds,NBedrooms,PropertyType,AvailabilityType,Comodities")] ReceivePost post)
@@ -180,7 +187,12 @@ namespace MyAirbnb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var post = await _context.Posts.FindAsync(id);
+            var post = await _context.Posts.Include(e=>e.PostImages).FirstOrDefaultAsync(e=>e.Id == id);
+            foreach(var postImage  in post.PostImages)
+            {
+                var fullPath = _environment.WebRootPath + postImage.FilePath;
+                new FileInfo(fullPath).Delete();
+            }
             _context.Posts.Remove(post);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -206,7 +218,10 @@ namespace MyAirbnb.Controllers
 
             post.PostImages.Remove(postImage);
             await _context.SaveChangesAsync();
-            //TODO talvez remover o ficheiro, talvez não, fazer tipo facebook e guardar tudo
+
+            var fullPath = _environment.WebRootPath + postImage.FilePath;
+            new FileInfo(fullPath).Delete();
+
             return Ok();
         }
 
@@ -227,7 +242,7 @@ namespace MyAirbnb.Controllers
             {
                 if (formFile.Length <= 0) continue;
 
-                var filePath = "/"+imagesPath + $@"/{Path.GetRandomFileName()}.jpg"; //so para mostrar no explorardor de ficheiros
+                var filePath = "/" + imagesPath + $@"/{Path.GetRandomFileName()}.jpg"; //so para mostrar no explorardor de ficheiros
 
                 using (var stream = System.IO.File.Create(_environment.WebRootPath + filePath))
                 {
@@ -243,17 +258,6 @@ namespace MyAirbnb.Controllers
 
             await _context.SaveChangesAsync();
 
-            //var toSendBack = new List<PostImage>();
-            //foreach (var img in newImages)
-            //{
-            //    toSendBack.Add(new PostImage
-            //    {
-            //        Id = img.Id,
-            //        FilePath = img.FilePath
-            //    });
-            //}
-
-            //TODO talvez remover o ficheiro, talvez não, fazer tipo facebook e guardar 
             return Ok(newImages);
         }
 

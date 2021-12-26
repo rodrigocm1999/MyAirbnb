@@ -5,16 +5,16 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create Post</h1>
+<h1>Edit new Post</h1>
 <hr />
 
 <div class="container">
-    <form asp-action="Create">
+    <form asp-action="Edit">
 
         @{await Html.RenderPartialAsync("PostFormEdition", Model); }
 
         <div class="container mt-3">
-            <input type="submit" value="Create" class="btn btn-primary" />
+            <input type="submit" value="Save" class="btn btn-primary" />
         </div>
     </form>
 </div>
