@@ -1,7 +1,12 @@
 ﻿@inject SignInManager<IdentityUser> SignInManager
+@inject RoleManager<IdentityRole> RoleManager
+@using MyAirbnb.Other
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+    var isManager = User.IsInRole(App.ManagerRole);
+    var isWorker = isManager || User.IsInRole(App.WorkerRole);
 }
+
 <ul class="nav nav-pills flex-column">
     <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a></li>
     <li class="nav-item"><a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Email</a></li>
@@ -12,4 +17,12 @@
     }
     <li class="nav-item"><a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">Two-factor authentication</a></li>
     <li class="nav-item"><a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Personal data</a></li>
+    @if (isWorker)
+    {
+        <li class="nav-item"><a class="nav-link" id="two-factor" asp-controller="Worker">Worker settings</a></li>
+    }
+    @if (isManager)
+    {
+        <li class="nav-item"><a class="nav-link" asp-controller="Manager">Manager settings</a></li>
+    }
 </ul>

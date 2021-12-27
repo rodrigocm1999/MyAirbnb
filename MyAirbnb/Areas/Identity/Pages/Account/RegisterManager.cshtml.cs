@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using MyAirbnb.Data;
 using MyAirbnb.Models;
+using MyAirbnb.Other;
 
 namespace MyAirbnb.Areas.Identity.Pages.Account
 {

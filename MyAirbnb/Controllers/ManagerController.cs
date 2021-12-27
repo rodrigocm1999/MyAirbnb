@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyAirbnb.Data;
-using MyAirbnb.Extensions;
+using MyAirbnb.Other;
 using System;
 using System.Collections.Generic;
 using System.Linq;

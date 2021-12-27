@@ -1,29 +1,52 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
-using static MyAirbnb.Data.DataClassesHelper;
 
 namespace MyAirbnb.Models
 {
 
-    //public class PropertyType
-    //{
-    //    public static ValueName Home = new(0, "Home");
-    //    public static ValueName Apartment = new(1, "Apartment");
-    //    public static List<ValueName> Types = new() { Home, Apartment };
-    //}
+    /*Random thoughts--------------------------------------------------
+     
+     Ainda vai ser preciso guardar as reservas, 
+     guardar a checklist, provavelmente basta meter ter strings agarradas a um manager que são cada campo da checklist
+     resultado da checklist da reserva
 
-    //public class AvailabilityType
-    //{
-    //    public static ValueName Available = new(0, "Available");
-    //    public static ValueName AlreadyRented = new(1, "Already Rented");
-    //    public static List<ValueName> Types = new() { Available, AlreadyRented };
-    //}
+    ------------------------------------------------------------------- */
 
+    //Non Specific
+    //TODO index- conseguir fazer pesquisa por endereço, talvez também ter filtros para escolher as camas e 
+    //TODO fazer pedir as reservas- tem de verificar a existencia de outras nessas datas e também mostrar as datas disponivies
+
+
+    //Client
+    //TODO os clientes a terminarem a estadia, podem dar um comentário e um rating ao post
+
+    //Manager
+    //TODO manager criar workers
+    //TODO manager gerir as checklists
+
+
+    //Worker
+    //TODO os worker podem ver os comentário e ratings dos posts
+    //TODO os workers podem ver e dar rating aos clientes, para poder decidir se aceitam a reserva ou não
+    //TODO worker "entregar o espaço"
+    //TODO worker "receber o espaço"
+    //TODO reservas podem ou não ser aceites, por isso é um pedido de reserva
+    //TODO quando fizer a reserva os workers terão de preencher a checklist da categoria do edificio para a entrega aos clientes
+    // e depois ter a cena de "terminar" a reserva em que teem de preenchar a outra checklist
+
+
+    //Admin
+    //TODO gerir managers e workers
+    //TODO ver lista de 
+    //TODO gerir clientes
+    //TODO gerir SpaceCategories (provavelmente conseguir alterar o nome e adicionar novo, mas apagar so ia dar merda se já existissem posts com essa categoria e reservas também)
+
+
+    [Index(nameof(WorkerId))]
     public class Post
     {
         [Key]
@@ -70,6 +93,8 @@ namespace MyAirbnb.Models
         public virtual IList<Comment> Comments { get; set; }
     }
 
+    [Index(nameof(PostId))]
+    [Index(nameof(UserId))]
     public class Comment
     {
         [Key]
@@ -81,7 +106,7 @@ namespace MyAirbnb.Models
 
         public int UserId { get; set; }
 
-        public virtual IdentityUser User { get; set; }
+        public virtual IdentityUser User { get; set; } //TODO verificar se isto vai preencher sozinho
 
         [Required]
         public string Text { get; set; }
@@ -97,7 +122,7 @@ namespace MyAirbnb.Models
         public virtual ICollection<Post> Posts { get; set; }
     }
 
-
+    [Index(nameof(PostId))]
     public class PostImage
     {
         [Key]
@@ -117,6 +142,7 @@ namespace MyAirbnb.Models
         public string Name { get; set; }
     }
 
+    [Index(nameof(ManagerId), IsUnique = false)]
     public class CheckList
     {
         [Key]
@@ -136,25 +162,22 @@ namespace MyAirbnb.Models
         public string Text { get; set; }
     }
 
+
+    [Index(nameof(PostId))]
+    [Index(nameof(PostId))]
     public class Reservation
     {
         [Key]
         public int Id { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
+
         public int PostId { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime Start { get; set; }
+        public DateTime StartDate { get; set; }
         [DataType(DataType.Date)]
-        public DateTime End { get; set; }
+        public DateTime EndDate { get; set; }
     }
-
-
-    // Ainda vai ser preciso guardar as reservas, 
-    // guardar a checklist, provavelmente basta meter ter strings agarradas a um manager que são cada campo da checklist
-    // resultado da checklist da reserva
-
-
 
     //This Ids are of the UserId of the logged user
     //The manager has multiple workers and is also a worker and all of the worker accounts created by it are also workers

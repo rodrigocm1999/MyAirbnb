@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace MyAirbnb.Extensions
+namespace MyAirbnb.Other
 {
 
     public static class Extensions

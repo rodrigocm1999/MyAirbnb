@@ -17,6 +17,8 @@ namespace MyAirbnb.Data
         public DbSet<Manager> Managers { get; set; }
         public DbSet<Worker> Workers { get; set; }
 
+        public DbSet<Reservation> Reservations { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder builder)

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyAirbnb.Data;
-using MyAirbnb.Extensions;
+using MyAirbnb.Other;
 using MyAirbnb.Models;
 
 namespace MyAirbnb.Controllers

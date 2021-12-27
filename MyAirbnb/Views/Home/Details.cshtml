@@ -39,7 +39,7 @@
             </p>
             <br />
             <p class="d-inline-block">
-                <button class="btn btn-success" onclick="alert('TODO');">Reserve</button>
+                <a class="btn page-link" asp-controller="User" asp-action="CreateReservation" asp-route-id="@m.Id">Reserve</a>
             </p>
 
         </div>
@@ -62,7 +62,7 @@
                     var extra = "";
                     if (i == 0) extra = "active";
                     <div class="carousel-item @extra">
-                        <img src="@m.PostImages[i].FilePath" class="w-100" />
+                        <img src="@m.PostImages[i].FilePath" class="details-post-image" />
                     </div>
                 }
             </div>
@@ -97,18 +97,20 @@
     </div>
 
 
-    @if (m.Comments != null && m.Comments.Count > 0)
-    {
-        <div class="container mt-5">
-            <h4>Comments :</h4>
 
+    <div class="container mt-5">
+        <h4>Comments :</h4>
+        @if (m.Comments != null && m.Comments.Count > 0)
+        {
             @foreach (var c in m.Comments)
             {
                 <p>@c.User.UserName : @c.Text</p>
             }
-
-
-        </div>
-    }
+        }
+        else
+        {
+            <p>There are no comments yet.</p>
+        }
+    </div>
 
 </div>
