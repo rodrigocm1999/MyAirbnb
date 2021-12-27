@@ -11,6 +11,18 @@ namespace MyAirbnb.Data
 
         public static async Task FillTestDataAsync(ApplicationDbContext context)
         {
+            var spaceCategories = new List<SpaceCategory>(){
+                new SpaceCategory{Name = "Apartment" },
+                new SpaceCategory{Name = "Home" }
+            };
+            var apartementId = spaceCategories[0].Id;
+            var homeId = spaceCategories[1].Id;
+
+            if (context.SpaceCategories.FirstOrDefault() == null)
+            {
+                context.SpaceCategories.AddRange(spaceCategories);
+            }
+
             var comodities = new List<Comodity>(){
                 new Comodity{Name = "Wifi" },
                 new Comodity{Name = "Dryer" },
@@ -34,15 +46,12 @@ namespace MyAirbnb.Data
 
             var posts = new List<Post>
             {
-                new Post{Address="Rua do aço",AvailabilityType=AvailabilityType.Available.Value,
-                    Description="Este apartamente tem aço",Title="Casa para 3 nabos",
-                    NBedrooms=1,NBeds=3,Price=400.99m,Rating=0,PropertyType=PropertyType.Apartment.Value},
-                new Post{Address="Rua ao lado da rua do aço",AvailabilityType=AvailabilityType.AlreadyRented.Value,
-                    Description="Esta casa não vale nada",Title="Casa a cair aos bocados",
-                    NBedrooms=2,NBeds=1,Price=20.99m,Rating=3,PropertyType=PropertyType.Home.Value},
-                new Post{Address="Teste 25 do dia 32",AvailabilityType=AvailabilityType.Available.Value,
-                    Description="Nem sei o que dizer",Title="Titulo não",
-                    NBedrooms=5,NBeds=10,Price=300.21m,Rating=0,PropertyType=PropertyType.Home.Value},
+                new Post{Address="Rua do aço",Description="Este apartamente tem aço",Title="Casa para 3 nabos",
+                    NBedrooms=1,NBeds=3,Price=400.99m,Rating=0,SpaceCategoryId = apartementId},
+                new Post{Address="Rua ao lado da rua do aço",Description="Esta casa não vale nada",Title="Casa a cair aos bocados",
+                    NBedrooms=2,NBeds=1,Price=20.99m,Rating=3,SpaceCategoryId=apartementId},
+                new Post{Address="Teste 25 do dia 32",Description="Nem sei o que dizer",Title="Titulo não",
+                    NBedrooms=5,NBeds=10,Price=300.21m,Rating=0,SpaceCategoryId=homeId},
             };
 
             Random rand = new Random(4321);

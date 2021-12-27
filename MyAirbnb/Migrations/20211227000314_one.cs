@@ -71,6 +71,19 @@ namespace MyAirbnb.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SpaceCategories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SpaceCategories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -208,7 +221,7 @@ namespace MyAirbnb.Migrations
                     NBeds = table.Column<int>(type: "int", nullable: false),
                     NBedrooms = table.Column<int>(type: "int", nullable: false),
                     Rating = table.Column<float>(type: "real", nullable: false),
-                    PropertyType = table.Column<int>(type: "int", nullable: false),
+                    SpaceCategoryId = table.Column<int>(type: "int", nullable: false),
                     AvailabilityType = table.Column<int>(type: "int", nullable: false),
                     Hidden = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -230,15 +243,17 @@ namespace MyAirbnb.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PostId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ReserveId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Comment", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comment_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Comment_AspNetUsers_UserId1",
+                        column: x => x.UserId1,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -339,9 +354,9 @@ namespace MyAirbnb.Migrations
                 column: "PostId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_UserId",
+                name: "IX_Comment_UserId1",
                 table: "Comment",
-                column: "UserId");
+                column: "UserId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ComodityPost_PostsId",
@@ -389,6 +404,9 @@ namespace MyAirbnb.Migrations
 
             migrationBuilder.DropTable(
                 name: "PostImage");
+
+            migrationBuilder.DropTable(
+                name: "SpaceCategories");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

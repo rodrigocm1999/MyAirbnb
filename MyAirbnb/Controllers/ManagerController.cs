@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MyAirbnb.Data;
+using MyAirbnb.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,13 +22,25 @@ namespace MyAirbnb.Controllers
 
         public IActionResult Index()
         {
+            //TODO
             return View();
         }
 
 
         public IActionResult CreateWorkerAccount()
         {
+            //TODO
             return View();
+        }
+
+
+        public IActionResult ManageWorkerAccounts()
+        {
+            var manager = _context.Managers
+                .Include(e => e.Workers)
+                .FirstOrDefault(e => e.Id == User.GetUserId());
+            //TODO
+            return View(manager.Workers);
         }
     }
 }

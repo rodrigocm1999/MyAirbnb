@@ -10,5 +10,7 @@ namespace MyAirbnb.Models
     {
         public Post Post { get; set; }
         public IList<Comodity> Comodities { get; set; }
+
+        public SelectList SpaceCategories { get; set; }
     }
 }

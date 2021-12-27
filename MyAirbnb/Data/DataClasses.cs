@@ -10,19 +10,19 @@ using static MyAirbnb.Data.DataClassesHelper;
 namespace MyAirbnb.Models
 {
 
-    public class PropertyType
-    {
-        public static ValueName Home = new(0, "Home");
-        public static ValueName Apartment = new(1, "Apartment");
-        public static List<ValueName> Types = new() { Home, Apartment };
-    }
+    //public class PropertyType
+    //{
+    //    public static ValueName Home = new(0, "Home");
+    //    public static ValueName Apartment = new(1, "Apartment");
+    //    public static List<ValueName> Types = new() { Home, Apartment };
+    //}
 
-    public class AvailabilityType
-    {
-        public static ValueName Available = new(0, "Available");
-        public static ValueName AlreadyRented = new(1, "Already Rented");
-        public static List<ValueName> Types = new() { Available, AlreadyRented };
-    }
+    //public class AvailabilityType
+    //{
+    //    public static ValueName Available = new(0, "Available");
+    //    public static ValueName AlreadyRented = new(1, "Already Rented");
+    //    public static List<ValueName> Types = new() { Available, AlreadyRented };
+    //}
 
     public class Post
     {
@@ -58,7 +58,9 @@ namespace MyAirbnb.Models
 
         public float Rating { get; set; }
 
-        public int PropertyType { get; set; }
+
+        [Display(Name = "Space Category")]
+        public int SpaceCategoryId { get; set; }
         public int AvailabilityType { get; set; }
 
         public bool Hidden { get; set; } = false;
@@ -75,7 +77,10 @@ namespace MyAirbnb.Models
 
         public int PostId { get; set; }
 
-        [Required]
+        public int ReserveId { get; set; }
+
+        public int UserId { get; set; }
+
         public virtual IdentityUser User { get; set; }
 
         [Required]
@@ -104,11 +109,50 @@ namespace MyAirbnb.Models
 
     }
 
+    public class SpaceCategory
+    {
+        [Key]
+        public int Id { get; set; }
+        [Required]
+        public string Name { get; set; }
+    }
+
+    public class CheckList
+    {
+        [Key]
+        public int Id { get; set; }
+        public int ManagerId { get; set; }
+        public int SpaceCategoryId { get; set; }
+
+        public virtual List<CheckListItem> Items { get; set; }
+    }
+
+    //ou então meter uma string com as cenas separadas por algum caracter especial
+    public class CheckListItem
+    {
+        public int CheckListId { get; set; }
+
+        [Required]
+        public string Text { get; set; }
+    }
+
+    public class Reservation
+    {
+        [Key]
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public int PostId { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateTime Start { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime End { get; set; }
+    }
+
 
     // Ainda vai ser preciso guardar as reservas, 
     // guardar a checklist, provavelmente basta meter ter strings agarradas a um manager que são cada campo da checklist
     // resultado da checklist da reserva
-    // wtf is this ---- Gestão das categorias de espaços/alojamento a disponibilizar, talvez seja preciso alterar o Enum do PropertyType para uma tabela
 
 
 

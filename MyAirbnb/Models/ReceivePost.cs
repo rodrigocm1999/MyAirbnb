@@ -15,9 +15,7 @@ namespace MyAirbnb.Models
         public decimal Price { get; set; }
         public int NBeds { get; set; }
         public int NBedrooms { get; set; }
-        public int PropertyType { get; set; }
-        public int AvailabilityType { get; set; }
-
+        public int SpaceCategoryId { get; set; }
 
         public virtual IList<IFormFile> PostImages { get; set; }
         

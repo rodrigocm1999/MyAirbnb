@@ -12,6 +12,8 @@ namespace MyAirbnb.Data
 
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comodity> Comodities { get; set; }
+        public DbSet<SpaceCategory> SpaceCategories { get; set; }
+
         public DbSet<Manager> Managers { get; set; }
         public DbSet<Worker> Workers { get; set; }
 
