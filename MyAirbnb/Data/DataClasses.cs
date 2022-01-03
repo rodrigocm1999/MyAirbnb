@@ -65,11 +65,10 @@ namespace MyAirbnb.Models
         public string Description { get; set; } = "";
 
         [Display(Name = "Price per Night")]
-        [DisplayFormat(DataFormatString = "{0:F2}", ApplyFormatInEditMode = true)]
+        //[DisplayFormat(DataFormatString = "{0:F2}", ApplyFormatInEditMode = true)]
         [Range(1, float.MaxValue, ErrorMessage = "Invalid Price, cannot be 0")]
         [DataType(DataType.Currency)]
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal Price { get; set; }
+        public int Price { get; set; }
 
         [Display(Name = "Number of Beds")]
         [Range(1, 50, ErrorMessage = "Invalid number of Bedrooms (1 - 50)")]
@@ -150,7 +149,9 @@ namespace MyAirbnb.Models
         public int ManagerId { get; set; }
         public int SpaceCategoryId { get; set; }
 
-        public virtual List<CheckListItem> Items { get; set; }
+        public string Items { get; set; } // Separated by \n
+
+        //public virtual List<CheckListItem> Items { get; set; }
     }
 
     //ou então meter uma string com as cenas separadas por algum caracter especial
