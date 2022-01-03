@@ -62,6 +62,7 @@ namespace MyAirbnb.Controllers
         {
             if (id == null) return NotFound();
             var postId = id.Value;
+            var postPrice = _context.Posts.FirstOrDefault(x => x.Id == postId).Price;
             //TODO é preciso mostrar quais os dias disponíveis
 
             var rese = new Reservation

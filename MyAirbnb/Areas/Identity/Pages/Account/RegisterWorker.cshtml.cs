@@ -13,27 +13,36 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using MyAirbnb.Data;
+using MyAirbnb.Models;
+using MyAirbnb.Other;
 
 namespace MyAirbnb.Areas.Identity.Pages.Account
 {
-    [AllowAnonymous]
-    public class RegisterModel : PageModel
+    
+    public class RegisterWorkerModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ApplicationDbContext _context;
         private readonly ILogger<RegisterManagerModel> _logger;
         private readonly IEmailSender _emailSender;
 
-        public RegisterModel(
+        public RegisterWorkerModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterManagerModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
+            _context = context;
         }
 
         [BindProperty]
@@ -64,7 +73,7 @@ namespace MyAirbnb.Areas.Identity.Pages.Account
             [Required]
             public string Name { get; set; }
 
-            [Required]
+          
             [DataType(DataType.PhoneNumber)]
             [Display(Name = "Phone Number")]
             public string PhoneNumber { get; set; }
@@ -82,11 +91,17 @@ namespace MyAirbnb.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = Input.Name, Email = Input.Email , PhoneNumber = Input.PhoneNumber };
+                var user = new IdentityUser { UserName = Input.Name, Email = Input.Email, PhoneNumber = Input.PhoneNumber };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                    _logger.LogInformation("Manager created a new account with password.");
+
+                    await PrepareRoleAsync();
+                    await _userManager.AddToRoleAsync(user, App.ManagerRole);
+
+                    _context.Workers.Add(new Worker { Id = user.Id });
+                    await _context.SaveChangesAsync();
 
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -95,7 +110,7 @@ namespace MyAirbnb.Areas.Identity.Pages.Account
                     //    pageHandler: null,
                     //    values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
                     //    protocol: Request.Scheme);
-                    
+
                     //await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                     //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
@@ -105,7 +120,7 @@ namespace MyAirbnb.Areas.Identity.Pages.Account
                     //}
                     //else
                     //{
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                    await _signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
                     //}
                 }
@@ -117,6 +132,13 @@ namespace MyAirbnb.Areas.Identity.Pages.Account
 
             // If we got this far, something failed, redisplay form
             return Page();
+        }
+
+        private async Task PrepareRoleAsync()
+        {
+            var exists = await _roleManager.RoleExistsAsync(App.WorkerRole);
+            if (!exists)
+                await _roleManager.CreateAsync(new IdentityRole { Name = App.WorkerRole });
         }
     }
 }

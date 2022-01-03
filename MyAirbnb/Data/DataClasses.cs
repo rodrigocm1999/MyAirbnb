@@ -174,6 +174,8 @@ namespace MyAirbnb.Models
         public DateTime StartDate { get; set; }
         [DataType(DataType.Date)]
         public DateTime EndDate { get; set; }
+
+        public int TotalPrice { get; set; }
     }
 
     //This Ids are of the UserId of the logged user
@@ -193,6 +195,8 @@ namespace MyAirbnb.Models
 
         [Key]
         public string Id { get; set; }
+        public string Name { get; set; }
+
         public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
     }
 }
