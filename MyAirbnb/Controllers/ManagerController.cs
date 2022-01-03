@@ -27,12 +27,8 @@ namespace MyAirbnb.Controllers
         private readonly IEmailSender _emailSender;
 
         public ManagerController(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
-            ILogger<RegisterManagerModel> logger,
-            IEmailSender emailSender,
-            RoleManager<IdentityRole> roleManager,
-            ApplicationDbContext context)
+            UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ILogger<RegisterManagerModel> logger,
+            IEmailSender emailSender, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -42,22 +38,24 @@ namespace MyAirbnb.Controllers
             _context = context;
         }
 
-       
+        private Manager GetThisManager()
+        {
+            return _context.Managers
+                    .Include(e => e.Workers)
+                    .FirstOrDefault(e => e.Id == User.GetUserId());
+        }
+
 
         public IActionResult Index()
         {
+            var manager = GetThisManager();
             //TODO
-            var workers = _context.Workers;
-            return View(workers);
+            return View(manager.Workers);
         }
 
 
-        public IActionResult CreateWorkerAccount()
-        {
-            //TODO
-            return View();
-        }
-        public class InputModel
+        public IActionResult CreateWorkerAccount() { return View(); }
+        public class WorkerModel
         {
             [Required]
             [EmailAddress]
@@ -85,46 +83,32 @@ namespace MyAirbnb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateWorkerAccountAsync(InputModel Input)
+        public async Task<IActionResult> CreateWorkerAccountAsync(WorkerModel Input)
         {
-           
             var user = new IdentityUser { UserName = Input.Name, Email = Input.Email, PhoneNumber = Input.PhoneNumber };
             var result = await _userManager.CreateAsync(user, Input.Password);
             if (result.Succeeded)
             {
-                _logger.LogInformation("Manager created a new account with password.");
+                var roleExists = await _roleManager.RoleExistsAsync(App.WorkerRole);
+                if (!roleExists)
+                    await _roleManager.CreateAsync(new IdentityRole { Name = App.WorkerRole });
 
-                await PrepareRoleAsync();
-                await _userManager.AddToRoleAsync(user, App.ManagerRole);
+                await _userManager.AddToRoleAsync(user, App.WorkerRole);
 
                 _context.Workers.Add(new Worker { Id = user.Id });
                 await _context.SaveChangesAsync();
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction(nameof(Index));
-
             }
             foreach (var error in result.Errors)
-            {
                 ModelState.AddModelError(string.Empty, error.Description);
-            }
-
+            //TODO verificar a cena de mandar os erros de volta
             return View();
-
         }
-
-        private async Task PrepareRoleAsync()
-        {
-            var exists = await _roleManager.RoleExistsAsync(App.WorkerRole);
-            if (!exists)
-                await _roleManager.CreateAsync(new IdentityRole { Name = App.WorkerRole });
-        }
-
 
         public IActionResult ManageWorkerAccounts()
         {
-            var manager = _context.Managers
-                .Include(e => e.Workers)
-                .FirstOrDefault(e => e.Id == User.GetUserId());
+            var manager = GetThisManager();
             //TODO
             return View(manager.Workers);
         }
@@ -132,10 +116,7 @@ namespace MyAirbnb.Controllers
         public IActionResult Checklist()
         {
             var spaceCategories = _context.SpaceCategories;
-            var manager = _context.Managers
-                .Include(e => e.CheckLists)
-                .FirstOrDefault(e => e.Id == User.GetUserId());
-            if (manager == null) return NotFound();
+            var manager = GetThisManager();
 
             List<SpaceCategoriesManagerList> categories = new List<SpaceCategoriesManagerList>(spaceCategories.Count());
             foreach (var cat in spaceCategories)
@@ -163,7 +144,6 @@ namespace MyAirbnb.Controllers
             public int Id { get; set; }
             public string Name { get; set; }
             public bool HasDefinedItems { get; set; }
-
             public string CheckInItems { get; set; }
             public string CheckOutItems { get; set; }
         }
@@ -172,13 +152,9 @@ namespace MyAirbnb.Controllers
         {
             if (!id.HasValue) return NotFound();
             var spaceCategoryId = id.Value;
-
-            var manager = _context.Managers
-                .Include(e => e.CheckLists)
-                .FirstOrDefault(e => e.Id == User.GetUserId());
+            var manager = GetThisManager();
 
             var checklist = manager.CheckLists.FirstOrDefault(e => e.SpaceCategoryId == spaceCategoryId);
-
             var editCheckLists = new EditCheckLists { SpaceCategoryId = spaceCategoryId };
 
             if (checklist != null)
@@ -195,16 +171,12 @@ namespace MyAirbnb.Controllers
         public async Task<IActionResult> EditCheckList(int id, [Bind("SpaceCategoryId,CheckInItems,CheckOutItems")] EditCheckLists editCheckLists)
         {
             var spaceCategoryId = id;
-
-            var manager = _context.Managers
-                .Include(e => e.CheckLists)
-                .FirstOrDefault(e => e.Id == User.GetUserId());
+            var manager = GetThisManager();
 
             var checklist = manager.CheckLists.FirstOrDefault(e => e.SpaceCategoryId == spaceCategoryId);
-
             if (checklist == null)
             {
-                checklist = new Models.CheckList { SpaceCategoryId = spaceCategoryId };
+                checklist = new CheckList { SpaceCategoryId = spaceCategoryId };
                 manager.CheckLists.Add(checklist);
             }
             checklist.CheckInItems = editCheckLists.CheckInItems;
@@ -219,9 +191,7 @@ namespace MyAirbnb.Controllers
         {
             if (!id.HasValue) return NotFound();
             var spaceCategoryId = id.Value;
-            var manager = _context.Managers
-                .Include(e => e.CheckLists)
-                .FirstOrDefault(e => e.Id == User.GetUserId());
+            var manager = GetThisManager();
 
             var e = manager.CheckLists.FirstOrDefault(e => e.SpaceCategoryId == spaceCategoryId);
             if (e != null)

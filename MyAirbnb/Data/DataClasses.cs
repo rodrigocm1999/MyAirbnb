@@ -155,11 +155,13 @@ namespace MyAirbnb.Models
 
     [Index(nameof(PostId))]
     [Index(nameof(UserId))]
+    [Index(nameof(WorkerId))]
     public class Reservation
     {
         [Key]
         public int Id { get; set; }
         public string UserId { get; set; }
+        public string WorkerId { get; set; }
         public int PostId { get; set; }
 
         public int RatingUser { get; set; }
@@ -170,6 +172,8 @@ namespace MyAirbnb.Models
         public string CheckOutItems { get; set; } // Separated by \n, to indicate if was checked contains '*' at the start
 
 
+        public ReservationState State { get; set; }
+
         [DataType(DataType.Date)]
         public DateTime StartDate { get; set; }
         [DataType(DataType.Date)]
@@ -177,6 +181,8 @@ namespace MyAirbnb.Models
 
         public int TotalPrice { get; set; }
     }
+
+    public enum ReservationState { Pending, ToCheckIn, OnGoing, ToCheckOut, Finished }
 
     //This Ids are of the UserId of the logged user
     //The manager has multiple workers and is also a worker and all of the worker accounts created by it are also workers
@@ -192,7 +198,6 @@ namespace MyAirbnb.Models
 
     public class Worker
     {
-
         [Key]
         public string Id { get; set; }
         public string Name { get; set; }

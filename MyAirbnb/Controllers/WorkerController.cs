@@ -63,16 +63,21 @@ namespace MyAirbnb.Controllers
             return View(postsList);
         }
 
+        public IActionResult PendingReservations()
+        {
+            var reservationsList = _context.Reservations.Where(e => e.WorkerId == User.GetUserId() && e.State != ReservationState.Finished);
+            return View(reservationsList);
+        }
+
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-                return NotFound();
+            if (id == null) return NotFound();
 
             var post = await _context.Posts
                 .FirstOrDefaultAsync(e => e.Id == id && e.WorkerId == UserId);
-            if (post == null)
-                return NotFound();
+
+            if (post == null) return NotFound();
 
             return View(post);
         }
@@ -127,15 +132,14 @@ namespace MyAirbnb.Controllers
         // GET: Posts/Edit/5
         public IActionResult Edit(int? id)
         {
-            if (id == null)
-                return NotFound();
+            if (id == null) return NotFound();
 
             var post = _context.Posts
                 .Include(e => e.Comodities)
                 .Include(e => e.PostImages)
                 .FirstOrDefault(e => e.Id == id.Value && e.WorkerId == UserId);
-            if (post == null)
-                return NotFound();
+
+            if (post == null) return NotFound();
 
             EditPost editPost = CreateEditPostObject(post);
             return View(editPost);
@@ -155,8 +159,7 @@ namespace MyAirbnb.Controllers
                         .Include(e => e.Comodities)
                         .Include(e => e.PostImages)
                         .FirstOrDefault(e => e.Id == id && e.WorkerId == UserId);
-                    if (dbPost == null)
-                        return NotFound();
+                    if (dbPost == null) return NotFound();
 
                     List<Comodity> comodities = null;
                     if (post.Comodities != null)
@@ -178,10 +181,8 @@ namespace MyAirbnb.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PostExists(id))
-                        return NotFound();
-                    else
-                        throw;
+                    if (!PostExists(id)) return NotFound();
+                    throw;
                 }
             }
             return View(post);
@@ -190,13 +191,11 @@ namespace MyAirbnb.Controllers
         // GET: Posts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-                return NotFound();
+            if (id == null) return NotFound();
 
             var post = await _context.Posts
                 .FirstOrDefaultAsync(e => e.Id == id && e.WorkerId == UserId);
-            if (post == null)
-                return NotFound();
+            if (post == null) return NotFound();
 
             return View(post);
         }
@@ -206,7 +205,6 @@ namespace MyAirbnb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            //TODO no edit post talvez adicionar um botão de delete
             var post = await _context.Posts
                 .Include(e => e.PostImages)
                 .FirstOrDefaultAsync(e => e.Id == id && e.WorkerId == UserId);
@@ -254,7 +252,7 @@ namespace MyAirbnb.Controllers
             foreach (var formFile in files)
             {
                 if (formFile.Length <= 0) continue;
-                var filePath = "/" + imagesPath + $@"/{Path.GetRandomFileName()}.jpg"; 
+                var filePath = "/" + imagesPath + $@"/{Path.GetRandomFileName()}.jpg";
                 // .jpg so para mostrar no explorardor de ficheiros, não interessa se é jpg ou não
 
                 using (var stream = System.IO.File.Create(_environment.WebRootPath + filePath))
@@ -274,6 +272,6 @@ namespace MyAirbnb.Controllers
         }
 
 
-     
+
     }
 }
