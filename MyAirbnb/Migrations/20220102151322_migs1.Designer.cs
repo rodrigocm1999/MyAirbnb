@@ -10,8 +10,8 @@ using MyAirbnb.Data;
 namespace MyAirbnb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211227124734_two")]
-    partial class two
+    [Migration("20220102151322_migs1")]
+    partial class migs1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -263,6 +263,8 @@ namespace MyAirbnb.Migrations
 
                     b.HasIndex("PostId");
 
+                    b.HasIndex("UserId");
+
                     b.HasIndex("UserId1");
 
                     b.ToTable("Comment");
@@ -372,19 +374,21 @@ namespace MyAirbnb.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("End")
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("PostId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Start")
+                    b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PostId");
 
                     b.ToTable("Reservations");
                 });

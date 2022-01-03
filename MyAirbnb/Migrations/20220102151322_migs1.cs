@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MyAirbnb.Migrations
 {
-    public partial class one : Migration
+    public partial class migs1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -68,6 +68,22 @@ namespace MyAirbnb.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Managers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reservations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PostId = table.Column<int>(type: "int", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reservations", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -354,6 +370,11 @@ namespace MyAirbnb.Migrations
                 column: "PostId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comment_UserId",
+                table: "Comment",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Comment_UserId1",
                 table: "Comment",
                 column: "UserId1");
@@ -372,6 +393,11 @@ namespace MyAirbnb.Migrations
                 name: "IX_Posts_WorkerId",
                 table: "Posts",
                 column: "WorkerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reservations_PostId",
+                table: "Reservations",
+                column: "PostId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Workers_ManagerId",
@@ -404,6 +430,9 @@ namespace MyAirbnb.Migrations
 
             migrationBuilder.DropTable(
                 name: "PostImage");
+
+            migrationBuilder.DropTable(
+                name: "Reservations");
 
             migrationBuilder.DropTable(
                 name: "SpaceCategories");
