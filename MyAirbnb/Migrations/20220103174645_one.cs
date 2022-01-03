@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MyAirbnb.Migrations
 {
-    public partial class migs1 : Migration
+    public partial class one : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -76,8 +76,13 @@ namespace MyAirbnb.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     PostId = table.Column<int>(type: "int", nullable: false),
+                    RatingUser = table.Column<int>(type: "int", nullable: false),
+                    RatingPost = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<int>(type: "int", nullable: false),
+                    CheckInItems = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CheckOutItems = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -206,6 +211,29 @@ namespace MyAirbnb.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CheckList",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ManagerId = table.Column<int>(type: "int", nullable: false),
+                    SpaceCategoryId = table.Column<int>(type: "int", nullable: false),
+                    CheckInItems = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CheckOutItems = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ManagerId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CheckList", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CheckList_Managers_ManagerId1",
+                        column: x => x.ManagerId1,
+                        principalTable: "Managers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Workers",
                 columns: table => new
                 {
@@ -233,7 +261,7 @@ namespace MyAirbnb.Migrations
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Price = table.Column<int>(type: "int", nullable: false),
                     NBeds = table.Column<int>(type: "int", nullable: false),
                     NBedrooms = table.Column<int>(type: "int", nullable: false),
                     Rating = table.Column<float>(type: "real", nullable: false),
@@ -365,6 +393,16 @@ namespace MyAirbnb.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CheckList_ManagerId",
+                table: "CheckList",
+                column: "ManagerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CheckList_ManagerId1",
+                table: "CheckList",
+                column: "ManagerId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Comment_PostId",
                 table: "Comment",
                 column: "PostId");
@@ -400,6 +438,11 @@ namespace MyAirbnb.Migrations
                 column: "PostId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Reservations_UserId",
+                table: "Reservations",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Workers_ManagerId",
                 table: "Workers",
                 column: "ManagerId");
@@ -421,6 +464,9 @@ namespace MyAirbnb.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "CheckList");
 
             migrationBuilder.DropTable(
                 name: "Comment");

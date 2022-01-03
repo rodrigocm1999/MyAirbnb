@@ -106,3 +106,7 @@ body {
     right: 0px;
     left: 0px;
 }
+
+.pre-wrap {
+    white-space: pre-wrap;
+}

@@ -1,9 +1,6 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿
 @model EditPost
-@{
-}
+
 <div class="position-relative d-flex">
 
     <div class="mx-3 position-relative w-50">
@@ -39,8 +36,7 @@
 </div>
 
 <div class="container mt-5">
-    <style>
-    </style>
+
     <div id="imagesParent" class="d-flex flex-wrap accept-policy">
         @if (Model.Post.PostImages != null)
         {
@@ -54,7 +50,7 @@
         }
     </div>
 
-    <input name="" type="file" accept=".webp,.png,.jpeg,.jpg" onchange="uploadPostImage(this)" class="form-control-file" multiple/>
+    <input name="" type="file" accept=".webp,.png,.jpeg,.jpg" onchange="uploadPostImage(this)" class="form-control-file" multiple />
 
     <script>
         function removeImgFromPost(imgId, element) {
@@ -116,7 +112,7 @@
 
 <div class="container mt-5">
     <label asp-for="Post.Description" class="control-label"></label>
-    <textarea asp-for="Post.Description" class="form-control" value="@Model.Post.Description" rows="5" style="white-space: pre-wrap;"></textarea>
+    <textarea asp-for="Post.Description" class="form-control pre-wrap" value="@Model.Post.Description" rows="5"></textarea>
     <span asp-validation-for="Post.Description" class="text-danger"></span>
 </div>
 

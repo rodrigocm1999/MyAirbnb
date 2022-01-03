@@ -234,6 +234,37 @@ namespace MyAirbnb.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("MyAirbnb.Models.CheckList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CheckInItems")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CheckOutItems")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ManagerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ManagerId1")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("SpaceCategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ManagerId");
+
+                    b.HasIndex("ManagerId1");
+
+                    b.ToTable("CheckList");
+                });
+
             modelBuilder.Entity("MyAirbnb.Models.Comment", b =>
                 {
                     b.Property<int>("Id")
@@ -320,8 +351,8 @@ namespace MyAirbnb.Migrations
                     b.Property<int>("NBeds")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
 
                     b.Property<float>("Rating")
                         .HasColumnType("real");
@@ -372,21 +403,38 @@ namespace MyAirbnb.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("CheckInItems")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CheckOutItems")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("PostId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RatingPost")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RatingUser")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Reservations");
                 });
@@ -488,6 +536,13 @@ namespace MyAirbnb.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MyAirbnb.Models.CheckList", b =>
+                {
+                    b.HasOne("MyAirbnb.Models.Manager", null)
+                        .WithMany("CheckLists")
+                        .HasForeignKey("ManagerId1");
+                });
+
             modelBuilder.Entity("MyAirbnb.Models.Comment", b =>
                 {
                     b.HasOne("MyAirbnb.Models.Post", null)
@@ -528,6 +583,8 @@ namespace MyAirbnb.Migrations
 
             modelBuilder.Entity("MyAirbnb.Models.Manager", b =>
                 {
+                    b.Navigation("CheckLists");
+
                     b.Navigation("Workers");
                 });
 

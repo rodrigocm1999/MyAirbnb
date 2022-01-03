@@ -24,9 +24,6 @@ namespace MyAirbnb.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<Post>()
-                .Property(p => p.Price)
-                .HasColumnType("decimal(18,2)");
         }
     }
 }

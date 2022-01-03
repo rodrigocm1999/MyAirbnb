@@ -130,7 +130,6 @@ namespace MyAirbnb.Models
         [Required]
         [DataType(DataType.ImageUrl)]
         public string FilePath { get; set; }
-
     }
 
     public class SpaceCategory
@@ -141,7 +140,7 @@ namespace MyAirbnb.Models
         public string Name { get; set; }
     }
 
-    [Index(nameof(ManagerId), IsUnique = false)]
+    [Index(nameof(ManagerId))]
     public class CheckList
     {
         [Key]
@@ -149,30 +148,27 @@ namespace MyAirbnb.Models
         public int ManagerId { get; set; }
         public int SpaceCategoryId { get; set; }
 
-        public string Items { get; set; } // Separated by \n
-
-        //public virtual List<CheckListItem> Items { get; set; }
-    }
-
-    //ou então meter uma string com as cenas separadas por algum caracter especial
-    public class CheckListItem
-    {
-        public int CheckListId { get; set; }
-
-        [Required]
-        public string Text { get; set; }
+        public string CheckInItems { get; set; } // Separated by \n
+        public string CheckOutItems { get; set; } // Separated by \n
     }
 
 
     [Index(nameof(PostId))]
-    [Index(nameof(PostId))]
+    [Index(nameof(UserId))]
     public class Reservation
     {
         [Key]
         public int Id { get; set; }
         public string UserId { get; set; }
-
         public int PostId { get; set; }
+
+        public int RatingUser { get; set; }
+        public int RatingPost { get; set; }
+        public int Price { get; set; }
+
+        public string CheckInItems { get; set; } // Separated by \n, to indicate if was checked contains '*' at the start
+        public string CheckOutItems { get; set; } // Separated by \n, to indicate if was checked contains '*' at the start
+
 
         [DataType(DataType.Date)]
         public DateTime StartDate { get; set; }
@@ -187,7 +183,9 @@ namespace MyAirbnb.Models
 
         [Key]
         public string Id { get; set; }
-        public virtual ICollection<Worker> Workers { get; set; }
+
+        public virtual ICollection<CheckList> CheckLists { get; set; } = new List<CheckList>();
+        public virtual ICollection<Worker> Workers { get; set; } = new List<Worker>();
     }
 
     public class Worker
@@ -195,6 +193,6 @@ namespace MyAirbnb.Models
 
         [Key]
         public string Id { get; set; }
-        public virtual ICollection<Post> Posts { get; set; }
+        public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
     }
 }

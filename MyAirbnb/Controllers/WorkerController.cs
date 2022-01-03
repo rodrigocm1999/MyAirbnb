@@ -88,7 +88,7 @@ namespace MyAirbnb.Controllers
             _context.Posts.Add(post);
             _context.SaveChanges();
 
-            return RedirectToAction("Edit", new { post.Id });
+            return RedirectToAction(nameof(Edit), new { post.Id });
         }
 
 
@@ -255,7 +255,7 @@ namespace MyAirbnb.Controllers
             {
                 if (formFile.Length <= 0) continue;
                 var filePath = "/" + imagesPath + $@"/{Path.GetRandomFileName()}.jpg"; 
-                // .jpg so para mostrar no explorardor de ficheiros, não interessa se é jpg ou não, os browsers sabem ler o tipo certo
+                // .jpg so para mostrar no explorardor de ficheiros, não interessa se é jpg ou não
 
                 using (var stream = System.IO.File.Create(_environment.WebRootPath + filePath))
                 {
