@@ -20,9 +20,6 @@
     <div class="position-absolute" style="min-width:100px;right:0px;">
         <div class="d-flex">
             <input asp-for="Post.Price" value="@Model.Post.Price" class="form-control" style="width:100px;" /><span class="w-auto">€/night</span>
-            @{
-                //TODO arranjar problema de não deixarpor numeros com decimas/ponto
-            }
         </div>
         <span asp-validation-for="Post.Price" class="text-danger"></span>
         <br />
@@ -118,11 +115,8 @@
 </div>
 
 <div class="container mt-5">
-    @{
-        //TODO arranjar as mudanças de linha
-    }
     <label asp-for="Post.Description" class="control-label"></label>
-    <textarea asp-for="Post.Description" class="form-control" value="@Model.Post.Description" rows="5"></textarea>
+    <textarea asp-for="Post.Description" class="form-control" value="@Model.Post.Description" rows="5" style="white-space: pre-wrap;"></textarea>
     <span asp-validation-for="Post.Description" class="text-danger"></span>
 </div>
 
@@ -148,36 +142,14 @@
 
 <div class="container">
     <label asp-for="Post.SpaceCategoryId" class="control-label"></label>
-    <select asp-for="Post.SpaceCategoryId" class="form-control w-auto" asp-items="Model.SpaceCategories">
-        @*@foreach (var e in Model.SpaceCategories)
-            {
-                if (Model.Post.PropertyType == e.Value)
-                {
+    <select asp-for="Post.SpaceCategoryId" asp-items="Model.SpaceCategories" class="form-control w-auto">
+        @*@foreach (var e in Model.SpaceCategories) {
+                if (Model.Post.PropertyType == e.Value) {
                     <option value="@e.Value" selected>@e.Name</option>
-                }
-                else
-                {
+                } else {
                     <option value="@e.Value">@e.Name</option>
                 }
             }*@
     </select>
     <span asp-validation-for="Post.SpaceCategoryId" class="text-danger"></span>
 </div>
-
-@*<div class="container">
-        <label asp-for="Post.AvailabilityType" class="control-label"></label>
-        <select asp-for="Post.AvailabilityType" class="form-control w-auto">
-            @foreach (var e in AvailabilityType.Types)
-            {
-                if (Model.Post.AvailabilityType == e.Value)
-                {
-                    <option value="@e.Value" selected>@e.Name</option>
-                }
-                else
-                {
-                    <option value="@e.Value">@e.Name</option>
-                }
-            }
-        </select>
-        <span asp-validation-for="Post.AvailabilityType" class="text-danger"></span>
-    </div>*@
