@@ -23,7 +23,8 @@ namespace MyAirbnb.Controllers
         public IActionResult Index()
         {
             //TODO
-            return View();
+            var workers = _context.Workers;
+            return View(workers);
         }
 
 
