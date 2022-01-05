@@ -12,7 +12,9 @@ namespace MyAirbnb.Other
         public static string ManagerRole { get; } = "Manager";
         public static string WorkerRole { get; } = "Worker";
         public static string AdminRole { get; } = "Admin";
+        public static string ClientRole { get; } = "Client";
 
         public static string PostImagesFolderName { get; } = "postimages";
+        
     }
 }

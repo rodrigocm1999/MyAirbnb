@@ -120,6 +120,15 @@ namespace MyAirbnb
                 roleResult.Wait();
             }
 
+            Task<bool> hasClientRole = roleManager.RoleExistsAsync(App.ClientRole);
+            hasWorkerRole.Wait();
+
+            if (!hasWorkerRole.Result)
+            {
+                roleResult = roleManager.CreateAsync(new IdentityRole(App.ClientRole));
+                roleResult.Wait();
+            }
+
             //Check if the admin user exists and create it if not
             //Add to the Administrator role
             string emailAdmin = @"admin@myairbnb.com";
