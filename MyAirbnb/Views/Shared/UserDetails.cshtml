@@ -1,0 +1,38 @@
+﻿@model MyAirbnb.Models.UserModel
+
+<dl class="row">
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.UserName)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.UserName)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.PhoneNumber)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.PhoneNumber)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Rating)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Rating)
+    </dd>
+    <dd class="col-sm-2">
+        @Html.DisplayFor(model => model.Comments)
+    </dd>
+    <dt class="col-sm-10">
+        @if (Model.Comments != null)
+        {
+            @foreach (var item in Model.Comments)
+            {
+                <p>@item</p>
+            }
+        }
+        else
+        {
+            <span>No comments yet</span>
+        }
+    </dt>
+</dl>

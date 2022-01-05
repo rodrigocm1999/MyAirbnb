@@ -25,5 +25,7 @@ namespace MyAirbnb.Data
         {
             base.OnModelCreating(builder);
         }
+
+        public DbSet<MyAirbnb.Models.UserModel> UserModel { get; set; }
     }
 }

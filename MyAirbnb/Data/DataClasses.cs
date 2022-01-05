@@ -9,10 +9,6 @@ namespace MyAirbnb.Models
 {
 
     /*Random thoughts--------------------------------------------------
-     
-     Ainda vai ser preciso guardar as reservas, 
-     guardar a checklist, provavelmente basta meter ter strings agarradas a um manager que são cada campo da checklist
-     resultado da checklist da reserva
 
     ------------------------------------------------------------------- */
 
@@ -25,8 +21,8 @@ namespace MyAirbnb.Models
     //TODO os clientes a terminarem a estadia, podem dar um comentário e um rating ao post
 
     //Manager
-    //TODO manager criar workers
-    //TODO manager gerir as checklists
+    //TODO manager criar workers - deixar bonito
+    //TODO manager gerir as checklists - deixar bonito
 
 
     //Worker
@@ -211,4 +207,5 @@ namespace MyAirbnb.Models
 
         public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
     }
+
 }

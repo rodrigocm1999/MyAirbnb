@@ -62,7 +62,7 @@ namespace MyAirbnb.Controllers
         }
 
         // GET: Posts
-        public async Task<IActionResult> Posts(string id)
+        public IActionResult Posts(string id)
         {
             if (id != null)
             {
