@@ -14,7 +14,7 @@
         @foreach (var item in Model.CheckInItems)
         {
             <div class="form-check d-block">
-                <input class="form-check-input" type="checkbox" value="@item" asp-for="CheckInItems">
+                <input class="form-check-input" type="checkbox" value="@item" name="CheckInItems[]">
                 <label class="form-check-label">@item</label>
             </div>
         }

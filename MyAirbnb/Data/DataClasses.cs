@@ -145,7 +145,7 @@ namespace MyAirbnb.Models
     {
         [Key]
         public int Id { get; set; }
-        public int ManagerId { get; set; }
+        public string ManagerId { get; set; }
         public int SpaceCategoryId { get; set; }
 
         public string CheckInItems { get; set; } // Separated by \n

@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MyAirbnb.Data;
+using MyAirbnb.Models;
 using MyAirbnb.Other;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,7 @@ namespace MyAirbnb
             {
                 options.SignIn.RequireConfirmedAccount = false;
                 options.SignIn.RequireConfirmedEmail = false;
+                options.SignIn.RequireConfirmedPhoneNumber = false;
                 options.Password.RequireDigit = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
@@ -47,7 +49,7 @@ namespace MyAirbnb
             })
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
-            
+
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
         }
 
@@ -80,19 +82,7 @@ namespace MyAirbnb
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
-            //var adminEmail = "admin@myairbnb.com";
-            //var admin = "administrator";
-            //var user = new IdentityUser { UserName = admin, Email = adminEmail };
-            //var result = await userManager.CreateAsync(user, admin);
-            //if (result.Succeeded)
-            //{
-            //    var roleExists = await roleManager.RoleExistsAsync(App.AdminRole);
-            //    if (!roleExists)
-            //        await roleManager.CreateAsync(new IdentityRole { Name = App.AdminRole });
 
-            //    await userManager.AddToRoleAsync(user, App.AdminRole);
-
-            //}
             CreateRoles(serviceProvider, context);
         }
         private void CreateRoles(IServiceProvider serviceProvider, ApplicationDbContext context)
@@ -101,7 +91,6 @@ namespace MyAirbnb
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
             Task<IdentityResult> roleResult;
-            string emailAdmin = "admin@myairbnb.com";
 
             //Check that there is an Administrator role and create if not
             Task<bool> hasAdminRole = roleManager.RoleExistsAsync(App.AdminRole);
@@ -133,17 +122,21 @@ namespace MyAirbnb
 
             //Check if the admin user exists and create it if not
             //Add to the Administrator role
-
+            string emailAdmin = @"admin@myairbnb.com";
+            string passwordAdmin = @"_AStrongPassword";
             Task<IdentityUser> testUser = userManager.FindByEmailAsync(emailAdmin);
             testUser.Wait();
 
             if (testUser.Result == null)
             {
-                IdentityUser administrator = new IdentityUser();
-                administrator.Email = emailAdmin;
-                administrator.UserName = App.AdminRole;
+                IdentityUser administrator = new()
+                {
+                    Email = emailAdmin,
+                    UserName = App.AdminRole,
+                    EmailConfirmed = true,
+                };
 
-                Task<IdentityResult> newUser = userManager.CreateAsync(administrator, "_AStrongP@ssword!");
+                Task<IdentityResult> newUser = userManager.CreateAsync(administrator, passwordAdmin);
                 newUser.Wait();
 
                 if (newUser.Result.Succeeded)
@@ -152,9 +145,8 @@ namespace MyAirbnb
                     userManager.AddToRoleAsync(administrator, App.ManagerRole).Wait();
                     userManager.AddToRoleAsync(administrator, App.WorkerRole).Wait();
 
-
-                    Models.Worker worker = new Models.Worker { Id = administrator.Id };
-                    context.Managers.Add(new Models.Manager { Id = administrator.Id, Workers = (new[] { worker }).ToList()});
+                    var worker = new Worker { Id = administrator.Id };
+                    context.Managers.Add(new Manager { Id = administrator.Id, Workers = new[] { worker }.ToList() });
                     context.Workers.Add(worker);
                     context.SaveChangesAsync();
 

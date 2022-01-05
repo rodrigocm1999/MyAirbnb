@@ -243,7 +243,6 @@ namespace MyAirbnb.Controllers
             return Ok();
         }
 
-        [HttpGet]
         public IActionResult CheckIn(int? id)
         {
             if (!id.HasValue) return NotFound();
@@ -263,6 +262,21 @@ namespace MyAirbnb.Controllers
             };
 
             return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult CheckIn(int? id, CheckInWorkerOutputModel model)
+        {
+            if (!id.HasValue) return NotFound();
+            var reservationId = id.Value;
+
+            var reservation = _context.Reservations
+                .FirstOrDefault(e => e.Id == reservationId && e.WorkerId == UserId);
+            if (reservation == null) return NotFound();
+
+            reservation.CheckInItems = string.Join("\n", model.CheckInItems);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
