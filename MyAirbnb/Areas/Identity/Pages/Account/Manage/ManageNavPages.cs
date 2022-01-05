@@ -26,6 +26,7 @@ namespace MyAirbnb.Areas.Identity.Pages.Account.Manage
 
         public static string Worker => "Worker";
         public static string Manager => "Manager";
+        public static string Admin => "Admin";
 
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
 
@@ -46,6 +47,8 @@ namespace MyAirbnb.Areas.Identity.Pages.Account.Manage
         public static string WorkerNavClass(ViewContext viewContext) => PageNavClass(viewContext, Worker);
 
         public static string ManagerNavClass(ViewContext viewContext) => PageNavClass(viewContext, Manager);
+
+        public static string AdminNavClass(ViewContext viewContext) => PageNavClass(viewContext, Admin);
 
         private static string PageNavClass(ViewContext viewContext, string page)
         {

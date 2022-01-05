@@ -3,7 +3,9 @@
 @using MyAirbnb.Other
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
-    var isManager = User.IsInRole(App.ManagerRole);
+
+    var isAdmin = User.IsInRole(App.AdminRole);
+    var isManager = isAdmin || User.IsInRole(App.ManagerRole);
     var isWorker = isManager || User.IsInRole(App.WorkerRole);
 }
 
@@ -24,5 +26,9 @@
     @if (isManager)
     {
         <li class="nav-item"><a class="nav-link @ManageNavPages.ManagerNavClass(ViewContext)" id="manager" asp-page="./Manager">Manager</a></li>
+    }
+    @if (isAdmin)
+    {
+        <li class="nav-item"><a class="nav-link @ManageNavPages.AdminNavClass(ViewContext)" id="admin" asp-page="./Admin">Admin</a></li>
     }
 </ul>

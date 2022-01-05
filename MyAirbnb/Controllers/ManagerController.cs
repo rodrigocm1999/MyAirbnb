@@ -43,13 +43,12 @@ namespace MyAirbnb.Controllers
             return _context.Managers.Where(e => e.Id == User.GetUserId());
         }
 
-        public IActionResult Index()
+        public IActionResult Workers()
         {
             var manager = WhereManager().Include(e => e.Workers).FirstOrDefault();
             //TODO
             return View(manager.Workers);
         }
-
 
         public IActionResult CreateWorkerAccount() { return View(); }
         public class WorkerModel
@@ -110,7 +109,7 @@ namespace MyAirbnb.Controllers
             return View(manager.Workers);
         }
 
-        public IActionResult Checklist()
+        public IActionResult Checklists()
         {
             var spaceCategories = _context.SpaceCategories;
             var manager = WhereManager().Include(e => e.CheckLists).FirstOrDefault();
@@ -181,7 +180,7 @@ namespace MyAirbnb.Controllers
 
             await _context.SaveChangesAsync();
             //TODO
-            return RedirectToAction(nameof(Checklist));
+            return RedirectToAction(nameof(Checklists));
         }
 
         public async Task<IActionResult> DeleteCheckList(int? id)
@@ -195,7 +194,7 @@ namespace MyAirbnb.Controllers
             {
                 manager.CheckLists.Remove(e);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Checklist));
+                return RedirectToAction(nameof(Checklists));
             }
             return NotFound();
         }

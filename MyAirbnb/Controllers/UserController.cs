@@ -79,7 +79,7 @@ namespace MyAirbnb.Controllers
                 PostId = postId,
                 StartDate = reservation.StartDate,
                 EndDate = reservation.EndDate,
-                State = ReservationState.ToCheckIn,
+                State = ReservationState.Pending,
                 UserId = User.GetUserId(),
                 WorkerId = post.WorkerId,
             };

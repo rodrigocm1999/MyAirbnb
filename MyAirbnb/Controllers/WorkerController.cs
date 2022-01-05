@@ -61,8 +61,7 @@ namespace MyAirbnb.Controllers
             return editPost;
         }
 
-        // GET: Posts
-        public async Task<IActionResult> Index()
+        public IActionResult Posts()
         {
             var postsList = _context.Posts.Where(e => e.WorkerId == UserId);
             return View(postsList);
