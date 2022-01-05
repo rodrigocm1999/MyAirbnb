@@ -77,12 +77,14 @@ namespace MyAirbnb.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    WorkerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     PostId = table.Column<int>(type: "int", nullable: false),
                     RatingUser = table.Column<int>(type: "int", nullable: false),
                     RatingPost = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
                     CheckInItems = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CheckOutItems = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    State = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TotalPrice = table.Column<int>(type: "int", nullable: false)
@@ -443,6 +445,11 @@ namespace MyAirbnb.Migrations
                 name: "IX_Reservations_UserId",
                 table: "Reservations",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reservations_WorkerId",
+                table: "Reservations",
+                column: "WorkerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Workers_ManagerId",

@@ -427,10 +427,16 @@ namespace MyAirbnb.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
                     b.Property<int>("TotalPrice")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("WorkerId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -438,6 +444,8 @@ namespace MyAirbnb.Migrations
                     b.HasIndex("PostId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("WorkerId");
 
                     b.ToTable("Reservations");
                 });
