@@ -9,13 +9,16 @@
 <hr />
 
 <div class="container">
-    <form asp-action="CheckIn" asp-route-id="@Model.ReservationId">
+    <form asp-action="CheckIn" asp-route-id="@Model.ReservationId" method="post">
 
-        @foreach (var item in Model.CheckInItems)
+        @for (var i = 0; i < Model.CheckInItems.Count; i++)
         {
+            var item = Model.CheckInItems[i];
+            var id = i;
             <div class="form-check d-block">
-                <input class="form-check-input" type="checkbox" value="@item" name="CheckInItems[]">
-                <label class="form-check-label">@item</label>
+                <input class="form-check-input" type="hidden" value="@item" name="CheckInItems[]">
+                <input class="form-check-input" type="checkbox" value="@id" id="@id" name="ItemsIndeces[]">
+                <label class="form-check-label" for="@id">@item</label>
             </div>
         }
 

@@ -15,13 +15,19 @@ namespace MyAirbnb.Data
                 new SpaceCategory{Name = "Apartment" },
                 new SpaceCategory{Name = "Home" }
             };
-            var apartementId = spaceCategories[0].Id;
-            var homeId = spaceCategories[1].Id;
 
             if (context.SpaceCategories.FirstOrDefault() == null)
             {
                 context.SpaceCategories.AddRange(spaceCategories);
+                await context.SaveChangesAsync();
             }
+            else
+            {
+                spaceCategories = context.SpaceCategories.ToList();
+            }
+
+            var apartementId = spaceCategories[0].Id;
+            var homeId = spaceCategories[1].Id;
 
             var comodities = new List<Comodity>(){
                 new Comodity{Name = "Wifi" },
@@ -83,7 +89,6 @@ namespace MyAirbnb.Data
                 }
             }
 
-
             if (context.Posts.FirstOrDefault() == null)
             {
                 foreach (var p in posts)
@@ -98,8 +103,8 @@ namespace MyAirbnb.Data
                 }
 
                 context.Posts.AddRange(posts);
+                await context.SaveChangesAsync();
             }
-            await context.SaveChangesAsync();
         }
     }
 }
