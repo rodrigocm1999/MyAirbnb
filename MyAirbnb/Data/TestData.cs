@@ -44,18 +44,21 @@ namespace MyAirbnb.Data
                 context.Comodities.AddRange(comodities);
             }
 
+            var worker = context.Workers.FirstOrDefault();
+            var workerId = worker.Id;
+
             var posts = new List<Post>
             {
                 new Post{Address="Rua do aço",Description="Este apartamente tem aço",Title="Casa para 3 nabos",
-                    NBedrooms=1,NBeds=3,Price=400,Rating=0,SpaceCategoryId = apartementId},
+                    NBedrooms=1,NBeds=3,Price=400,Rating=0,SpaceCategoryId = apartementId,WorkerId = workerId},
                 new Post{Address="Rua ao lado da rua do aço",Description="Esta casa não vale nada",Title="Casa a cair aos bocados",
-                    NBedrooms=2,NBeds=1,Price=20,Rating=3,SpaceCategoryId=apartementId},
+                    NBedrooms=2,NBeds=1,Price=20,Rating=3,SpaceCategoryId=apartementId,WorkerId = workerId},
                 new Post{Address="Teste 25 do dia 32",Description="Nem sei o que dizer",Title="Titulo não",
-                    NBedrooms=5,NBeds=10,Price=300,Rating=0,SpaceCategoryId=homeId},
+                    NBedrooms=5,NBeds=10,Price=300,Rating=0,SpaceCategoryId=homeId,WorkerId = workerId},
                 new Post{Address="Rua do aço",Description="Este apartamente tem aço",Title="Casa para 3 nabos",
-                    NBedrooms=10,NBeds=3,Price=400,Rating=0,SpaceCategoryId = homeId},
+                    NBedrooms=10,NBeds=3,Price=400,Rating=0,SpaceCategoryId = homeId,WorkerId = workerId},
                 new Post{Address="Rua do aço",Description="Este apartamente tem aço",Title="Casa para 3 nabos",
-                    NBedrooms=1,NBeds=1,Price=299,Rating=0,SpaceCategoryId = apartementId},
+                    NBedrooms=1,NBeds=1,Price=299,Rating=0,SpaceCategoryId = apartementId, WorkerId = workerId},
             };
 
             Random rand = new Random(4321);

@@ -161,8 +161,12 @@ namespace MyAirbnb.Models
         [Key]
         public int Id { get; set; }
         public string UserId { get; set; }
+
         public string WorkerId { get; set; }
+        public virtual Worker Worker { get; set; }
+        
         public int PostId { get; set; }
+        public virtual Post Post { get; set; }
 
         public int RatingUser { get; set; }
         public int RatingPost { get; set; }
@@ -196,11 +200,14 @@ namespace MyAirbnb.Models
         public virtual ICollection<Worker> Workers { get; set; } = new List<Worker>();
     }
 
+    [Index(nameof(ManagerId))]
     public class Worker
     {
         [Key]
         public string Id { get; set; }
-        public string Name { get; set; }
+
+        public string ManagerId { get; set; }
+        public virtual Manager Manager { get; set; }
 
         public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
     }

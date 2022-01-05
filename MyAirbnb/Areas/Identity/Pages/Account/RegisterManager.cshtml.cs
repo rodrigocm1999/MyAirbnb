@@ -73,7 +73,7 @@ namespace MyAirbnb.Areas.Identity.Pages.Account
             [Required]
             public string Name { get; set; }
 
-            
+
             [DataType(DataType.PhoneNumber)]
             [Display(Name = "Phone Number")]
             public string PhoneNumber { get; set; }
@@ -100,7 +100,8 @@ namespace MyAirbnb.Areas.Identity.Pages.Account
                     await PrepareRoleAsync();
                     await _userManager.AddToRoleAsync(user, App.ManagerRole);
 
-                    _context.Workers.Add(new Worker { Id = user.Id });
+                    var worker = new Worker { Id = user.Id, ManagerId = user.Id };
+                    _context.Workers.Add(worker);
                     _context.Managers.Add(new Manager { Id = user.Id });
                     await _context.SaveChangesAsync();
 

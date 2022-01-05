@@ -10,7 +10,7 @@ using MyAirbnb.Data;
 namespace MyAirbnb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220103215907_one")]
+    [Migration("20220105010234_one")]
     partial class one
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -429,10 +429,16 @@ namespace MyAirbnb.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
                     b.Property<int>("TotalPrice")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("WorkerId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -440,6 +446,8 @@ namespace MyAirbnb.Migrations
                     b.HasIndex("PostId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("WorkerId");
 
                     b.ToTable("Reservations");
                 });
@@ -467,9 +475,6 @@ namespace MyAirbnb.Migrations
 
                     b.Property<string>("ManagerId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -582,11 +587,30 @@ namespace MyAirbnb.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MyAirbnb.Models.Reservation", b =>
+                {
+                    b.HasOne("MyAirbnb.Models.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MyAirbnb.Models.Worker", "Worker")
+                        .WithMany()
+                        .HasForeignKey("WorkerId");
+
+                    b.Navigation("Post");
+
+                    b.Navigation("Worker");
+                });
+
             modelBuilder.Entity("MyAirbnb.Models.Worker", b =>
                 {
-                    b.HasOne("MyAirbnb.Models.Manager", null)
+                    b.HasOne("MyAirbnb.Models.Manager", "Manager")
                         .WithMany("Workers")
                         .HasForeignKey("ManagerId");
+
+                    b.Navigation("Manager");
                 });
 
             modelBuilder.Entity("MyAirbnb.Models.Manager", b =>

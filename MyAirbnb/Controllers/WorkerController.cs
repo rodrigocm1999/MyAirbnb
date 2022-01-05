@@ -39,6 +39,11 @@ namespace MyAirbnb.Controllers
             }
         }
 
+        private IQueryable<Worker> WhereThisWorker()
+        {
+            return _context.Workers.Where(e => e.Id == UserId);
+        }
+
         private bool PostExists(int id)
         {
             return _context.Posts.Any(e => e.Id == id);
@@ -236,6 +241,28 @@ namespace MyAirbnb.Controllers
             new FileInfo(fullPath).Delete();
 
             return Ok();
+        }
+
+        [HttpGet]
+        public IActionResult CheckIn(int? id)
+        {
+            if (!id.HasValue) return NotFound();
+            var reservationId = id.Value;
+
+            var reservation = _context.Reservations
+                .Include(e => e.Worker).ThenInclude(e => e.Manager).ThenInclude(e => e.CheckLists)
+                .Include(e => e.Post)
+                .FirstOrDefault(e => e.Id == reservationId && e.WorkerId == UserId);
+            if (reservation == null) return NotFound();
+
+            var checkList = reservation.Worker.Manager.CheckLists.FirstOrDefault(e => e.SpaceCategoryId == reservation.Post.SpaceCategoryId);
+
+            var model = new CheckInWorkerInputModel
+            {
+                CheckInItems = checkList == null ? new List<string>() : checkList.CheckInItems.Split("\n"),
+            };
+
+            return View(model);
         }
 
         [HttpPost]

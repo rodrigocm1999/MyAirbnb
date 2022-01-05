@@ -1,0 +1,34 @@
+﻿@model MyAirbnb.Models.CheckInWorkerInputModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Check In";
+}
+
+<h1>Check In</h1>
+<hr />
+
+<div class="container">
+    <form asp-action="CheckIn" asp-route-id="@Model.ReservationId">
+
+        @foreach (var item in Model.CheckInItems)
+        {
+            <div class="form-check d-block">
+                <input class="form-check-input" type="checkbox" value="@item" asp-for="CheckInItems">
+                <label class="form-check-label">@item</label>
+            </div>
+        }
+
+        <div class="container mt-3">
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+
+<div class="position-relative" style="right:0px;">
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

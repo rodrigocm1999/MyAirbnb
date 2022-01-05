@@ -45,7 +45,7 @@ namespace MyAirbnb
             })
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
-
+            
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
         }
 
@@ -78,6 +78,7 @@ namespace MyAirbnb
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+
         }
     }
 }

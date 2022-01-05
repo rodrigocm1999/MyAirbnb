@@ -27,6 +27,13 @@ namespace MyAirbnb.Controllers
         }
 
 
+        public IActionResult Reservations()
+        {
+            var model = _context.Reservations.Where(e => e.UserId == User.GetUserId());
+
+            return View(model);
+        }
+
         public class ReservationModel : IValidatableObject
         {
             public int PostId { get; set; }
@@ -57,25 +64,29 @@ namespace MyAirbnb.Controllers
         }
 
         [HttpPost]
-        //[Route("CreateReservation")]
-        public IActionResult SaveReservation(int? id, ReservationModel reservation)
+        public IActionResult CreateReservation(int? id, ReservationModel reservation)
         {
             if (id == null) return NotFound();
             var postId = id.Value;
             var postPrice = _context.Posts.FirstOrDefault(x => x.Id == postId).Price;
             //TODO é preciso mostrar quais os dias disponíveis
 
+            var post = _context.Posts.FirstOrDefault(e => e.Id == postId);
+            if (post == null) return NotFound();
+
             var rese = new Reservation
             {
                 PostId = postId,
                 StartDate = reservation.StartDate,
                 EndDate = reservation.EndDate,
+                State = ReservationState.ToCheckIn,
                 UserId = User.GetUserId(),
+                WorkerId = post.WorkerId,
             };
 
             _context.Reservations.Add(rese);
             _context.SaveChanges();
-            return View();
+            return RedirectToAction(nameof(Reservations));//TODO mudar para a lista de reservas ou assim
         }
     }
 }
