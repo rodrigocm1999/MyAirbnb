@@ -19,10 +19,10 @@
     <li class="nav-item"><a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Personal data</a></li>
     @if (isWorker)
     {
-        <li class="nav-item"><a class="nav-link" id="two-factor" asp-controller="Worker">Worker settings</a></li>
+        <li class="nav-item"><a class="nav-link @ManageNavPages.WorkerNavClass(ViewContext)" id="worker" asp-page="./Worker">Worker</a></li>
     }
     @if (isManager)
     {
-        <li class="nav-item"><a class="nav-link" asp-controller="Manager">Manager settings</a></li>
+        <li class="nav-item"><a class="nav-link @ManageNavPages.ManagerNavClass(ViewContext)" id="manager" asp-page="./Manager">Manager</a></li>
     }
 </ul>

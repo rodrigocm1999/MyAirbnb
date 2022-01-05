@@ -64,7 +64,7 @@ namespace MyAirbnb.Controllers
         // GET: Posts
         public async Task<IActionResult> Index()
         {
-            var postsList = await _context.Posts.Where(e => e.WorkerId == UserId).ToListAsync();
+            var postsList = _context.Posts.Where(e => e.WorkerId == UserId);
             return View(postsList);
         }
 
@@ -251,14 +251,15 @@ namespace MyAirbnb.Controllers
             var reservation = _context.Reservations
                 .Include(e => e.Worker).ThenInclude(e => e.Manager).ThenInclude(e => e.CheckLists)
                 .Include(e => e.Post)
-                .FirstOrDefault(e => e.Id == reservationId && e.WorkerId == UserId);
+                .FirstOrDefault(e => e.Id == reservationId && e.WorkerId == UserId && e.State == ReservationState.ToCheckIn);
             if (reservation == null) return NotFound();
 
             var checkList = reservation.Worker.Manager.CheckLists.FirstOrDefault(e => e.SpaceCategoryId == reservation.Post.SpaceCategoryId);
 
             var model = new CheckInWorkerInputModel
             {
-                CheckInItems = checkList == null ? new List<string>() : checkList.CheckInItems.Split("\n"),
+                ReservationId = reservation.Id,
+                CheckInItems = checkList == null ? new List<string>() : CheckListsHelper.SplitFromDatabase(checkList.CheckInItems),
             };
 
             return View(model);
@@ -271,10 +272,12 @@ namespace MyAirbnb.Controllers
             var reservationId = id.Value;
 
             var reservation = _context.Reservations
-                .FirstOrDefault(e => e.Id == reservationId && e.WorkerId == UserId);
+                .FirstOrDefault(e => e.Id == reservationId && e.WorkerId == UserId && e.State == ReservationState.ToCheckIn);
             if (reservation == null) return NotFound();
 
-            reservation.CheckInItems = string.Join("\n", model.CheckInItems);
+            reservation.CheckInItems = CheckListsHelper.JoinForDatabase(model.CheckInItems, model.ItemsIndeces);
+            reservation.State = ReservationState.OnGoing;
+
             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }

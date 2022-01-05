@@ -38,17 +38,14 @@ namespace MyAirbnb.Controllers
             _context = context;
         }
 
-        private Manager GetThisManager()
+        private IQueryable<Manager> WhereManager()
         {
-            return _context.Managers
-                    .Include(e => e.Workers)
-                    .FirstOrDefault(e => e.Id == User.GetUserId());
+            return _context.Managers.Where(e => e.Id == User.GetUserId());
         }
-
 
         public IActionResult Index()
         {
-            var manager = GetThisManager();
+            var manager = WhereManager().Include(e => e.Workers).FirstOrDefault();
             //TODO
             return View(manager.Workers);
         }
@@ -108,7 +105,7 @@ namespace MyAirbnb.Controllers
 
         public IActionResult ManageWorkerAccounts()
         {
-            var manager = GetThisManager();
+            var manager = WhereManager().Include(e => e.Workers).FirstOrDefault();
             //TODO
             return View(manager.Workers);
         }
@@ -116,7 +113,7 @@ namespace MyAirbnb.Controllers
         public IActionResult Checklist()
         {
             var spaceCategories = _context.SpaceCategories;
-            var manager = GetThisManager();
+            var manager = WhereManager().Include(e => e.CheckLists).FirstOrDefault();
 
             List<SpaceCategoriesManagerList> categories = new List<SpaceCategoriesManagerList>(spaceCategories.Count());
             foreach (var cat in spaceCategories)
@@ -130,8 +127,8 @@ namespace MyAirbnb.Controllers
                 };
                 if (checklists != null)
                 {
-                    scml.CheckInItems = checklists.CheckInItems;
-                    scml.CheckOutItems = checklists.CheckOutItems;
+                    scml.CheckInItems = checklists.CheckInItems.Replace('\n', ';');
+                    scml.CheckOutItems = checklists.CheckOutItems.Replace('\n', ';');
                 }
                 categories.Add(scml);
             }
@@ -152,15 +149,15 @@ namespace MyAirbnb.Controllers
         {
             if (!id.HasValue) return NotFound();
             var spaceCategoryId = id.Value;
-            var manager = GetThisManager();
+            var manager = WhereManager().Include(e => e.CheckLists).FirstOrDefault();
 
             var checklist = manager.CheckLists.FirstOrDefault(e => e.SpaceCategoryId == spaceCategoryId);
             var editCheckLists = new EditCheckLists { SpaceCategoryId = spaceCategoryId };
 
             if (checklist != null)
             {
-                editCheckLists.CheckInItems = checklist.CheckInItems.Replace('\n', ';');
-                editCheckLists.CheckOutItems = checklist.CheckOutItems.Replace('\n', ';');
+                editCheckLists.CheckInItems = checklist.CheckInItems;
+                editCheckLists.CheckOutItems = checklist.CheckOutItems;
             }
             //TODO
             return View(editCheckLists);
@@ -171,7 +168,7 @@ namespace MyAirbnb.Controllers
         public async Task<IActionResult> EditCheckList(int id, [Bind("SpaceCategoryId,CheckInItems,CheckOutItems")] EditCheckLists editCheckLists)
         {
             var spaceCategoryId = id;
-            var manager = GetThisManager();
+            var manager = WhereManager().Include(e => e.CheckLists).FirstOrDefault();
 
             var checklist = manager.CheckLists.FirstOrDefault(e => e.SpaceCategoryId == spaceCategoryId);
             if (checklist == null)
@@ -191,15 +188,16 @@ namespace MyAirbnb.Controllers
         {
             if (!id.HasValue) return NotFound();
             var spaceCategoryId = id.Value;
-            var manager = GetThisManager();
+            var manager = WhereManager().Include(e => e.CheckLists).FirstOrDefault();
 
             var e = manager.CheckLists.FirstOrDefault(e => e.SpaceCategoryId == spaceCategoryId);
             if (e != null)
             {
                 manager.CheckLists.Remove(e);
                 await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Checklist));
             }
-            return RedirectToAction(nameof(Checklist));
+            return NotFound();
         }
 
         public class EditCheckLists

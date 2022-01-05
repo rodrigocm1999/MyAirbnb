@@ -148,8 +148,8 @@ namespace MyAirbnb.Models
         public string ManagerId { get; set; }
         public int SpaceCategoryId { get; set; }
 
-        public string CheckInItems { get; set; } // Separated by \n
-        public string CheckOutItems { get; set; } // Separated by \n
+        public string CheckInItems { get; set; } = ""; // Separated by \n
+        public string CheckOutItems { get; set; } = ""; // Separated by \n
     }
 
 

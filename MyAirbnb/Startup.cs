@@ -148,7 +148,7 @@ namespace MyAirbnb
                     var worker = new Worker { Id = administrator.Id };
                     context.Managers.Add(new Manager { Id = administrator.Id, Workers = new[] { worker }.ToList() });
                     context.Workers.Add(worker);
-                    context.SaveChangesAsync();
+                    context.SaveChanges();
 
                 }
             }
