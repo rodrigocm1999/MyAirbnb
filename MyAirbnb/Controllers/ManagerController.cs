@@ -47,8 +47,18 @@ namespace MyAirbnb.Controllers
         {
             var manager = WhereManager().Include(e => e.Workers).FirstOrDefault();
             //TODO
-            return View(manager.Workers);
+            var workerList = new List<WorkerViewModel>(manager.Workers.Count);
+            foreach(var a in manager.Workers)
+            {
+                var user = _context.Users.FirstOrDefault(e => e.Id == a.Id);
+                WorkerViewModel workerModel = new WorkerViewModel { Id = user.Id,  Name = user.UserName , Posts = a.Posts};
+                workerList.Add(workerModel);
+            }
+
+            return View(workerList);
         }
+
+
 
         public IActionResult CreateWorkerAccount() { return View(); }
         public class WorkerModel
@@ -90,10 +100,10 @@ namespace MyAirbnb.Controllers
                     await _roleManager.CreateAsync(new IdentityRole { Name = App.WorkerRole });
 
                 await _userManager.AddToRoleAsync(user, App.WorkerRole);
+                var manager = WhereManager().FirstOrDefault();
 
-                _context.Workers.Add(new Worker { Id = user.Id });
+                _context.Workers.Add(new Worker { Id = user.Id , ManagerId = manager.Id });
                 await _context.SaveChangesAsync();
-                await _signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction(nameof(Index));
             }
             foreach (var error in result.Errors)

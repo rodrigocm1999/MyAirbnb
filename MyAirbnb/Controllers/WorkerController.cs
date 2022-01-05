@@ -61,10 +61,24 @@ namespace MyAirbnb.Controllers
             return editPost;
         }
 
-        public IActionResult Posts()
+        // GET: Posts
+        public async Task<IActionResult> Index(string id)
         {
-            var postsList = _context.Posts.Where(e => e.WorkerId == UserId);
-            return View(postsList);
+            if (id != null)
+            {
+                var workerId = id;
+                var worker = _context.Workers
+                    .Include(e => e.Posts)
+                    .Where(e => e.ManagerId == User.GetUserId() && e.Id == workerId)
+                    .FirstOrDefault();
+                if (worker == null) return NotFound();
+                return View(worker.Posts);
+            }
+            else
+            {
+                var postsList = _context.Posts.Where(e => e.WorkerId == UserId);
+                return View(postsList);
+            }
         }
 
         public IActionResult PendingReservations()
