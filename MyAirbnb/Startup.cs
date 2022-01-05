@@ -52,7 +52,7 @@ namespace MyAirbnb
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public async void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
+        public async void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider, ApplicationDbContext context)
         {
             if (env.IsDevelopment())
             {
@@ -93,9 +93,9 @@ namespace MyAirbnb
             //    await userManager.AddToRoleAsync(user, App.AdminRole);
 
             //}
-            CreateRoles(serviceProvider);
+            CreateRoles(serviceProvider, context);
         }
-        private void CreateRoles(IServiceProvider serviceProvider)
+        private void CreateRoles(IServiceProvider serviceProvider, ApplicationDbContext context)
         {
 
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -110,6 +110,24 @@ namespace MyAirbnb
             if (!hasAdminRole.Result)
             {
                 roleResult = roleManager.CreateAsync(new IdentityRole(App.AdminRole));
+                roleResult.Wait();
+            }
+
+            Task<bool> hasManagerRole = roleManager.RoleExistsAsync(App.ManagerRole);
+            hasManagerRole.Wait();
+
+            if (!hasManagerRole.Result)
+            {
+                roleResult = roleManager.CreateAsync(new IdentityRole(App.ManagerRole));
+                roleResult.Wait();
+            }
+
+            Task<bool> hasWorkerRole = roleManager.RoleExistsAsync(App.WorkerRole);
+            hasWorkerRole.Wait();
+
+            if (!hasWorkerRole.Result)
+            {
+                roleResult = roleManager.CreateAsync(new IdentityRole(App.WorkerRole));
                 roleResult.Wait();
             }
 
@@ -130,8 +148,16 @@ namespace MyAirbnb
 
                 if (newUser.Result.Succeeded)
                 {
-                    Task<IdentityResult> newUserRole = userManager.AddToRoleAsync(administrator, App.AdminRole);
-                    newUserRole.Wait();
+                    userManager.AddToRoleAsync(administrator, App.AdminRole).Wait();
+                    userManager.AddToRoleAsync(administrator, App.ManagerRole).Wait();
+                    userManager.AddToRoleAsync(administrator, App.WorkerRole).Wait();
+
+
+                    Models.Worker worker = new Models.Worker { Id = administrator.Id };
+                    context.Managers.Add(new Models.Manager { Id = administrator.Id, Workers = (new[] { worker }).ToList()});
+                    context.Workers.Add(worker);
+                    context.SaveChangesAsync();
+
                 }
             }
         }
