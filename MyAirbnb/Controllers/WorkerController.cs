@@ -62,7 +62,7 @@ namespace MyAirbnb.Controllers
         }
 
         // GET: Posts
-        public async Task<IActionResult> Index(string id)
+        public async Task<IActionResult> Posts(string id)
         {
             if (id != null)
             {
@@ -110,7 +110,6 @@ namespace MyAirbnb.Controllers
             };
             _context.Posts.Add(post);
             _context.SaveChanges();
-
             return RedirectToAction(nameof(Edit), new { post.Id });
         }
 
