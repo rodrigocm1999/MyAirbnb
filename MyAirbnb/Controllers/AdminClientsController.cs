@@ -42,17 +42,13 @@ namespace MyAirbnb.Controllers
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var user =  _context.Users.FirstOrDefault(m => m.Id == id);
             var clientsAdminView = new ClientsAdminView() { Id = user.Id, Name = user.UserName };
             //TODO IR BUSCAR AS RESERVAS
             if (clientsAdminView == null)
-            {
                 return NotFound();
-            }
 
             return View(clientsAdminView);
         }
