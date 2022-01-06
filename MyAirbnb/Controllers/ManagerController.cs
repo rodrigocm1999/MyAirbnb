@@ -43,15 +43,27 @@ namespace MyAirbnb.Controllers
             return _context.Managers.Where(e => e.Id == User.GetUserId());
         }
 
-        public IActionResult Workers()
+
+        public IActionResult Workers(string? id)
         {
-            var manager = WhereManager().Include(e => e.Workers).FirstOrDefault();
-            //TODO
+            Manager manager;
+            if (id != null)
+            {
+                manager = _context.Managers.Where(e => e.Id == id).Include(e => e.Workers).FirstOrDefault();
+            }
+            else
+            {
+                manager = WhereManager().Include(e => e.Workers).FirstOrDefault();
+            }
+
+
             var workerList = new List<WorkerViewModel>(manager.Workers.Count);
-            foreach(var a in manager.Workers)
+            //TODO
+
+            foreach (var a in manager.Workers)
             {
                 var user = _context.Users.FirstOrDefault(e => e.Id == a.Id);
-                WorkerViewModel workerModel = new WorkerViewModel { Id = user.Id,  Name = user.UserName , Posts = a.Posts};
+                WorkerViewModel workerModel = new WorkerViewModel { Id = user.Id, Name = user.UserName, Posts = a.Posts };
                 workerList.Add(workerModel);
             }
 
@@ -102,7 +114,7 @@ namespace MyAirbnb.Controllers
                 await _userManager.AddToRoleAsync(user, App.WorkerRole);
                 var manager = WhereManager().FirstOrDefault();
 
-                _context.Workers.Add(new Worker { Id = user.Id , ManagerId = manager.Id });
+                _context.Workers.Add(new Worker { Id = user.Id, ManagerId = manager.Id });
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -119,10 +131,18 @@ namespace MyAirbnb.Controllers
             return View(manager.Workers);
         }
 
-        public IActionResult Checklists()
+        public IActionResult Checklists(string? id)
         {
             var spaceCategories = _context.SpaceCategories;
-            var manager = WhereManager().Include(e => e.CheckLists).FirstOrDefault();
+            Manager manager;
+            if (id != null)
+            {
+                manager = _context.Managers.Where(e => e.Id == id).Include(e => e.CheckLists).FirstOrDefault();
+            }
+            else
+            {
+                manager = WhereManager().Include(e => e.CheckLists).FirstOrDefault();
+            }
 
             List<SpaceCategoriesManagerList> categories = new List<SpaceCategoriesManagerList>(spaceCategories.Count());
             foreach (var cat in spaceCategories)
