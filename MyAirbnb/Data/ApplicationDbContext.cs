@@ -30,6 +30,7 @@ namespace MyAirbnb.Data
 
         public DbSet<MyAirbnb.Models.AcceptReservationWorkerInputModel> AcceptReservationWorkerInputModel { get; set; }
 
+
         
     }
 }

@@ -22,9 +22,9 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-controller="Worker" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a>*@
+                <a asp-controller="Worker" asp-action="Posts" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="DeleteWorker" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }
