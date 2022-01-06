@@ -32,27 +32,22 @@ namespace MyAirbnb.Controllers
             var result = await _userManager.GetUsersInRoleAsync(App.ClientRole);
             List<ClientsAdminView> clients = new ();
             foreach (var user in result)
-            {
                 clients.Add(new ClientsAdminView() { Id = user.Id, Name = user.UserName });
-            }
+
             return View(clients);
         }
 
         // GET: AdminClients/Details/5
-        public async Task<IActionResult> Details(string id)
+        public IActionResult Details(string id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var user =  _context.Users.FirstOrDefault(m => m.Id == id);
+            var user = _context.Users.FirstOrDefault(m => m.Id == id);
             var clientsAdminView = new ClientsAdminView() { Id = user.Id, Name = user.UserName };
             //TODO IR BUSCAR AS RESERVAS
             if (clientsAdminView == null)
-            {
                 return NotFound();
-            }
 
             return View(clientsAdminView);
         }
@@ -147,6 +142,6 @@ namespace MyAirbnb.Controllers
         //    return View(clientsAdminView);
         //}
 
-        
+
     }
 }

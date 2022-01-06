@@ -27,5 +27,7 @@ namespace MyAirbnb.Data
         }
 
         public DbSet<MyAirbnb.Models.UserModel> UserModel { get; set; }
+
+        public DbSet<MyAirbnb.Models.AcceptReservationWorkerInputModel> AcceptReservationWorkerInputModel { get; set; }
     }
 }

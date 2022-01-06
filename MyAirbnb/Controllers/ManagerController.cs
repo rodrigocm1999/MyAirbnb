@@ -44,17 +44,13 @@ namespace MyAirbnb.Controllers
         }
 
 
-        public IActionResult Workers(string? id)
+        public IActionResult Workers(string id)
         {
             Manager manager;
             if (id != null)
-            {
                 manager = _context.Managers.Where(e => e.Id == id).Include(e => e.Workers).FirstOrDefault();
-            }
             else
-            {
                 manager = WhereManager().Include(e => e.Workers).FirstOrDefault();
-            }
 
 
             var workerList = new List<WorkerViewModel>(manager.Workers.Count);
@@ -140,7 +136,7 @@ namespace MyAirbnb.Controllers
             else
                 manager = WhereManager().Include(e => e.CheckLists).FirstOrDefault();
 
-            List<SpaceCategoriesManagerList> categories = new List<SpaceCategoriesManagerList>(spaceCategories.Count());
+            var categories = new List<SpaceCategoriesManagerList>(spaceCategories.Count());
             foreach (var cat in spaceCategories)
             {
                 var checklists = manager.CheckLists.FirstOrDefault(e => e.SpaceCategoryId == cat.Id);

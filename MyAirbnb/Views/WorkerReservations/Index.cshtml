@@ -68,12 +68,10 @@
                         case ReservationState.ToCheckIn:
                             <a asp-action="CheckIn" asp-route-id="@item.Id">CheckIn</a>
                             break;
-                        case ReservationState.OnGoing:
-                            break;
                         case ReservationState.ToCheckOut:
                             <a asp-action="CheckOut" asp-route-id="@item.Id">CheckOut</a>
                             break;
-                        case ReservationState.Finished:
+                        default:
                             break;
                     }
                 </td>

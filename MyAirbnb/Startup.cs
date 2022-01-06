@@ -92,26 +92,20 @@ namespace MyAirbnb
             var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
             //Check that there is an Administrator role and create if not, etc
-            if (!roleManager.RoleExistsAsync(App.AdminRole).Result)
-                roleManager.CreateAsync(new IdentityRole(App.AdminRole)).Wait();
 
-            if (!roleManager.RoleExistsAsync(App.ManagerRole).Result)            
-                 roleManager.CreateAsync(new IdentityRole(App.ManagerRole)).Wait();
-          
-            if (!roleManager.RoleExistsAsync(App.WorkerRole).Result)            
-                roleManager.CreateAsync(new IdentityRole(App.WorkerRole)).Wait();
+            var rolesToCreate = new[] { App.AdminRole, App.ManagerRole, App.WorkerRole, App.ClientRole };
 
-            if (!roleManager.RoleExistsAsync(App.ClientRole).Result)
-                roleManager.CreateAsync(new IdentityRole(App.ClientRole)).Wait();
+            foreach( var role in rolesToCreate)
+                if (!roleManager.RoleExistsAsync(role).Result)
+                    roleManager.CreateAsync(new IdentityRole(role)).Wait();
+            context.SaveChanges();
 
             //Check if the admin user exists and create it if not
             //Add to the Administrator role
             string emailAdmin = @"admin@myairbnb.com";
             string passwordAdmin = @"_AStrongPassword";
-            Task<IdentityUser> testUser = userManager.FindByEmailAsync(emailAdmin);
-            testUser.Wait();
 
-            if (testUser.Result == null)
+            if (userManager.FindByEmailAsync(emailAdmin).Result == null)
             {
                 IdentityUser administrator = new()
                 {
