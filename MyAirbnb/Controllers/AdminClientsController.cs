@@ -44,7 +44,9 @@ namespace MyAirbnb.Controllers
                 return NotFound();
 
             var user = _context.Users.FirstOrDefault(m => m.Id == id);
-            var clientsAdminView = new ClientsAdminView() { Id = user.Id, Name = user.UserName };
+            IQueryable<Reservation> reservations = _context.Reservations.Where(m => m.UserId == id).Include(m => m.Post);
+            var clientsAdminView = new ClientsAdminView() { Id = user.Id, Name = user.UserName , Reservations = reservations};
+            var count = clientsAdminView.Reservations.Count();
             //TODO IR BUSCAR AS RESERVAS
             if (clientsAdminView == null)
                 return NotFound();

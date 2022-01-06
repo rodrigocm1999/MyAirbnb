@@ -13,6 +13,7 @@ namespace MyAirbnb.Models
         [Display(Name = "Name")]
         public string Name { get; set; }
 
-        public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
+        [Display(Name = "Reservations")]
+        public virtual IQueryable<Reservation> Reservations { get; set; }
     }
 }

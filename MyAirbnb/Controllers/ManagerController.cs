@@ -221,6 +221,41 @@ namespace MyAirbnb.Controllers
             return NotFound();
         }
 
+        public async Task<IActionResult> DeleteWorker(string id)
+        {
+            var worker = _context.Users.FirstOrDefault(e => e.Id == id);
+            WorkerViewModel workerModel = new WorkerViewModel { Id = worker.Id, Name = worker.UserName };
+            if(worker == null)
+            {
+                return NotFound();
+            }
+
+            return View(workerModel);
+        }
+
+        [HttpPost, ActionName("DeleteWorker")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var worker = _context.Users.FirstOrDefault(e => e.Id == id);
+            var post = _context.Posts.Where(e => e.WorkerId == worker.Id);
+            var maganerId = WhereManager().FirstOrDefault().Id;
+            await post.ForEachAsync( x =>
+            {
+                x.WorkerId = maganerId;
+            });
+
+            var reservations = _context.Reservations.Where(e => e.WorkerId == worker.Id);
+            await reservations.ForEachAsync(x =>
+            {
+                x.WorkerId = maganerId;
+            });
+            _context.Remove(worker);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Index));
+        }
+
+
         public class EditCheckLists
         {
             [HiddenInput]

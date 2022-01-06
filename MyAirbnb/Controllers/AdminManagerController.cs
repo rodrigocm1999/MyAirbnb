@@ -30,10 +30,10 @@ namespace MyAirbnb.Controllers
         public async Task<IActionResult> Index()
         {
             var result = await _userManager.GetUsersInRoleAsync(App.ManagerRole);
-            List<ManageViewModel> managers = new();
+            List<ManagerViewModel> managers = new();
             foreach (var manager in result)
             {
-                managers.Add(new ManageViewModel() { Id = manager.Id, Name = manager.UserName });
+                managers.Add(new ManagerViewModel() { Id = manager.Id, Name = manager.UserName });
             }
             return View(managers);
         }
@@ -54,7 +54,7 @@ namespace MyAirbnb.Controllers
             }
             var name =  _context.Users
                 .FirstOrDefaultAsync(m => m.Id == id).Result.UserName;
-            var viewModel = new ManageViewModel() { Id = manager.Id, Workers = manager.Workers, Name = name };
+            var viewModel = new ManagerViewModel() { Id = manager.Id, Workers = manager.Workers, Name = name };
             return View(viewModel);
         }
 

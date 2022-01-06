@@ -1,0 +1,33 @@
+﻿@model MyAirbnb.Models.WorkerViewModel
+
+@{
+    ViewData["Title"] = "DeleteWorker";
+}
+
+<h1>DeleteWorker</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>WorkerViewModel</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>
+
+    <dl class="row">
+        <h6>
+            If the worker has any pots published they will be associate to your account
+        </h6>
+    </dl>
+    
+    <form asp-action="DeleteWorker">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Workers">Back to List</a>
+    </form>
+</div>
