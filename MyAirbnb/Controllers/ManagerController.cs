@@ -135,7 +135,7 @@ namespace MyAirbnb.Controllers
         {
             var spaceCategories = _context.SpaceCategories;
             Manager manager;
-            if (id != null
+            if (id != null)
                 manager = _context.Managers.Where(e => e.Id == id).Include(e => e.CheckLists).FirstOrDefault();
             else
                 manager = WhereManager().Include(e => e.CheckLists).FirstOrDefault();
