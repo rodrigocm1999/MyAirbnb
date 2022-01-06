@@ -17,12 +17,12 @@ namespace MyAirbnb.Controllers
 {
 
     [Authorize(Roles = "Worker, Manager")]
-    public class WorkerController : Controller
+    public class WorkerPostsController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _environment;
 
-        public WorkerController(ApplicationDbContext context, IWebHostEnvironment environment)
+        public WorkerPostsController(ApplicationDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
             _environment = environment;
@@ -62,7 +62,7 @@ namespace MyAirbnb.Controllers
         }
 
         // GET: Posts
-        public IActionResult Posts(string id)
+        public IActionResult Index(string id)
         {
             if (id != null)
             {

@@ -15,7 +15,7 @@ namespace MyAirbnb.Models
 
         public string UserId { get; set; }
         public string UserName { get; set; }
-        public float UserRating { get; set; }
+        public float? UserRating { get; set; }
         public string PhoneNumber { get; set; }
     }
 

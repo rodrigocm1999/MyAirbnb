@@ -34,14 +34,12 @@ namespace MyAirbnb.Controllers
 
             //(e.State != ReservationState.Finished || (DateTime.Now.Date - e.EndDate.Date).Days <= 7 )
 
-            var waiter = reservations
+            await reservations
                 .Where(e => e.State == ReservationState.OnGoing && DateTime.Now >= e.EndDate)
                 .ForEachAsync(e => e.State = ReservationState.ToCheckOut);
-            var waiter2 = reservations
+            await reservations
                 .Where(e => e.State == ReservationState.Accepted && DateTime.Now >= e.StartDate)
                 .ForEachAsync(e => e.State = ReservationState.ToCheckIn);
-
-            Task.WaitAll(waiter, waiter2);
 
             await _context.SaveChangesAsync();
             return View(reservations);
@@ -85,15 +83,19 @@ namespace MyAirbnb.Controllers
             var userRatings = _context.Reservations
                 .Where(e => e.UserId == reservation.UserId && e.RatingUser.HasValue);
 
+            float? userRating = null;
+            if (userRatings.Any())
+                userRating = (float?) userRatings.Average(e => e.RatingUser.Value);
+
             var model = new AcceptReservationWorkerInputModel
             {
                 ReservationId = reservation.Id,
                 UserId = reservation.UserId,
                 UserName = reservation.User.UserName,
-                UserRating = (float)userRatings.Average(e => e.RatingUser),
+                UserRating = userRating,
                 PhoneNumber = reservation.User.PhoneNumber,
             };
-
+            //TODO deixar pretty, mostrar cenas do user
             return View(model);
         }
 

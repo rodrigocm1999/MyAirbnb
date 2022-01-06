@@ -1,0 +1,17 @@
+﻿@page
+@{
+    ViewData["Title"] = "Client";
+    ViewData["ActivePage"] = ManageNavPages.Client;
+}
+
+<div class="row">
+    <div class="col-md-6">
+
+        <a asp-controller="ClientReservations" asp-action="Index" class="btn btn-primary">Manage reservations</a>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -88,25 +88,6 @@ namespace MyAirbnb.Models
         public virtual IList<Comment> Comments { get; set; }
     }
 
-    [Index(nameof(PostId))]
-    [Index(nameof(UserId))]
-    public class Comment
-    {
-        [Key]
-        public int Id { get; set; }
-
-        public int PostId { get; set; }
-
-        public int ReserveId { get; set; }
-
-        public int UserId { get; set; }
-
-        public virtual IdentityUser User { get; set; } //TODO verificar se isto vai preencher sozinho
-
-        [Required]
-        public string Text { get; set; }
-    }
-
     public class Comodity
     {
         [Key]
@@ -168,11 +149,12 @@ namespace MyAirbnb.Models
 
         public int? RatingUser { get; set; }
         public int? RatingPost { get; set; }
+
         public int Price { get; set; }
+        public int TotalPrice { get; set; }
 
         public string CheckInItems { get; set; } // Separated by \n, to indicate if was checked contains '*' at the start
         public string CheckOutItems { get; set; } // Separated by \n, to indicate if was checked contains '*' at the start
-
 
         public ReservationState State { get; set; }
 
@@ -181,7 +163,28 @@ namespace MyAirbnb.Models
         [DataType(DataType.Date)]
         public DateTime EndDate { get; set; }
 
-        public int TotalPrice { get; set; }
+        public virtual Comment Comment { get; set; }
+    }
+
+    [Index(nameof(PostId))]
+    [Index(nameof(UserId))]
+    [Index(nameof(ReservationId))]
+    public class Comment
+    {
+        [Key]
+        public int Id { get; set; }
+
+        public int PostId { get; set; }
+        public virtual Post Post { get; set; }
+
+        public int ReservationId { get; set; }
+        public virtual Reservation Reservation { get; set; }
+
+        public string UserId { get; set; }
+        public virtual IdentityUser User { get; set; }
+
+        [Required]
+        public string Text { get; set; }
     }
 
     public enum ReservationState { Pending, ToCheckIn, ToCheckOut, OnGoing, Accepted, Rejected, Finished } // A ordem interessa para poder ordenar as cenas na lista

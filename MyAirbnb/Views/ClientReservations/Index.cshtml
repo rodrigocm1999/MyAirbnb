@@ -1,0 +1,74 @@
+﻿@model IEnumerable<MyAirbnb.Controllers.ClientReservationsController.ReservationTableModel>
+
+@{
+    ViewData["Title"] = "Reservations";
+}
+
+<h1>Reservations</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Post)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RatingUser)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RatingPost)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.State)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalPrice)
+            </th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Post.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RatingUser)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RatingPost)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.State)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalPrice)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                </td>
+                <td>
+                    @if (item.CanComment)
+                    {
+                        <a asp-action="Comment" asp-route-id="@item.Id">Comment</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

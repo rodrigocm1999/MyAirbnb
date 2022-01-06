@@ -9,10 +9,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace MyAirbnb.Areas.Identity.Pages.Account.Manage
 {
-    public class WorkerModel : PageModel
+    public class ClientModel : PageModel
     {
+
         public IActionResult OnGet()
         {
+
             return Page();
         }
 

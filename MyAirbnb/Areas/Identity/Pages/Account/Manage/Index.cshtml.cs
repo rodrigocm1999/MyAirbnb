@@ -24,6 +24,8 @@ namespace MyAirbnb.Areas.Identity.Pages.Account.Manage
 
         public string Username { get; set; }
 
+        public string Email { get; set; }
+
         [TempData]
         public string StatusMessage { get; set; }
 
@@ -41,8 +43,10 @@ namespace MyAirbnb.Areas.Identity.Pages.Account.Manage
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
+            var email = await _userManager.GetEmailAsync(user);
+            
             Username = userName;
+            Email = email;
 
             Input = new InputModel
             {

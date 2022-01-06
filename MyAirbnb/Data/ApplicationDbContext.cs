@@ -18,16 +18,19 @@ namespace MyAirbnb.Data
         public DbSet<Worker> Workers { get; set; }
 
         public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<Comment>()
+               .HasOne(e => e.Reservation)
+               .WithOne(e => e.Comment)
+               .OnDelete(DeleteBehavior.NoAction);
+
         }
-
-        public DbSet<MyAirbnb.Models.UserModel> UserModel { get; set; }
-
-        public DbSet<MyAirbnb.Models.AcceptReservationWorkerInputModel> AcceptReservationWorkerInputModel { get; set; }
     }
 }

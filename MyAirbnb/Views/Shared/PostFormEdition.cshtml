@@ -56,7 +56,7 @@
         function removeImgFromPost(imgId, element) {
             $.ajax({
                 type: 'POST',
-                url: '/Worker/RemovePostImage',
+                url: '/WorkerPosts/RemovePostImage',
                 data: {
                     postId: @Model.Post.Id,
                     postImageId: imgId
@@ -90,7 +90,7 @@
             $.ajax({
                 type: 'POST',
                 enctype: 'multipart/form-data',
-                url: '/Worker/UploadPostImage/' + @Model.Post.Id,
+                url: '/WorkerPosts/UploadPostImage/' + @Model.Post.Id,
                 data: formData,
                 contentType: false,
                 processData: false,
