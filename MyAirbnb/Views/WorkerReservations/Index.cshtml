@@ -13,28 +13,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.UserId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Worker)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Post)
+                @Html.DisplayNameFor(model => model.Post.Address)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.RatingUser)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RatingPost)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CheckInItems)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CheckOutItems)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.State)
@@ -49,53 +31,53 @@
                 @Html.DisplayNameFor(model => model.TotalPrice)
             </th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Worker.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Post.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RatingUser)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RatingPost)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CheckInItems)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CheckOutItems)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.State)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalPrice)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Post.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RatingUser)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.State)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalPrice)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                </td>
+                <td>
+                    @switch (item.State)
+                    {
+                        case ReservationState.Pending:
+                            <a asp-action="Accept" asp-route-id="@item.Id">Pending</a>
+                            break;
+                        case ReservationState.ToCheckIn:
+                            <a asp-action="CheckIn" asp-route-id="@item.Id">CheckIn</a>
+                            break;
+                        case ReservationState.OnGoing:
+                            break;
+                        case ReservationState.ToCheckOut:
+                            <a asp-action="CheckOut" asp-route-id="@item.Id">CheckOut</a>
+                            break;
+                        case ReservationState.Finished:
+                            break;
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

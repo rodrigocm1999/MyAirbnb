@@ -131,18 +131,14 @@ namespace MyAirbnb.Controllers
             return View(manager.Workers);
         }
 
-        public IActionResult Checklists(string? id)
+        public IActionResult Checklists(string id)
         {
             var spaceCategories = _context.SpaceCategories;
             Manager manager;
-            if (id != null)
-            {
+            if (id != null
                 manager = _context.Managers.Where(e => e.Id == id).Include(e => e.CheckLists).FirstOrDefault();
-            }
             else
-            {
                 manager = WhereManager().Include(e => e.CheckLists).FirstOrDefault();
-            }
 
             List<SpaceCategoriesManagerList> categories = new List<SpaceCategoriesManagerList>(spaceCategories.Count());
             foreach (var cat in spaceCategories)
@@ -156,8 +152,8 @@ namespace MyAirbnb.Controllers
                 };
                 if (checklists != null)
                 {
-                    scml.CheckInItems = checklists.CheckInItems.Replace('\n', ';');
-                    scml.CheckOutItems = checklists.CheckOutItems.Replace('\n', ';');
+                    scml.CheckInItems = checklists.CheckInItems != null ? checklists.CheckInItems.Replace('\n', ';') : "";
+                    scml.CheckOutItems = checklists.CheckOutItems != null ? checklists.CheckOutItems.Replace('\n', ';') : "";
                 }
                 categories.Add(scml);
             }

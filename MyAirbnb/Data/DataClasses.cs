@@ -28,7 +28,7 @@ namespace MyAirbnb.Models
     //Worker
     //TODO os worker podem ver os comentário e ratings dos posts
     //TODO os workers podem ver e dar rating aos clientes, para poder decidir se aceitam a reserva ou não
-    //TODO worker "entregar o espaço"
+    //TODO worker "entregar o espaço" - deixar bonito
     //TODO worker "receber o espaço"
     //TODO reservas podem ou não ser aceites, por isso é um pedido de reserva
     //TODO quando fizer a reserva os workers terão de preencher a checklist da categoria do edificio para a entrega aos clientes

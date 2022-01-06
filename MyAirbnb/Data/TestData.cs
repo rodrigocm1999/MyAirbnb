@@ -1,6 +1,9 @@
-﻿using MyAirbnb.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using MyAirbnb.Models;
+using MyAirbnb.Other;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -29,6 +32,15 @@ namespace MyAirbnb.Data
             var apartementId = spaceCategories[0].Id;
             var homeId = spaceCategories[1].Id;
 
+
+            var manager = context.Managers.Include(e => e.CheckLists).FirstOrDefault();
+            if (manager.CheckLists.Count == 0)
+            {
+                manager.CheckLists.Add(new CheckList { SpaceCategoryId = apartementId, CheckInItems = "Clean\nGive keys to the home", CheckOutItems = "Check rooms state\nCall neighbor\nGet the keys back" });
+                manager.CheckLists.Add(new CheckList { SpaceCategoryId = homeId, CheckInItems = "Clean\nGive keys to the apartment", CheckOutItems = "Check rooms state\nCall neighbor\nGet the keys back" });
+                await context.SaveChangesAsync();
+            }
+
             var comodities = new List<Comodity>(){
                 new Comodity{Name = "Wifi" },
                 new Comodity{Name = "Dryer" },
@@ -43,6 +55,8 @@ namespace MyAirbnb.Data
                 new Comodity{Name = "Microwave" },
                 new Comodity{Name = "Balcony" },
                 new Comodity{Name = "Garage" },
+                new Comodity{Name = "Pool" },
+                new Comodity{Name = "Jacuzzi" },
             };
 
             if (context.Posts.FirstOrDefault() == null)
@@ -69,14 +83,12 @@ namespace MyAirbnb.Data
 
             Random rand = new Random(4321);
 
-            var presetImages = new[] {
-               "/postimages/357279596.webp",
-               "/postimages/357279612.webp",
-               "/postimages/357279628.webp",
-               "/postimages/357279690.webp",
-               "/postimages/357279736.webp",
-               "/postimages/300000548.webp",
-               "/postimages/32379616.webp"};
+            var d = new DirectoryInfo(Path.Combine("wwwroot", App.PostImagesFolderName));
+            var files = d.GetFiles();
+
+            var presetImages = new List<string>();
+            for (int i = 0; i < files.Length; i++)
+                presetImages.Add("/" + App.PostImagesFolderName + "/" + files[i].Name);
 
             foreach (var p in posts)
             {
@@ -84,7 +96,7 @@ namespace MyAirbnb.Data
                 var amount = rand.Next(2, 6);
                 for (int i = 0; i < amount; i++)
                 {
-                    var filePath = presetImages[rand.Next(presetImages.Length)];
+                    var filePath = presetImages[rand.Next(presetImages.Count)];
                     p.PostImages.Add(new PostImage() { FilePath = filePath });
                 }
             }

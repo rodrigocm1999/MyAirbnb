@@ -81,13 +81,6 @@ namespace MyAirbnb.Controllers
             }
         }
 
-        public IActionResult PendingReservations()
-        {
-            var reservationsList = _context.Reservations.Where(e => e.WorkerId == User.GetUserId() && e.State != ReservationState.Finished);
-            return View(reservationsList);
-        }
-
-        // GET: Posts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -99,8 +92,7 @@ namespace MyAirbnb.Controllers
 
             return View(post);
         }
-
-        // GET: Posts/Create
+        
         public IActionResult Create()
         {
             var post = new Post()
@@ -253,45 +245,6 @@ namespace MyAirbnb.Controllers
             new FileInfo(fullPath).Delete();
 
             return Ok();
-        }
-
-        public IActionResult CheckIn(int? id)
-        {
-            if (!id.HasValue) return NotFound();
-            var reservationId = id.Value;
-
-            var reservation = _context.Reservations
-                .Include(e => e.Worker).ThenInclude(e => e.Manager).ThenInclude(e => e.CheckLists)
-                .Include(e => e.Post)
-                .FirstOrDefault(e => e.Id == reservationId && e.WorkerId == UserId && e.State == ReservationState.ToCheckIn);
-            if (reservation == null) return NotFound();
-
-            var checkList = reservation.Worker.Manager.CheckLists.FirstOrDefault(e => e.SpaceCategoryId == reservation.Post.SpaceCategoryId);
-
-            var model = new CheckInWorkerInputModel
-            {
-                ReservationId = reservation.Id,
-                CheckInItems = checkList == null ? new List<string>() : CheckListsHelper.SplitFromDatabase(checkList.CheckInItems),
-            };
-
-            return View(model);
-        }
-
-        [HttpPost]
-        public IActionResult CheckIn(int? id, CheckInWorkerOutputModel model)
-        {
-            if (!id.HasValue) return NotFound();
-            var reservationId = id.Value;
-
-            var reservation = _context.Reservations
-                .FirstOrDefault(e => e.Id == reservationId && e.WorkerId == UserId && e.State == ReservationState.ToCheckIn);
-            if (reservation == null) return NotFound();
-
-            reservation.CheckInItems = CheckListsHelper.JoinForDatabase(model.CheckInItems, model.ItemsIndeces);
-            reservation.State = ReservationState.OnGoing;
-
-            _context.SaveChanges();
-            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]

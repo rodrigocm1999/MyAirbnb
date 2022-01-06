@@ -90,44 +90,19 @@ namespace MyAirbnb
 
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
-            Task<IdentityResult> roleResult;
 
-            //Check that there is an Administrator role and create if not
-            Task<bool> hasAdminRole = roleManager.RoleExistsAsync(App.AdminRole);
-            hasAdminRole.Wait();
+            //Check that there is an Administrator role and create if not, etc
+            if (!roleManager.RoleExistsAsync(App.AdminRole).Result)
+                roleManager.CreateAsync(new IdentityRole(App.AdminRole)).Wait();
 
-            if (!hasAdminRole.Result)
-            {
-                roleResult = roleManager.CreateAsync(new IdentityRole(App.AdminRole));
-                roleResult.Wait();
-            }
+            if (!roleManager.RoleExistsAsync(App.ManagerRole).Result)            
+                 roleManager.CreateAsync(new IdentityRole(App.ManagerRole)).Wait();
+          
+            if (!roleManager.RoleExistsAsync(App.WorkerRole).Result)            
+                roleManager.CreateAsync(new IdentityRole(App.WorkerRole)).Wait();
 
-            Task<bool> hasManagerRole = roleManager.RoleExistsAsync(App.ManagerRole);
-            hasManagerRole.Wait();
-
-            if (!hasManagerRole.Result)
-            {
-                roleResult = roleManager.CreateAsync(new IdentityRole(App.ManagerRole));
-                roleResult.Wait();
-            }
-
-            Task<bool> hasWorkerRole = roleManager.RoleExistsAsync(App.WorkerRole);
-            hasWorkerRole.Wait();
-
-            if (!hasWorkerRole.Result)
-            {
-                roleResult = roleManager.CreateAsync(new IdentityRole(App.WorkerRole));
-                roleResult.Wait();
-            }
-
-            Task<bool> hasClientRole = roleManager.RoleExistsAsync(App.ClientRole);
-            hasWorkerRole.Wait();
-
-            if (!hasWorkerRole.Result)
-            {
-                roleResult = roleManager.CreateAsync(new IdentityRole(App.ClientRole));
-                roleResult.Wait();
-            }
+            if (!roleManager.RoleExistsAsync(App.ClientRole).Result)
+                roleManager.CreateAsync(new IdentityRole(App.ClientRole)).Wait();
 
             //Check if the admin user exists and create it if not
             //Add to the Administrator role
@@ -145,10 +120,7 @@ namespace MyAirbnb
                     EmailConfirmed = true,
                 };
 
-                Task<IdentityResult> newUser = userManager.CreateAsync(administrator, passwordAdmin);
-                newUser.Wait();
-
-                if (newUser.Result.Succeeded)
+                if (userManager.CreateAsync(administrator, passwordAdmin).Result.Succeeded)
                 {
                     userManager.AddToRoleAsync(administrator, App.AdminRole).Wait();
                     userManager.AddToRoleAsync(administrator, App.ManagerRole).Wait();
@@ -158,7 +130,6 @@ namespace MyAirbnb
                     context.Managers.Add(new Manager { Id = administrator.Id, Workers = new[] { worker }.ToList() });
                     context.Workers.Add(worker);
                     context.SaveChanges();
-
                 }
             }
         }

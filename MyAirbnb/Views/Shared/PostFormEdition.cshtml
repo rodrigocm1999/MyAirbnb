@@ -118,15 +118,15 @@
 
 <div class="container">
     <label asp-for="Post.Comodities" class="control-label"></label>
-    <div class="container">
+    <div class="" style="column-count: 5;">
         @foreach (var c in Model.Comodities)
         {
             var checkedExtra = "";
             if (Model.Post.Comodities != null && Model.Post.Comodities.Contains(c))
                 checkedExtra = "checked";
-            <div class="form-check d-block float-left" style="width:20%;">
-                <input class="form-check-input" type="checkbox" value="@c.Id" name="Post.Comodities[]" @checkedExtra>
-                <label class="form-check-label" for="flexCheckDefault">@c.Name</label>
+            <div class="form-check d-block" style="">
+                <input class="form-check-input" type="checkbox" value="@c.Id" id="@c.Id" name="Post.Comodities[]" @checkedExtra>
+                <label class="form-check-label" for="@c.Id">@c.Name</label>
             </div>
         }
     </div>
@@ -138,14 +138,6 @@
 
 <div class="container">
     <label asp-for="Post.SpaceCategoryId" class="control-label"></label>
-    <select asp-for="Post.SpaceCategoryId" asp-items="Model.SpaceCategories" class="form-control w-auto">
-        @*@foreach (var e in Model.SpaceCategories) {
-                if (Model.Post.PropertyType == e.Value) {
-                    <option value="@e.Value" selected>@e.Name</option>
-                } else {
-                    <option value="@e.Value">@e.Name</option>
-                }
-            }*@
-    </select>
+    <select asp-for="Post.SpaceCategoryId" asp-items="Model.SpaceCategories" class="form-control w-auto"></select>
     <span asp-validation-for="Post.SpaceCategoryId" class="text-danger"></span>
 </div>

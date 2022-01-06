@@ -22,151 +22,115 @@ namespace MyAirbnb.Controllers
             _context = context;
         }
 
-        // GET: WorkerReservations
-        public IActionResult Index()
+        public async Task<IActionResult> IndexAsync()
         {
+            //ViewData["PostId"] = new SelectList(_context.Posts, "Id", "Address", reservation.PostId);
+            //ViewData["WorkerId"] = new SelectList(_context.Workers, "Id", "Id", reservation.WorkerId);
+
             var reservations = _context.Reservations
                 .Include(e => e.Post)
-                .Include(e => e.Worker)
-                .Where(e => e.WorkerId == User.GetUserId());
+                .Where(e => e.WorkerId == User.GetUserId() && e.State != ReservationState.Finished);
+
+            await reservations
+                .Where(e => DateTime.Now >= e.EndDate)
+                .ForEachAsync(e => e.State = ReservationState.ToCheckOut);
+            
+            await _context.SaveChangesAsync();
+            
             return View(reservations);
         }
 
-        // GET: WorkerReservations/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var reservation = await _context.Reservations
                 .Include(r => r.Post)
                 .Include(r => r.Worker)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (reservation == null)
-            {
-                return NotFound();
-            }
+
+            if (reservation == null) return NotFound();
 
             return View(reservation);
         }
 
-        // GET: WorkerReservations/Create
-        public IActionResult Create()
+        public IActionResult CheckIn(int? id)
         {
-            ViewData["PostId"] = new SelectList(_context.Posts, "Id", "Address");
-            ViewData["WorkerId"] = new SelectList(_context.Workers, "Id", "Id");
-            return View();
+            if (!id.HasValue) return NotFound();
+            var reservationId = id.Value;
+
+            var reservation = _context.Reservations
+                .Include(e => e.Worker).ThenInclude(e => e.Manager).ThenInclude(e => e.CheckLists)
+                .Include(e => e.Post)
+                .FirstOrDefault(e => e.Id == reservationId && e.WorkerId == User.GetUserId() && e.State == ReservationState.ToCheckIn);
+            if (reservation == null) return NotFound();
+
+            var checkList = reservation.Worker.Manager.CheckLists.FirstOrDefault(e => e.SpaceCategoryId == reservation.Post.SpaceCategoryId);
+
+            var model = new CheckInWorkerInputModel
+            {
+                ReservationId = reservation.Id,
+                CheckItems = checkList == null ? new List<string>() : CheckListsHelper.SplitFromDatabase(checkList.CheckInItems),
+            };
+
+            return View(model);
         }
 
-        // POST: WorkerReservations/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,WorkerId,PostId,RatingUser,RatingPost,Price,CheckInItems,CheckOutItems,State,StartDate,EndDate,TotalPrice")] Reservation reservation)
+        public IActionResult CheckIn(int? id, CheckInWorkerOutputModel model)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(reservation);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["PostId"] = new SelectList(_context.Posts, "Id", "Address", reservation.PostId);
-            ViewData["WorkerId"] = new SelectList(_context.Workers, "Id", "Id", reservation.WorkerId);
-            return View(reservation);
+            if (!id.HasValue) return NotFound();
+            var reservationId = id.Value;
+
+            var reservation = _context.Reservations
+                .FirstOrDefault(e => e.Id == reservationId && e.WorkerId == User.GetUserId() && e.State == ReservationState.ToCheckIn);
+            if (reservation == null) return NotFound();
+
+            reservation.CheckInItems = CheckListsHelper.JoinForDatabase(model.CheckItems, model.ItemsIndeces);
+            reservation.State = ReservationState.OnGoing;
+
+            _context.SaveChanges();
+            return RedirectToAction(nameof(IndexAsync));
         }
 
-        // GET: WorkerReservations/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult CheckOut(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (!id.HasValue) return NotFound();
+            var reservationId = id.Value;
 
-            var reservation = await _context.Reservations.FindAsync(id);
-            if (reservation == null)
+            var reservation = _context.Reservations
+                .Include(e => e.Worker).ThenInclude(e => e.Manager).ThenInclude(e => e.CheckLists)
+                .Include(e => e.Post)
+                .FirstOrDefault(e => e.Id == reservationId && e.WorkerId == User.GetUserId() && e.State == ReservationState.ToCheckOut);
+            if (reservation == null) return NotFound();
+
+            var checkList = reservation.Worker.Manager.CheckLists.FirstOrDefault(e => e.SpaceCategoryId == reservation.Post.SpaceCategoryId);
+
+            var model = new CheckOutWorkerInputModel
             {
-                return NotFound();
-            }
-            ViewData["PostId"] = new SelectList(_context.Posts, "Id", "Address", reservation.PostId);
-            ViewData["WorkerId"] = new SelectList(_context.Workers, "Id", "Id", reservation.WorkerId);
-            return View(reservation);
+                ReservationId = reservation.Id,
+                CheckItems = checkList == null ? new List<string>() : CheckListsHelper.SplitFromDatabase(checkList.CheckInItems),
+            };
+
+            return View(model);
         }
 
-        // POST: WorkerReservations/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,WorkerId,PostId,RatingUser,RatingPost,Price,CheckInItems,CheckOutItems,State,StartDate,EndDate,TotalPrice")] Reservation reservation)
+        public IActionResult CheckOut(int? id, CheckOutWorkerOutputModel model)
         {
-            if (id != reservation.Id)
-            {
-                return NotFound();
-            }
+            if (!id.HasValue) return NotFound();
+            var reservationId = id.Value;
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(reservation);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ReservationExists(reservation.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["PostId"] = new SelectList(_context.Posts, "Id", "Address", reservation.PostId);
-            ViewData["WorkerId"] = new SelectList(_context.Workers, "Id", "Id", reservation.WorkerId);
-            return View(reservation);
-        }
+            var reservation = _context.Reservations
+                .FirstOrDefault(e => e.Id == reservationId && e.WorkerId == User.GetUserId() && e.State == ReservationState.ToCheckOut);
+            if (reservation == null) return NotFound();
 
-        // GET: WorkerReservations/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            reservation.CheckOutItems = CheckListsHelper.JoinForDatabase(model.CheckItems, model.ItemsIndeces);
+            reservation.State = ReservationState.Finished;
+            reservation.RatingUser = model.RatingUser;
 
-            var reservation = await _context.Reservations
-                .Include(r => r.Post)
-                .Include(r => r.Worker)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (reservation == null)
-            {
-                return NotFound();
-            }
-
-            return View(reservation);
-        }
-
-        // POST: WorkerReservations/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var reservation = await _context.Reservations.FindAsync(id);
-            _context.Reservations.Remove(reservation);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool ReservationExists(int id)
-        {
-            return _context.Reservations.Any(e => e.Id == id);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(IndexAsync));
         }
     }
 }
