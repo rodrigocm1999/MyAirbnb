@@ -19,9 +19,6 @@
                 @Html.DisplayNameFor(model => model.RatingUser)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.State)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.StartDate)
             </th>
             <th>
@@ -30,6 +27,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.TotalPrice)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.State)
+            </th>
             <th></th>
             <th></th>
         </tr>
@@ -37,45 +37,45 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Post.Address)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.RatingUser)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.State)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StartDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EndDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalPrice)
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-                </td>
-                <td>
-                    @switch (item.State)
-                    {
-                        case ReservationState.Pending:
-                            <a asp-action="Accept" asp-route-id="@item.Id">Pending</a>
-                            break;
-                        case ReservationState.ToCheckIn:
-                            <a asp-action="CheckIn" asp-route-id="@item.Id">CheckIn</a>
-                            break;
-                        case ReservationState.ToCheckOut:
-                            <a asp-action="CheckOut" asp-route-id="@item.Id">CheckOut</a>
-                            break;
-                        default:
-                            break;
-                    }
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Post.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RatingUser)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalPrice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.State)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+            </td>
+            <td>
+                @switch (item.State)
+                {
+                    case ReservationState.Pending:
+                        <a asp-action="Accept" asp-route-id="@item.Id">Pending</a>
+                        break;
+                    case ReservationState.ToCheckIn:
+                        <a asp-action="CheckIn" asp-route-id="@item.Id">CheckIn</a>
+                        break;
+                    case ReservationState.ToCheckOut:
+                        <a asp-action="CheckOut" asp-route-id="@item.Id">CheckOut</a>
+                        break;
+                    default:
+                        break;
+                }
+            </td>
+        </tr>
         }
     </tbody>
 </table>

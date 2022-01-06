@@ -1,0 +1,35 @@
+﻿@model MyAirbnb.Controllers.ManagerChecklistsController.EditCheckLists
+
+
+<h1>Edit Checklists</h1>
+
+<h4>Type: @Model.SpaceCategoryName</h4>
+
+<h6>Separate items by changing lines</h6>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+
+            <input asp-for="SpaceCategoryId" />
+
+            <div class="form-group">
+                <label for="CheckInItems" class="control-label">Check in items:</label>
+                <textarea id="CheckInItems" asp-for="CheckInItems" class="pre-wrap form-control" rows="8"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="CheckOutItems" class="control-label">Check out items:</label>
+                <textarea id="CheckOutItems" asp-for="CheckOutItems" class="pre-wrap form-control" rows="8"></textarea>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

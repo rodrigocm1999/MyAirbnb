@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace MyAirbnb.Models
 {
-
     public class AcceptReservationWorkerInputModel
     {
         public int Id { get; set; }

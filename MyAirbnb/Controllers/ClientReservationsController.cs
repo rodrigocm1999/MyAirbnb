@@ -78,6 +78,19 @@ namespace MyAirbnb.Controllers
             return View(model);
         }
 
+        public IActionResult Details(int? id)
+        {
+            if (id == null) return NotFound();
+            var postId = id.Value;
+
+            var post = _context.Reservations.FirstOrDefault(e => e.Id == postId && e.WorkerId == User.GetUserId());
+            if (post == null) return NotFound();
+            
+            //var model = new ReservationModel
+
+
+            return View();
+        }
 
         public class ReservationModel : IValidatableObject
         {

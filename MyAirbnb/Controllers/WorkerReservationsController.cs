@@ -155,7 +155,7 @@ namespace MyAirbnb.Controllers
             var model = new CheckOutWorkerInputModel
             {
                 ReservationId = reservation.Id,
-                CheckItems = checkList == null ? new List<string>() : ChecklistsHelper.SplitItems(checkList.CheckInItems),
+                CheckItems = checkList == null ? new List<string>() : ChecklistsHelper.SplitItems(checkList.CheckOutItems),
             };
 
             return View(model);

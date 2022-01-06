@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 namespace MyAirbnb.Controllers
 {
     [Authorize(Roles = "Manager")]
-    public class ManagerController : Controller
+    public class ManagerWorkersController : Controller
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
@@ -26,7 +26,7 @@ namespace MyAirbnb.Controllers
         private readonly ILogger<RegisterManagerModel> _logger;
         private readonly IEmailSender _emailSender;
 
-        public ManagerController(
+        public ManagerWorkersController(
             UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ILogger<RegisterManagerModel> logger,
             IEmailSender emailSender, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
         {
@@ -42,9 +42,7 @@ namespace MyAirbnb.Controllers
         {
             return _context.Managers.Where(e => e.Id == User.GetUserId());
         }
-
-
-        public IActionResult Workers(string id)
+        public IActionResult Index(string id)
         {
             Manager manager;
             if (id != null)
@@ -66,9 +64,7 @@ namespace MyAirbnb.Controllers
             return View(workerList);
         }
 
-
-
-        public IActionResult CreateWorkerAccount() { return View(); }
+        public IActionResult Create() { return View(); }
         public class WorkerModel
         {
             [Required]
@@ -97,7 +93,7 @@ namespace MyAirbnb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateWorkerAccountAsync(WorkerModel Input)
+        public async Task<IActionResult> CreateAsync(WorkerModel Input)
         {
             var user = new IdentityUser { UserName = Input.Name, Email = Input.Email, PhoneNumber = Input.PhoneNumber };
             var result = await _userManager.CreateAsync(user, Input.Password);
@@ -119,110 +115,9 @@ namespace MyAirbnb.Controllers
             //TODO verificar a cena de mandar os erros de volta
             return View();
         }
+       
 
-        public IActionResult ManageWorkerAccounts()
-        {
-            var manager = WhereManager().Include(e => e.Workers).FirstOrDefault();
-            //TODO
-            return View(manager.Workers);
-        }
-
-        public IActionResult Checklists(string id)
-        {
-            var spaceCategories = _context.SpaceCategories;
-            Manager manager;
-            if (id != null)
-                manager = _context.Managers.Where(e => e.Id == id).Include(e => e.CheckLists).FirstOrDefault();
-            else
-                manager = WhereManager().Include(e => e.CheckLists).FirstOrDefault();
-
-            var categories = new List<SpaceCategoriesManagerList>(spaceCategories.Count());
-            foreach (var cat in spaceCategories)
-            {
-                var checklists = manager.CheckLists.FirstOrDefault(e => e.SpaceCategoryId == cat.Id);
-                var scml = new SpaceCategoriesManagerList
-                {
-                    Id = cat.Id,
-                    Name = cat.Name,
-                    HasDefinedItems = checklists != null,
-                };
-                if (checklists != null)
-                {
-                    scml.CheckInItems = checklists.CheckInItems != null ? checklists.CheckInItems.Replace('\n', ';') : "";
-                    scml.CheckOutItems = checklists.CheckOutItems != null ? checklists.CheckOutItems.Replace('\n', ';') : "";
-                }
-                categories.Add(scml);
-            }
-
-            return View(categories);
-        }
-
-        public class SpaceCategoriesManagerList
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
-            public bool HasDefinedItems { get; set; }
-            public string CheckInItems { get; set; }
-            public string CheckOutItems { get; set; }
-        }
-
-        public IActionResult EditCheckList(int? id)
-        {
-            if (!id.HasValue) return NotFound();
-            var spaceCategoryId = id.Value;
-            var manager = WhereManager().Include(e => e.CheckLists).FirstOrDefault();
-
-            var checklist = manager.CheckLists.FirstOrDefault(e => e.SpaceCategoryId == spaceCategoryId);
-            var editCheckLists = new EditCheckLists { SpaceCategoryId = spaceCategoryId };
-
-            if (checklist != null)
-            {
-                editCheckLists.CheckInItems = checklist.CheckInItems;
-                editCheckLists.CheckOutItems = checklist.CheckOutItems;
-            }
-            //TODO
-            return View(editCheckLists);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditCheckList(int id, [Bind("SpaceCategoryId,CheckInItems,CheckOutItems")] EditCheckLists editCheckLists)
-        {
-            var spaceCategoryId = id;
-            var manager = WhereManager().Include(e => e.CheckLists).FirstOrDefault();
-
-            var checklist = manager.CheckLists.FirstOrDefault(e => e.SpaceCategoryId == spaceCategoryId);
-            if (checklist == null)
-            {
-                checklist = new CheckList { SpaceCategoryId = spaceCategoryId };
-                manager.CheckLists.Add(checklist);
-            }
-
-            checklist.CheckInItems = ChecklistsHelper.JoinToStr(ChecklistsHelper.Trim(ChecklistsHelper.SplitItems(editCheckLists.CheckInItems)));
-            checklist.CheckOutItems = ChecklistsHelper.JoinToStr(ChecklistsHelper.Trim(ChecklistsHelper.SplitItems(editCheckLists.CheckOutItems)));
-
-            await _context.SaveChangesAsync();
-            //TODO
-            return RedirectToAction(nameof(Checklists));
-        }
-
-        public async Task<IActionResult> DeleteCheckList(int? id)
-        {
-            if (!id.HasValue) return NotFound();
-            var spaceCategoryId = id.Value;
-            var manager = WhereManager().Include(e => e.CheckLists).FirstOrDefault();
-
-            var e = manager.CheckLists.FirstOrDefault(e => e.SpaceCategoryId == spaceCategoryId);
-            if (e != null)
-            {
-                manager.CheckLists.Remove(e);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Checklists));
-            }
-            return NotFound();
-        }
-
-        public IActionResult DeleteWorker(string id)
+        public IActionResult Delete(string id)
         {
             var worker = _context.Users.FirstOrDefault(e => e.Id == id);
             var workerModel = new WorkerViewModel { Id = worker.Id, Name = worker.UserName };
@@ -231,13 +126,13 @@ namespace MyAirbnb.Controllers
             return View(workerModel);
         }
 
-        [HttpPost, ActionName("DeleteWorker")]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var worker = _context.Users.FirstOrDefault(e => e.Id == id);
             var post = _context.Posts.Where(e => e.WorkerId == worker.Id);
-            
+
             var maganerId = WhereManager().FirstOrDefault().Id;
             await post.ForEachAsync(x =>
             {
@@ -251,19 +146,13 @@ namespace MyAirbnb.Controllers
             });
             _context.Remove(worker);
 
-            //TODO falta remover o IdentityUser dessa conta
+            //faltava remover o user
+            var user = await _userManager.GetUserAsync(User);
+            await _userManager.DeleteAsync(user);
 
             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
 
-
-        public class EditCheckLists
-        {
-            [HiddenInput]
-            public int SpaceCategoryId { get; set; }
-            public string CheckInItems { get; set; } = "";
-            public string CheckOutItems { get; set; } = "";
-        }
     }
 }

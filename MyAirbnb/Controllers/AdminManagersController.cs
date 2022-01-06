@@ -14,13 +14,13 @@ using MyAirbnb.Other;
 namespace MyAirbnb.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class AdminManagerController : Controller
+    public class AdminManagersController : Controller
     {
         private readonly ApplicationDbContext _context;
 
         private readonly UserManager<IdentityUser> _userManager;
 
-        public AdminManagerController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public AdminManagersController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _userManager = userManager;
