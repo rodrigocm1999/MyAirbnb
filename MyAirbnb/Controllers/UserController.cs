@@ -27,9 +27,17 @@ namespace MyAirbnb.Controllers
         }
 
 
-        public IActionResult Reservations()
+        public IActionResult Reservations(string id)
         {
-            var model = _context.Reservations.Where(e => e.UserId == User.GetUserId());
+            IQueryable<Reservation> model;
+            if (id != null)
+            {
+                 model = _context.Reservations.Where(e => e.UserId == id);
+            }
+            else
+            {
+                model = _context.Reservations.Where(e => e.UserId == User.GetUserId());
+            }
 
             return View(model);
         }

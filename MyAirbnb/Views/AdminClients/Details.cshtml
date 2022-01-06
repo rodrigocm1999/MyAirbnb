@@ -18,6 +18,32 @@
         </dd>
     </dl>
 </div>
+<hr />
+<table>
+    <thead>
+        
+            <tr class="col-sm-2">
+                <th>
+                    @Html.DisplayNameFor(model => model.Reservations)
+                </th>
+            </tr>
+        
+    </thead>
+    <tbody>
+        @foreach (var reservation in Model.Reservations)
+        {
+            <tr>
+                <td>
+                    @reservation.Post.Title
+                    @Html.DisplayFor(modelItem => reservation.Post.Address)
+                </td>
+                <td>
+                    <a asp-controller="User" asp-action="Reservation">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 <div>
     @*<a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |*@
     <a asp-action="Index">Back to List</a>
