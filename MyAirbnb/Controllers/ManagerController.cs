@@ -197,8 +197,9 @@ namespace MyAirbnb.Controllers
                 checklist = new CheckList { SpaceCategoryId = spaceCategoryId };
                 manager.CheckLists.Add(checklist);
             }
-            checklist.CheckInItems = editCheckLists.CheckInItems;
-            checklist.CheckOutItems = editCheckLists.CheckOutItems;
+
+            checklist.CheckInItems = ChecklistsHelper.JoinToStr(ChecklistsHelper.Trim(ChecklistsHelper.SplitItems(editCheckLists.CheckInItems)));
+            checklist.CheckOutItems = ChecklistsHelper.JoinToStr(ChecklistsHelper.Trim(ChecklistsHelper.SplitItems(editCheckLists.CheckOutItems)));
 
             await _context.SaveChangesAsync();
             //TODO
@@ -221,14 +222,11 @@ namespace MyAirbnb.Controllers
             return NotFound();
         }
 
-        public async Task<IActionResult> DeleteWorker(string id)
+        public IActionResult DeleteWorker(string id)
         {
             var worker = _context.Users.FirstOrDefault(e => e.Id == id);
-            WorkerViewModel workerModel = new WorkerViewModel { Id = worker.Id, Name = worker.UserName };
-            if(worker == null)
-            {
-                return NotFound();
-            }
+            var workerModel = new WorkerViewModel { Id = worker.Id, Name = worker.UserName };
+            if (worker == null) return NotFound();
 
             return View(workerModel);
         }
@@ -239,8 +237,9 @@ namespace MyAirbnb.Controllers
         {
             var worker = _context.Users.FirstOrDefault(e => e.Id == id);
             var post = _context.Posts.Where(e => e.WorkerId == worker.Id);
+            
             var maganerId = WhereManager().FirstOrDefault().Id;
-            await post.ForEachAsync( x =>
+            await post.ForEachAsync(x =>
             {
                 x.WorkerId = maganerId;
             });
@@ -251,6 +250,9 @@ namespace MyAirbnb.Controllers
                 x.WorkerId = maganerId;
             });
             _context.Remove(worker);
+
+            //TODO falta remover o IdentityUser dessa conta
+
             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }

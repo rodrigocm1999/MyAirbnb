@@ -115,7 +115,7 @@ namespace MyAirbnb.Controllers
             var model = new CheckInWorkerInputModel
             {
                 ReservationId = reservation.Id,
-                CheckItems = checkList == null ? new List<string>() : CheckListsHelper.SplitFromDatabase(checkList.CheckInItems),
+                CheckItems = checkList == null ? new List<string>() : ChecklistsHelper.SplitItems(checkList.CheckInItems),
             };
 
             return View(model);
@@ -132,7 +132,7 @@ namespace MyAirbnb.Controllers
                 .FirstOrDefault(e => e.Id == reservationId && e.WorkerId == User.GetUserId() && e.State == ReservationState.ToCheckIn);
             if (reservation == null) return NotFound();
 
-            reservation.CheckInItems = CheckListsHelper.JoinForDatabase(model.CheckItems, model.ItemsIndeces);
+            reservation.CheckInItems = ChecklistsHelper.JoinForDatabase(model.CheckItems, model.ItemsIndeces);
             reservation.State = ReservationState.OnGoing;
 
             _context.SaveChanges();
@@ -155,7 +155,7 @@ namespace MyAirbnb.Controllers
             var model = new CheckOutWorkerInputModel
             {
                 ReservationId = reservation.Id,
-                CheckItems = checkList == null ? new List<string>() : CheckListsHelper.SplitFromDatabase(checkList.CheckInItems),
+                CheckItems = checkList == null ? new List<string>() : ChecklistsHelper.SplitItems(checkList.CheckInItems),
             };
 
             return View(model);
@@ -172,7 +172,7 @@ namespace MyAirbnb.Controllers
                 .FirstOrDefault(e => e.Id == reservationId && e.WorkerId == User.GetUserId() && e.State == ReservationState.ToCheckOut);
             if (reservation == null) return NotFound();
 
-            reservation.CheckOutItems = CheckListsHelper.JoinForDatabase(model.CheckItems, model.ItemsIndeces);
+            reservation.CheckOutItems = ChecklistsHelper.JoinForDatabase(model.CheckItems, model.ItemsIndeces);
             reservation.State = ReservationState.Finished;
             reservation.RatingUser = model.RatingUser;
 
