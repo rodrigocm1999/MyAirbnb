@@ -74,6 +74,8 @@ namespace MyAirbnb.Controllers
             var post = _context.Posts.FirstOrDefault(e => e.Id == postId);
             if (post == null) return NotFound();
 
+            var numberOfDays = (reservation.EndDate.Date - reservation.StartDate.Date).Days;
+
             var rese = new Reservation
             {
                 PostId = postId,
@@ -82,6 +84,8 @@ namespace MyAirbnb.Controllers
                 State = ReservationState.Pending,
                 UserId = User.GetUserId(),
                 WorkerId = post.WorkerId,
+                Price = post.Price,
+                TotalPrice = post.Price * numberOfDays,
             };
 
             _context.Reservations.Add(rese);

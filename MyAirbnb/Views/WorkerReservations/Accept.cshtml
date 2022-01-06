@@ -1,0 +1,49 @@
+﻿@model MyAirbnb.Models.AcceptReservationWorkerInputModel
+
+@{
+    ViewData["Title"] = "Accept";
+}
+
+<h1>Accept</h1>
+
+<div>
+    <h4>AcceptReservationWorkerInputModel</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ReservationId)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ReservationId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.UserId)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.UserId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.UserName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.UserRating)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.UserRating)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Accept" asp-route-id="@Model.ReservationId" asp-route-accepted="true">Accept</a> |
+    <a asp-action="Accept" asp-route-id="@Model.ReservationId" asp-route-accepted="false">Reject</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

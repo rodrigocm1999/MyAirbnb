@@ -156,16 +156,18 @@ namespace MyAirbnb.Models
     {
         [Key]
         public int Id { get; set; }
+
         public string UserId { get; set; }
+        public virtual IdentityUser User { get; set; }
 
         public string WorkerId { get; set; }
         public virtual Worker Worker { get; set; }
-        
+
         public int PostId { get; set; }
         public virtual Post Post { get; set; }
 
-        public int RatingUser { get; set; }
-        public int RatingPost { get; set; }
+        public int? RatingUser { get; set; }
+        public int? RatingPost { get; set; }
         public int Price { get; set; }
 
         public string CheckInItems { get; set; } // Separated by \n, to indicate if was checked contains '*' at the start
@@ -182,7 +184,7 @@ namespace MyAirbnb.Models
         public int TotalPrice { get; set; }
     }
 
-    public enum ReservationState { Pending, ToCheckIn, OnGoing, ToCheckOut, Finished }
+    public enum ReservationState { Pending, ToCheckIn, ToCheckOut, OnGoing, Accepted, Rejected, Finished } // A ordem interessa para poder ordenar as cenas na lista
 
     //This Ids are of the UserId of the logged user
     //The manager has multiple workers and is also a worker and all of the worker accounts created by it are also workers

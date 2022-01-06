@@ -29,14 +29,21 @@ namespace MyAirbnb.Controllers
 
             var reservations = _context.Reservations
                 .Include(e => e.Post)
-                .Where(e => e.WorkerId == User.GetUserId() && e.State != ReservationState.Finished);
+                .Where(e => e.WorkerId == User.GetUserId())
+                .OrderBy(e => e.State);
 
-            await reservations
-                .Where(e => DateTime.Now >= e.EndDate)
+            //(e.State != ReservationState.Finished || (DateTime.Now.Date - e.EndDate.Date).Days <= 7 )
+
+            var waiter = reservations
+                .Where(e => e.State == ReservationState.OnGoing && DateTime.Now >= e.EndDate)
                 .ForEachAsync(e => e.State = ReservationState.ToCheckOut);
-            
+            var waiter2 = reservations
+                .Where(e => e.State == ReservationState.Accepted && DateTime.Now >= e.StartDate)
+                .ForEachAsync(e => e.State = ReservationState.ToCheckIn);
+
+            Task.WaitAll(waiter, waiter2);
+
             await _context.SaveChangesAsync();
-            
             return View(reservations);
         }
 
@@ -52,6 +59,42 @@ namespace MyAirbnb.Controllers
             if (reservation == null) return NotFound();
 
             return View(reservation);
+        }
+
+        public IActionResult Accept(int? id, bool? accepted)
+        {
+            if (!id.HasValue) return NotFound();
+            var reservationId = id.Value;
+
+            var reservation = _context.Reservations
+                .Include(e => e.User)
+                .Include(e => e.Post)
+                .FirstOrDefault(e => e.Id == reservationId && e.WorkerId == User.GetUserId() && e.State == ReservationState.Pending);
+            if (reservation == null) return NotFound();
+
+            if (accepted.HasValue)
+            {
+                if (accepted.Value)
+                    reservation.State = ReservationState.Accepted;
+                else
+                    reservation.State = ReservationState.Rejected;
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
+            }
+
+            var userRatings = _context.Reservations
+                .Where(e => e.UserId == reservation.UserId && e.RatingUser.HasValue);
+
+            var model = new AcceptReservationWorkerInputModel
+            {
+                ReservationId = reservation.Id,
+                UserId = reservation.UserId,
+                UserName = reservation.User.UserName,
+                UserRating = (float)userRatings.Average(e => e.RatingUser),
+                PhoneNumber = reservation.User.PhoneNumber,
+            };
+
+            return View(model);
         }
 
         public IActionResult CheckIn(int? id)
@@ -77,6 +120,7 @@ namespace MyAirbnb.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult CheckIn(int? id, CheckInWorkerOutputModel model)
         {
             if (!id.HasValue) return NotFound();
@@ -90,7 +134,7 @@ namespace MyAirbnb.Controllers
             reservation.State = ReservationState.OnGoing;
 
             _context.SaveChanges();
-            return RedirectToAction(nameof(IndexAsync));
+            return RedirectToAction("Index");
         }
 
         public IActionResult CheckOut(int? id)
@@ -116,6 +160,7 @@ namespace MyAirbnb.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult CheckOut(int? id, CheckOutWorkerOutputModel model)
         {
             if (!id.HasValue) return NotFound();
@@ -130,7 +175,7 @@ namespace MyAirbnb.Controllers
             reservation.RatingUser = model.RatingUser;
 
             _context.SaveChanges();
-            return RedirectToAction(nameof(IndexAsync));
+            return RedirectToAction("Index");
         }
     }
 }
