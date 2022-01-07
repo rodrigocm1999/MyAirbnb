@@ -32,5 +32,9 @@ namespace MyAirbnb.Data
                .OnDelete(DeleteBehavior.NoAction);
 
         }
+
+        public DbSet<MyAirbnb.Models.ReservationCommentModel> ReservationCommentModel { get; set; }
+
+        public DbSet<MyAirbnb.Models.ReservationModel> ReservationModel { get; set; }
     }
 }

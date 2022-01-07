@@ -35,13 +35,15 @@ namespace MyAirbnb.Controllers
 
             var currentLastPostNumber = posts.Count() + amountToSkip;
 
-            return View(new IndexModel
+            var model = new IndexModel
             {
                 Posts = posts,
                 CurrentPage = page,
                 HasNextPage = _context.Posts.Count() > currentLastPostNumber,
                 HasPreviousPage = amountToSkip > 0
-            });
+            };
+
+            return View(model);
         }
 
         public IActionResult Details(int? id)
@@ -50,9 +52,10 @@ namespace MyAirbnb.Controllers
             var post = _context.Posts
                 .Include(p => p.PostImages)
                 .Include(p => p.Comodities)
-                .Include(p => p.Comments)
+                .Include(p => p.Comments).ThenInclude(p => p.User)
                 .FirstOrDefault(p => p.Id == id && !p.Hidden);
             if (post == null) return NotFound();
+
             return View(post);
         }
 

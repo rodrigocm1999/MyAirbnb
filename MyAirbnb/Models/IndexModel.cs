@@ -8,7 +8,7 @@ namespace MyAirbnb.Models
     public class IndexModel
     {
 
-        public IQueryable<Post> Posts { get; set; }
+        public IEnumerable<Post> Posts { get; set; }
 
 
         public int CurrentPage { get; set; }

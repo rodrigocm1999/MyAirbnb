@@ -22,45 +22,20 @@ namespace MyAirbnb.Controllers
             _context = context;
         }
 
-        public class ReservationTableModel
-        {
-
-            public int Id { get; set; }
-            public Post Post { get; set; }
-
-            public bool CanComment { get; set; } = false;
-            public Comment Comment { get; set; }
-
-            public int? RatingUser { get; set; }
-            public int? RatingPost { get; set; }
-            public int TotalPrice { get; set; }
-
-            public ReservationState State { get; set; }
-
-            [DataType(DataType.Date)]
-            public DateTime StartDate { get; set; }
-            [DataType(DataType.Date)]
-            public DateTime EndDate { get; set; }
-        }
 
         public IActionResult Index()
         {
             var reservations = _context.Reservations
                 .Include(e => e.Post)
+                .Include(e => e.Comment)
                 .Where(e => e.UserId == User.GetUserId());
 
-            var model = new List<ReservationTableModel>();
+            var model = new List<ReservationModel>();
             foreach (var r in reservations)
             {
-                bool canComment = false;
-                Comment postComment = null;
-                if (r.State == ReservationState.Finished)
-                {
-                    postComment = _context.Comments.FirstOrDefault(e => e.ReservationId == r.Id);
-                    if (postComment == null) canComment = true;
-                }
+                bool canComment = r.State == ReservationState.Finished && r.Comment == null && r.RatingPost == null;
 
-                model.Add(new ReservationTableModel
+                model.Add(new ReservationModel
                 {
                     Id = r.Id,
                     Post = r.Post,
@@ -70,7 +45,7 @@ namespace MyAirbnb.Controllers
                     StartDate = r.StartDate,
                     EndDate = r.EndDate,
                     State = r.State,
-                    Comment = postComment,
+                    Comment = r.Comment,
                     CanComment = canComment,
                 });
             }
@@ -81,35 +56,80 @@ namespace MyAirbnb.Controllers
         public IActionResult Details(int? id)
         {
             if (id == null) return NotFound();
-            var postId = id.Value;
+            var reservationId = id.Value;
 
-            var post = _context.Reservations.FirstOrDefault(e => e.Id == postId && e.WorkerId == User.GetUserId());
+            var post = _context.Reservations.FirstOrDefault(e => e.Id == reservationId && e.WorkerId == User.GetUserId());
             if (post == null) return NotFound();
-            
-            //var model = new ReservationModel
 
+            var reservations = _context.Reservations
+                .Include(e => e.Post)
+                .Include(e => e.Comment)
+                .FirstOrDefault(e => e.Id == reservationId && e.UserId == User.GetUserId());
 
-            return View();
+            var model = new ReservationModel
+            {
+                Id = reservations.Id,
+                Post = reservations.Post,
+                TotalPrice = reservations.TotalPrice,
+                RatingUser = reservations.RatingUser,
+                RatingPost = reservations.RatingPost,
+                StartDate = reservations.StartDate,
+                EndDate = reservations.EndDate,
+                State = reservations.State,
+                Comment = reservations.Comment,
+            };
+
+            return View(model);
         }
 
-        public class ReservationModel : IValidatableObject
+        public IActionResult Comment(int? id)
         {
-            public int PostId { get; set; }
-            public int Price { get; set; }
+            if (id == null) return NotFound();
+            var reservationId = id.Value;
 
-            [Display(Name = "Start of Reservation")]
-            [DataType(DataType.Date)]
-            public DateTime StartDate { get; set; } = DateTime.Today;
-            [DataType(DataType.Date)]
-            [Display(Name = "End of Reservation")]
-            public DateTime EndDate { get; set; } = DateTime.Today.AddDays(5);
+            var reservation = _context.Reservations
+                .Include(e => e.Post)
+                .FirstOrDefault(e => e.Id == reservationId && e.UserId == User.GetUserId()
+                    && e.State == ReservationState.Finished && e.Comment == null && e.RatingPost == null);
+            if (reservation == null) return NotFound();
 
-            public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+            var model = new ReservationCommentModel
             {
-                int result = DateTime.Compare(StartDate, EndDate);
-                if (result >= 0)
-                    yield return new ValidationResult("End date must be after start date!");
+                Id = reservation.Id,
+                Post = reservation.Post,
+                TotalPrice = reservation.TotalPrice,
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Comment(int? id, ReservationCommentModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            if (id == null) return NotFound();
+            var reservationId = id.Value;
+
+            var reservation = _context.Reservations
+                .Include(e => e.Post)
+                .FirstOrDefault(e => e.Id == reservationId && e.UserId == User.GetUserId()
+                    && e.State == ReservationState.Finished && e.Comment == null && e.RatingPost == null);
+            if (reservation == null) return NotFound();
+
+            reservation.RatingPost = model.RatingPost;
+            if (model.Comment != null)
+            {
+                reservation.Comment = new Comment()
+                {
+                    UserId = User.GetUserId(),
+                    PostId = reservation.PostId,
+                    Text = model.Comment,
+                };
             }
+
+            _context.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         public IActionResult Create(int? id)
@@ -120,13 +140,13 @@ namespace MyAirbnb.Controllers
             var post = _context.Posts.FirstOrDefault(e => e.Id == postId);
             if (post == null) return NotFound();
 
-            var model = new ReservationModel { PostId = postId, Price = post.Price };
+            var model = new ReservationCreationModel { PostId = postId, Price = post.Price };
             //TODO atualizar preço ao mudar as datas
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult Create(int? id, ReservationModel reservation)
+        public IActionResult Create(int? id, ReservationCreationModel reservation)
         {
             if (!ModelState.IsValid)
                 return View(reservation);

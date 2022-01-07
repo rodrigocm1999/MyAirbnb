@@ -11,11 +11,7 @@ namespace MyAirbnb.Other
     {
         public static string GetUserId(this ClaimsPrincipal principal)
         {
-            if (principal == null)
-                throw new ArgumentNullException(nameof(principal));
-
-            var loggedInUserId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
-            return loggedInUserId;
+            return principal.FindFirstValue(ClaimTypes.NameIdentifier);
         }
     }
 }

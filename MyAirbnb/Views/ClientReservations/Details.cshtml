@@ -1,0 +1,59 @@
+﻿@model MyAirbnb.Models.ReservationModel
+
+@{
+    ViewData["Title"] = "Reservation Details";
+}
+
+<h1>Reservation Details</h1>
+<hr />
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            Comment
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Comment.Text)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RatingUser)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RatingUser)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RatingPost)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RatingPost)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TotalPrice)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TotalPrice)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.State)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.State)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.StartDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StartDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EndDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EndDate)
+        </dd>
+    </dl>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
