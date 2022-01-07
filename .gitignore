@@ -368,4 +368,6 @@ FodyWeavers.xsd
 
 MyAirbnb/Migrations/
 wwwroot/postimages/
+/MyAirbnb/wwwroot/postimages
 wwwroot/reservationimages/
+/MyAirbnb/wwwroot/reservationimages
