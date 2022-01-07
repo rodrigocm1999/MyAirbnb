@@ -228,14 +228,15 @@ namespace MyAirbnb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> RemovePostImage(int postId, int postImageId)
+        public async Task<IActionResult> RemovePostImage(int id, int fileId)
         {
+            var postId = id;
             var post = await _context.Posts
                 .Include(e => e.PostImages)
                 .FirstOrDefaultAsync(e => e.Id == postId && e.WorkerId == UserId);
             if (post == null) return NotFound();
 
-            var postImage = post.PostImages.FirstOrDefault(e => e.Id == postImageId);
+            var postImage = post.PostImages.FirstOrDefault(e => e.Id == fileId);
             if (postImage == null) return NotFound();
 
             post.PostImages.Remove(postImage);
@@ -261,7 +262,7 @@ namespace MyAirbnb.Controllers
             foreach (var formFile in files)
             {
                 if (formFile.Length <= 0) continue;
-                var filePath = "/" + imagesPath + $@"/{Path.GetRandomFileName()}.jpg";
+                var filePath = "/" + imagesPath + $@"/{id}-{Path.GetRandomFileName()}.jpg";
                 // .jpg so para mostrar no explorardor de ficheiros, não interessa se é jpg ou não
 
                 using (var stream = System.IO.File.Create(_environment.WebRootPath + filePath))

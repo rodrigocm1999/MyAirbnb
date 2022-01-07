@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -16,10 +19,12 @@ namespace MyAirbnb.Controllers
     public class WorkerReservationsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _environment;
 
-        public WorkerReservationsController(ApplicationDbContext context)
+        public WorkerReservationsController(ApplicationDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
 
         public async Task<IActionResult> IndexAsync()
@@ -85,7 +90,7 @@ namespace MyAirbnb.Controllers
 
             float? userRating = null;
             if (userRatings.Any())
-                userRating = (float?) userRatings.Average(e => e.RatingUser.Value);
+                userRating = (float?)userRatings.Average(e => e.RatingUser.Value);
 
             var model = new AcceptReservationWorkerInputModel
             {
@@ -133,6 +138,8 @@ namespace MyAirbnb.Controllers
             if (reservation == null) return NotFound();
 
             reservation.CheckInItems = ChecklistsHelper.JoinForDatabase(model.CheckItems, model.ItemsIndeces);
+            if (!string.IsNullOrEmpty(model.Notes))
+                reservation.CheckInNotes = model.Notes;
             reservation.State = ReservationState.OnGoing;
 
             _context.SaveChanges();
@@ -147,6 +154,7 @@ namespace MyAirbnb.Controllers
             var reservation = _context.Reservations
                 .Include(e => e.Worker).ThenInclude(e => e.Manager).ThenInclude(e => e.CheckLists)
                 .Include(e => e.Post)
+                .Include(e => e.CheckOutImages)
                 .FirstOrDefault(e => e.Id == reservationId && e.WorkerId == User.GetUserId() && e.State == ReservationState.ToCheckOut);
             if (reservation == null) return NotFound();
 
@@ -156,6 +164,7 @@ namespace MyAirbnb.Controllers
             {
                 ReservationId = reservation.Id,
                 CheckItems = checkList == null ? new List<string>() : ChecklistsHelper.SplitItems(checkList.CheckOutItems),
+                Files = reservation.CheckOutImages,
             };
 
             return View(model);
@@ -173,13 +182,96 @@ namespace MyAirbnb.Controllers
             if (reservation == null) return NotFound();
 
             reservation.CheckOutItems = ChecklistsHelper.JoinForDatabase(model.CheckItems, model.ItemsIndeces);
+            if (!string.IsNullOrEmpty(model.Notes))
+                reservation.CheckOutNotes = model.Notes;
             reservation.State = ReservationState.Finished;
             reservation.RatingUser = model.RatingUser;
 
-            //TODO calcular a media do user e guardar em alggum lado, talvez criar uma DdSet<Client>
+            _context.SaveChanges();
+
+            var userId = reservation.UserId;
+            var average = _context.Reservations.Where(e => e.UserId == userId && e.RatingUser != null).Average(e => e.RatingUser);
+            if (average.HasValue)
+            {
+                var client = _context.Clients.FirstOrDefault(e => e.Id == userId);
+                if (client == null)
+                {
+                    client = new Client { Id = userId, Rating = (float)average };
+                    _context.Clients.Add(client);
+                }
+                else
+                    client.Rating = (float)average;
+            }
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveCheckOutImage(int id, int fileId)
+        {
+            var reservationId = id;
+            var reservation = await _context.Reservations
+                .Include(e => e.CheckOutImages)
+                .FirstOrDefaultAsync(e => e.Id == reservationId && e.WorkerId == User.GetUserId());
+            if (reservation == null) return NotFound();
+
+            var postImage = reservation.CheckOutImages.FirstOrDefault(e => e.Id == fileId);
+            if (postImage == null) return NotFound();
+
+            reservation.CheckOutImages.Remove(postImage);
+            await _context.SaveChangesAsync();
+
+            var fullPath = _environment.WebRootPath + postImage.FilePath;
+            new FileInfo(fullPath).Delete();
+
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadCheckOutImage(int id, IEnumerable<IFormFile> files)
+        {
+            var reservation = await _context.Reservations
+                .Include(e => e.CheckOutImages)
+                .FirstOrDefaultAsync(e => e.Id == id && e.WorkerId == User.GetUserId());
+            if (reservation == null) return NotFound();
+
+            var imagesPath = App.ReservationImagesFolderName;
+            var newImages = new List<CheckOutImage>();
+
+            foreach (var formFile in files)
+            {
+                if (formFile.Length <= 0) continue;
+                var filePath = "/" + imagesPath + $@"/{id}-{Path.GetRandomFileName()}.jpg";
+                // .jpg so para mostrar no explorardor de ficheiros, não interessa se é jpg ou não
+
+                using (var stream = System.IO.File.Create(_environment.WebRootPath + filePath))
+                {
+                    await formFile.CopyToAsync(stream);
+                }
+                var checkOutImage = new CheckOutImage
+                {
+                    FilePath = filePath
+                };
+                reservation.CheckOutImages.Add(checkOutImage);
+                newImages.Add(checkOutImage);
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok(newImages);
+        }
+
+
+        public IActionResult DebugChangeEndDate(int id)
+        {
+            var reservation = _context.Reservations
+                .FirstOrDefault(e => e.Id == id && e.WorkerId == User.GetUserId());
+            reservation.EndDate = DateTime.Today;
 
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
+
     }
 }

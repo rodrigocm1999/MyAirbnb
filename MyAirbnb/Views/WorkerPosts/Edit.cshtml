@@ -1,7 +1,7 @@
 ﻿@model MyAirbnb.Models.EditPost
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Post";
 }
 
 <h1>Edit Post</h1>
@@ -58,7 +58,7 @@
                     }
                 }
             </div>
-            <input name="" type="file" accept=".webp,.png,.jpeg,.jpg" onchange="uploadPostImage(this)" class="form-control-file" multiple />
+            <input id="inputFileEl" name="" type="file" accept=".webp,.png,.jpeg,.jpg" onchange="uploadPostImage(this)" class="form-control-file" multiple />
         </div>
 
         <div class="container mt-5">
@@ -90,7 +90,7 @@
         </div>
 
         <div class="container mt-3">
-            <input type="submit" value="Save" class="btn btn-primary" />
+            <input type="submit" value="Save" class="btn btn-primary" onclick="$('#inputFileEl').prop('disabled',true);"/>
         </div>
     </form>
 </div>
@@ -108,8 +108,8 @@
                 type: 'POST',
                 url: '/WorkerPosts/RemovePostImage',
                 data: {
-                    postId: @Model.Post.Id,
-                    postImageId: imgId
+                    id: @Model.Post.Id,
+                    fileId: imgId
                 },
                 success: function (data) {
                     var group = element.parentElement;
@@ -134,6 +134,8 @@
             let formData = new FormData();
             for (f of element.files)
                 formData.append('files',f);
+
+            element.value = "";
 
             console.log(formData);
 

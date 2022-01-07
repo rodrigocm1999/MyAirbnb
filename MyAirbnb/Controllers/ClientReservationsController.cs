@@ -33,7 +33,7 @@ namespace MyAirbnb.Controllers
             var model = new List<ReservationModel>();
             foreach (var r in reservations)
             {
-                bool canComment = r.State == ReservationState.Finished && r.Comment == null && r.RatingPost == null;
+                bool canComment = r.State == ReservationState.Finished && r.RatingPost == null /*&& r.Comment == null*/;
 
                 model.Add(new ReservationModel
                 {
@@ -90,7 +90,7 @@ namespace MyAirbnb.Controllers
             var reservation = _context.Reservations
                 .Include(e => e.Post)
                 .FirstOrDefault(e => e.Id == reservationId && e.UserId == User.GetUserId()
-                    && e.State == ReservationState.Finished && e.Comment == null && e.RatingPost == null);
+                    && e.State == ReservationState.Finished && e.RatingPost == null);
             if (reservation == null) return NotFound();
 
             var model = new ReservationCommentModel
@@ -114,7 +114,7 @@ namespace MyAirbnb.Controllers
             var reservation = _context.Reservations
                 .Include(e => e.Post)
                 .FirstOrDefault(e => e.Id == reservationId && e.UserId == User.GetUserId()
-                    && e.State == ReservationState.Finished && e.Comment == null && e.RatingPost == null);
+                    && e.State == ReservationState.Finished && e.RatingPost == null);
             if (reservation == null) return NotFound();
 
             reservation.RatingPost = model.RatingPost;
@@ -127,11 +127,10 @@ namespace MyAirbnb.Controllers
                     Text = model.Comment,
                 };
             }
-
-            var postId = reservation.PostId;
-
+            _context.SaveChanges();
+            
             var avg = _context.Reservations
-                .Where(e => e.PostId == postId && e.State == ReservationState.Finished && e.RatingPost != null)
+                .Where(e => e.PostId == reservation.PostId && e.State == ReservationState.Finished && e.RatingPost != null)
                 .Average(e => e.RatingPost);
 
             if (avg.HasValue)

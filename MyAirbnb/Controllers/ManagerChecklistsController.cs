@@ -47,8 +47,8 @@ namespace MyAirbnb.Controllers
                 };
                 if (checklists != null)
                 {
-                    scml.CheckInItems = checklists.CheckInItems != null ? checklists.CheckInItems.Replace('\n', ';') : "";
-                    scml.CheckOutItems = checklists.CheckOutItems != null ? checklists.CheckOutItems.Replace('\n', ';') : "";
+                    scml.CheckInItems = checklists.CheckInItems != null ? checklists.CheckInItems.Replace("\n", " ; ") : "";
+                    scml.CheckOutItems = checklists.CheckOutItems != null ? checklists.CheckOutItems.Replace("\n", " ; ") : "";
                 }
                 categories.Add(scml);
             }
@@ -82,7 +82,6 @@ namespace MyAirbnb.Controllers
                 editCheckLists.CheckInItems = checklist.CheckInItems;
                 editCheckLists.CheckOutItems = checklist.CheckOutItems;
             }
-            //TODO
             return View(editCheckLists);
         }
 
@@ -104,10 +103,10 @@ namespace MyAirbnb.Controllers
             checklist.CheckOutItems = ChecklistsHelper.JoinToStr(ChecklistsHelper.Trim(ChecklistsHelper.SplitItems(editCheckLists.CheckOutItems)));
 
             await _context.SaveChangesAsync();
-            return RedirectToAction();
+            return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (!id.HasValue) return NotFound();
             var spaceCategoryId = id.Value;
@@ -117,8 +116,8 @@ namespace MyAirbnb.Controllers
             if (e != null)
             {
                 manager.CheckLists.Remove(e);
-                await _context.SaveChangesAsync();
-                return RedirectToAction();
+                _context.SaveChanges();
+                return RedirectToAction("Index");
             }
             return NotFound();
         }

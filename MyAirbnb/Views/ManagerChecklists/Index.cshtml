@@ -10,7 +10,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Name</th>
+                <th>Space Type</th>
                 <th>Check In</th>
                 <th>Check Out</th>
                 <th></th>
@@ -30,8 +30,15 @@
                         @Html.DisplayFor(modelItem => item.CheckOutItems)
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        @if (item.HasDefinedItems)
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a><span> &#x7C;</span>
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        }
+                        else
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id">Create</a>
+                        }
                     </td>
                 </tr>
             }

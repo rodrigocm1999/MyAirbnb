@@ -15,6 +15,7 @@ namespace MyAirbnb.Other
         public static string ClientRole { get; } = "Client";
 
         public static string PostImagesFolderName { get; } = "postimages";
-        
+        public static string ReservationImagesFolderName { get; } = "reservationimages";
+
     }
 }

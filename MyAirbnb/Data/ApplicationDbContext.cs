@@ -19,7 +19,6 @@ namespace MyAirbnb.Data
         public DbSet<Client> Clients { get; set; }
 
         public DbSet<Reservation> Reservations { get; set; }
-        public DbSet<Comment> Comments { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
@@ -34,8 +33,5 @@ namespace MyAirbnb.Data
 
         }
 
-        public DbSet<MyAirbnb.Models.ReservationCommentModel> ReservationCommentModel { get; set; }
-
-        public DbSet<MyAirbnb.Models.ReservationModel> ReservationModel { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -42,8 +43,9 @@ namespace MyAirbnb.Models
         public int RatingUser { get; set; }
 
         public string Notes { get; set; }
+        public IEnumerable<CheckOutImage> Files { get; set; }
 
-       
+
     }
     //TODO fazer upload de imagens no checkout de eventuais danos
     public class CheckOutWorkerOutputModel

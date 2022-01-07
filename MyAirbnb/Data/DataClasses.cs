@@ -23,11 +23,7 @@ namespace MyAirbnb.Models
 
 
     //Worker
-    //TODO os worker podem ver os comentário e ratings dos posts
     //TODO os workers podem ver e dar rating aos clientes, para poder decidir se aceitam a reserva ou não
-    //TODO reservas podem ou não ser aceites, por isso é um pedido de reserva
-    //TODO quando fizer a reserva os workers terão de preencher a checklist da categoria do edificio para a entrega aos clientes
-    // e depois ter a cena de "terminar" a reserva em que teem de preenchar a outra checklist
 
 
     //Admin
@@ -153,6 +149,7 @@ namespace MyAirbnb.Models
 
         public string CheckInNotes { get; set; }
         public string CheckOutNotes { get; set; }
+        public virtual ICollection<CheckOutImage> CheckOutImages { get; set; }
 
         public ReservationState State { get; set; }
 
@@ -162,6 +159,17 @@ namespace MyAirbnb.Models
         public DateTime EndDate { get; set; }
 
         public virtual Comment Comment { get; set; }
+    }
+
+    [Index(nameof(ReservationId))]
+    public class CheckOutImage
+    {
+        [Key]
+        public int Id { get; set; }
+        public int ReservationId { get; set; }
+        [Required]
+        [DataType(DataType.ImageUrl)]
+        public string FilePath { get; set; }
     }
 
     [Index(nameof(PostId))]
