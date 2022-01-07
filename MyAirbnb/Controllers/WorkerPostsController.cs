@@ -16,7 +16,7 @@ using MyAirbnb.Models;
 namespace MyAirbnb.Controllers
 {
 
-    [Authorize(Roles = "Worker, Manager")]
+    [Authorize(Roles = "Worker, Manager, Admin")]
     public class WorkerPostsController : Controller
     {
         private readonly ApplicationDbContext _context;

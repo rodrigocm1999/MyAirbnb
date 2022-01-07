@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace MyAirbnb.Controllers
 {
-    [Authorize(Roles = "Manager")]
+    [Authorize(Roles = "Manager, Admin")]
     public class ManagerWorkersController : Controller
     {
         private readonly SignInManager<IdentityUser> _signInManager;

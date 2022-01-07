@@ -118,7 +118,7 @@ namespace MyAirbnb.Controllers
             if (reservation == null) return NotFound();
 
             reservation.RatingPost = model.RatingPost;
-            if (model.Comment != null)
+            if (!string.IsNullOrWhiteSpace(model.Comment))
             {
                 reservation.Comment = new Comment()
                 {
@@ -127,6 +127,15 @@ namespace MyAirbnb.Controllers
                     Text = model.Comment,
                 };
             }
+
+            var postId = reservation.PostId;
+
+            var avg = _context.Reservations
+                .Where(e => e.PostId == postId && e.State == ReservationState.Finished && e.RatingPost != null)
+                .Average(e => e.RatingPost);
+
+            if (avg.HasValue)
+                reservation.Post.Rating = (float)avg.Value;
 
             _context.SaveChanges();
             return RedirectToAction("Index");

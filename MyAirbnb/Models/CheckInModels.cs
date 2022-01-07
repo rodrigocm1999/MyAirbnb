@@ -22,12 +22,14 @@ namespace MyAirbnb.Models
     {
         public int ReservationId { get; set; }
         public List<string> CheckItems { get; set; }
+        public string Notes { get; set; }
     }
 
     public class CheckInWorkerOutputModel
     {
         public List<string> CheckItems { get; set; }
         public List<int> ItemsIndeces { get; set; }
+        public string Notes { get; set; }
     }
 
 
@@ -38,13 +40,18 @@ namespace MyAirbnb.Models
 
         [Range(1, 5, ErrorMessage = "Value between 1 and 5")]
         public int RatingUser { get; set; }
-    }
 
+        public string Notes { get; set; }
+
+       
+    }
+    //TODO fazer upload de imagens no checkout de eventuais danos
     public class CheckOutWorkerOutputModel
     {
         public List<string> CheckItems { get; set; }
         public List<int> ItemsIndeces { get; set; }
         public int RatingUser { get; set; }
+        public string Notes { get; set; }
     }
 
     public class CheckedText

@@ -30,17 +30,12 @@ namespace MyAirbnb.Controllers
         // GET: AdminSpaceCategories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var spaceCategory = await _context.SpaceCategories
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (spaceCategory == null)
-            {
-                return NotFound();
-            }
+
+            if (spaceCategory == null) return NotFound();
 
             return View(spaceCategory);
         }
@@ -70,16 +65,11 @@ namespace MyAirbnb.Controllers
         // GET: AdminSpaceCategories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var spaceCategory = await _context.SpaceCategories.FindAsync(id);
-            if (spaceCategory == null)
-            {
-                return NotFound();
-            }
+            if (spaceCategory == null) return NotFound();
+
             return View(spaceCategory);
         }
 
@@ -90,10 +80,7 @@ namespace MyAirbnb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] SpaceCategory spaceCategory)
         {
-            if (id != spaceCategory.Id)
-            {
-                return NotFound();
-            }
+            if (id != spaceCategory.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
@@ -105,13 +92,8 @@ namespace MyAirbnb.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!SpaceCategoryExists(spaceCategory.Id))
-                    {
                         return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -121,17 +103,11 @@ namespace MyAirbnb.Controllers
         // GET: AdminSpaceCategories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var spaceCategory = await _context.SpaceCategories
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (spaceCategory == null)
-            {
-                return NotFound();
-            }
+            if (spaceCategory == null) return NotFound();
 
             return View(spaceCategory);
         }

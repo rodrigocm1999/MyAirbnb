@@ -117,8 +117,8 @@ namespace MyAirbnb
                 if (userManager.CreateAsync(administrator, passwordAdmin).Result.Succeeded)
                 {
                     userManager.AddToRoleAsync(administrator, App.AdminRole).Wait();
-                    userManager.AddToRoleAsync(administrator, App.ManagerRole).Wait();
-                    userManager.AddToRoleAsync(administrator, App.WorkerRole).Wait();
+                    //userManager.AddToRoleAsync(administrator, App.ManagerRole).Wait();
+                    //userManager.AddToRoleAsync(administrator, App.WorkerRole).Wait();
 
                     var worker = new Worker { Id = administrator.Id };
                     context.Managers.Add(new Manager { Id = administrator.Id, Workers = new[] { worker }.ToList() });

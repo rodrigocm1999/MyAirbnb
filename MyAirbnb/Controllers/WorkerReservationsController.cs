@@ -12,7 +12,7 @@ using MyAirbnb.Other;
 
 namespace MyAirbnb.Controllers
 {
-    [Authorize(Roles = "Worker")]
+    [Authorize(Roles = "Worker, Manager, Admin")]
     public class WorkerReservationsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -175,6 +175,8 @@ namespace MyAirbnb.Controllers
             reservation.CheckOutItems = ChecklistsHelper.JoinForDatabase(model.CheckItems, model.ItemsIndeces);
             reservation.State = ReservationState.Finished;
             reservation.RatingUser = model.RatingUser;
+
+            //TODO calcular a media do user e guardar em alggum lado, talvez criar uma DdSet<Client>
 
             _context.SaveChanges();
             return RedirectToAction("Index");

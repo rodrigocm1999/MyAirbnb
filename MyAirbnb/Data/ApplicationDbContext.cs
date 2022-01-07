@@ -16,6 +16,7 @@ namespace MyAirbnb.Data
 
         public DbSet<Manager> Managers { get; set; }
         public DbSet<Worker> Workers { get; set; }
+        public DbSet<Client> Clients { get; set; }
 
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Comment> Comments { get; set; }

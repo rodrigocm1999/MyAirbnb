@@ -17,9 +17,6 @@ namespace MyAirbnb.Models
     //TODO fazer pedir as reservas- tem de verificar a existencia de outras nessas datas e também mostrar as datas disponivies
 
 
-    //Client
-    //TODO os clientes a terminarem a estadia, podem dar um comentário e um rating ao post
-
     //Manager
     //TODO manager criar workers - deixar bonito
     //TODO manager gerir as checklists - deixar bonito
@@ -28,8 +25,6 @@ namespace MyAirbnb.Models
     //Worker
     //TODO os worker podem ver os comentário e ratings dos posts
     //TODO os workers podem ver e dar rating aos clientes, para poder decidir se aceitam a reserva ou não
-    //TODO worker "entregar o espaço" - deixar bonito
-    //TODO worker "receber o espaço"
     //TODO reservas podem ou não ser aceites, por isso é um pedido de reserva
     //TODO quando fizer a reserva os workers terão de preencher a checklist da categoria do edificio para a entrega aos clientes
     // e depois ter a cena de "terminar" a reserva em que teem de preenchar a outra checklist
@@ -156,6 +151,9 @@ namespace MyAirbnb.Models
         public string CheckInItems { get; set; } // Separated by \n, to indicate if was checked contains '*' at the start
         public string CheckOutItems { get; set; } // Separated by \n, to indicate if was checked contains '*' at the start
 
+        public string CheckInNotes { get; set; }
+        public string CheckOutNotes { get; set; }
+
         public ReservationState State { get; set; }
 
         [DataType(DataType.Date)]
@@ -211,6 +209,14 @@ namespace MyAirbnb.Models
         public virtual Manager Manager { get; set; }
 
         public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
+    }
+
+    public class Client
+    {
+        [Key]
+        public string Id { get; set; }
+
+        public float Rating { get; set; }
     }
 
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyAirbnb.Data;
 using MyAirbnb.Models;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace MyAirbnb.Controllers
 {
+    [Authorize(Roles = "Manager, Admin")]
     public class ManagerChecklistsController : Controller
     { 
         private readonly ApplicationDbContext _context;
