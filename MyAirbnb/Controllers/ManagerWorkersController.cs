@@ -53,12 +53,16 @@ namespace MyAirbnb.Controllers
 
             var workerList = new List<WorkerViewModel>(manager.Workers.Count);
             //TODO
-
+            var adminRoleId = _context.Roles.FirstOrDefault(x => x.Name == App.AdminRole).Id;
             foreach (var a in manager.Workers)
             {
                 var user = _context.Users.FirstOrDefault(e => e.Id == a.Id);
-                WorkerViewModel workerModel = new WorkerViewModel { Id = user.Id, Name = user.UserName, Posts = a.Posts };
-                workerList.Add(workerModel);
+                IdentityUserRole<string> userHasAdminRole = _context.UserRoles.FirstOrDefault(x => x.RoleId == adminRoleId && x.UserId == user.Id);
+                if(userHasAdminRole == null)
+                {
+                    WorkerViewModel workerModel = new WorkerViewModel { Id = user.Id, Name = user.UserName, Posts = a.Posts };
+                    workerList.Add(workerModel);
+                }
             }
 
             return View(workerList);
