@@ -52,7 +52,6 @@ namespace MyAirbnb.Controllers
 
 
             var workerList = new List<WorkerViewModel>(manager.Workers.Count);
-            //TODO
             var adminRoleId = _context.Roles.FirstOrDefault(x => x.Name == App.AdminRole).Id;
             foreach (var a in manager.Workers)
             {

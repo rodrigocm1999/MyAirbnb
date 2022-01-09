@@ -27,9 +27,9 @@ namespace MyAirbnb.Models
 
 
     //Admin
-    //TODO gerir managers e workers
-    //TODO ver lista de 
-    //TODO gerir clientes
+    
+    //TODO ver lista de ??????????
+    
     //TODO gerir SpaceCategories (provavelmente conseguir alterar o nome e adicionar novo, mas apagar so ia dar merda se já existissem posts com essa categoria e reservas também)
 
 
