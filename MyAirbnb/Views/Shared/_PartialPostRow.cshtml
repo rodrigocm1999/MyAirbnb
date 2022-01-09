@@ -43,7 +43,7 @@
         <h3><a href="/Home/Details/@m.Id" class="text-dark">@m.Title</a></h3>
         <h5>@m.Address</h5>
 
-        @{await Html.RenderPartialAsync("RatingPartial", m.Rating); }
+        @{await Html.RenderPartialAsync("_RatingPartial", m.Rating); }
 
         <div class="my-2 position-absolute overflow-hidden d-flex" style="bottom: 0; left: 0;">
             @foreach (var c in m.Comodities)

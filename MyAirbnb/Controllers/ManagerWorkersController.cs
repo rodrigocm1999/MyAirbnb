@@ -58,7 +58,7 @@ namespace MyAirbnb.Controllers
             {
                 var user = _context.Users.FirstOrDefault(e => e.Id == a.Id);
                 IdentityUserRole<string> userHasAdminRole = _context.UserRoles.FirstOrDefault(x => x.RoleId == adminRoleId && x.UserId == user.Id);
-                if(userHasAdminRole == null)
+                if (userHasAdminRole == null)
                 {
                     WorkerViewModel workerModel = new WorkerViewModel { Id = user.Id, Name = user.UserName, Posts = a.Posts };
                     workerList.Add(workerModel);
@@ -66,6 +66,11 @@ namespace MyAirbnb.Controllers
             }
 
             return View(workerList);
+        }
+
+        public IActionResult Details(string id)
+        {
+            return RedirectToAction("Index", "WorkerPosts", new { workerId = id });
         }
 
         public IActionResult Create() { return View(); }
@@ -119,7 +124,6 @@ namespace MyAirbnb.Controllers
             //TODO verificar a cena de mandar os erros de volta
             return View();
         }
-       
 
         public IActionResult Delete(string id)
         {

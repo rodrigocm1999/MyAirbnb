@@ -23,7 +23,7 @@ namespace MyAirbnb.Models
 
 
     //Worker
-    //TODO os workers podem ver e dar rating aos clientes, para poder decidir se aceitam a reserva ou não
+    //TODO os workers podem ver os clientes para poder decidir se aceitam a reserva ou não
 
 
     //Admin
@@ -39,7 +39,7 @@ namespace MyAirbnb.Models
         [Key]
         public int Id { get; set; }
         public string WorkerId { get; set; }
-
+        public virtual Worker Worker { get; set; }
 
         [Required]
         [MinLength(10, ErrorMessage = "Title is too short (min 10)")]

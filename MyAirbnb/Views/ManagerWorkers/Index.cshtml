@@ -4,7 +4,7 @@
     ViewData["Title"] = "Workers";
 }
 
-<h1>Index</h1>
+<h1>Manage Workers</h1>
 
 <p>
     <a asp-action="Create">Create New Worker</a>
@@ -12,7 +12,8 @@
 <table class="table">
     <thead>
         <tr>
-            <th></th>
+            <th>Name</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -23,7 +24,7 @@
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    <a asp-controller="WorkerPosts" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>

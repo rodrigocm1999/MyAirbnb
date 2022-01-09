@@ -8,15 +8,22 @@ using System.Threading.Tasks;
 
 namespace MyAirbnb.Models
 {
+
+    public class SimpleUserModel
+    {
+        public string UserId { get; set; }
+        public string UserName { get; set; }
+        public float? Rating { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
+    }
+
     public class AcceptReservationWorkerInputModel
     {
         public int Id { get; set; }
         public int ReservationId { get; set; }
 
-        public string UserId { get; set; }
-        public string UserName { get; set; }
-        public float? UserRating { get; set; }
-        public string PhoneNumber { get; set; }
+        public SimpleUserModel User { get; set; }
     }
 
     public class CheckInWorkerInputModel
@@ -24,6 +31,8 @@ namespace MyAirbnb.Models
         public int ReservationId { get; set; }
         public List<string> CheckItems { get; set; }
         public string Notes { get; set; }
+
+       public SimpleUserModel User { get; set; }
     }
 
     public class CheckInWorkerOutputModel
@@ -44,6 +53,8 @@ namespace MyAirbnb.Models
 
         public string Notes { get; set; }
         public IEnumerable<CheckOutImage> Files { get; set; }
+
+        public SimpleUserModel User { get; set; }
 
 
     }

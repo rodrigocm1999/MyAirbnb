@@ -16,9 +16,7 @@ namespace MyAirbnb.Models
         public int NBeds { get; set; }
         public int NBedrooms { get; set; }
         public int SpaceCategoryId { get; set; }
-
-        public virtual IList<IFormFile> PostImages { get; set; }
         
-        public virtual ICollection<int> Comodities { get; set; } // Esta classe existe para conseguir receber os ids das comodities
+        public ICollection<int> Comodities { get; set; } // Esta classe existe para conseguir receber os ids das comodities
     }
 }

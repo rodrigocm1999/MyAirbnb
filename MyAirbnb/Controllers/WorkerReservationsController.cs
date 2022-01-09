@@ -27,6 +27,12 @@ namespace MyAirbnb.Controllers
             _environment = environment;
         }
 
+
+        public Client GetClient(string id)
+        {
+            return _context.Clients.FirstOrDefault(e => e.Id == id);
+        }
+
         public async Task<IActionResult> IndexAsync()
         {
             //ViewData["PostId"] = new SelectList(_context.Posts, "Id", "Address", reservation.PostId);
@@ -85,21 +91,26 @@ namespace MyAirbnb.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var userRatings = _context.Reservations
-                .Where(e => e.UserId == reservation.UserId && e.RatingUser.HasValue);
+            //var userRatings = _context.Reservations
+            //    .Where(e => e.UserId == reservation.UserId && e.RatingUser.HasValue);
 
-            float? userRating = null;
-            if (userRatings.Any())
-                userRating = (float?)userRatings.Average(e => e.RatingUser.Value);
+            //float? userRating = null;
+            //if (userRatings.Any())
+            //    userRating = (float?)userRatings.Average(e => e.RatingUser.Value);
+            var client = GetClient(reservation.UserId);
 
             var model = new AcceptReservationWorkerInputModel
             {
                 ReservationId = reservation.Id,
-                UserId = reservation.UserId,
-                UserName = reservation.User.UserName,
-                UserRating = userRating,
-                PhoneNumber = reservation.User.PhoneNumber,
+                User = new SimpleUserModel
+                {
+                    UserId = reservation.UserId,
+                    UserName = reservation.User.UserName,
+                    Rating = client == null ? null : client.Rating,
+                    PhoneNumber = reservation.User.PhoneNumber,
+                }
             };
+
             //TODO deixar pretty, mostrar cenas do user
             return View(model);
         }
@@ -112,15 +123,32 @@ namespace MyAirbnb.Controllers
             var reservation = _context.Reservations
                 .Include(e => e.Worker).ThenInclude(e => e.Manager).ThenInclude(e => e.CheckLists)
                 .Include(e => e.Post)
+                .Include(e => e.User)
                 .FirstOrDefault(e => e.Id == reservationId && e.WorkerId == User.GetUserId() && e.State == ReservationState.ToCheckIn);
             if (reservation == null) return NotFound();
 
             var checkList = reservation.Worker.Manager.CheckLists.FirstOrDefault(e => e.SpaceCategoryId == reservation.Post.SpaceCategoryId);
 
+            //var userRatings = _context.Reservations
+            //   .Where(e => e.UserId == reservation.UserId && e.RatingUser.HasValue);
+
+            //float? userRating = null;
+            //if (userRatings.Any())
+            //    userRating = (float?)userRatings.Average(e => e.RatingUser.Value);
+
+            var client = GetClient(reservation.UserId);
+
             var model = new CheckInWorkerInputModel
             {
                 ReservationId = reservation.Id,
                 CheckItems = checkList == null ? new List<string>() : ChecklistsHelper.SplitItems(checkList.CheckInItems),
+                User = new SimpleUserModel
+                {
+                    UserId = reservation.UserId,
+                    UserName = reservation.User.UserName,
+                    Rating = client == null ? null : client.Rating,
+                    PhoneNumber = reservation.User.PhoneNumber,
+                },
             };
 
             return View(model);
@@ -155,16 +183,26 @@ namespace MyAirbnb.Controllers
                 .Include(e => e.Worker).ThenInclude(e => e.Manager).ThenInclude(e => e.CheckLists)
                 .Include(e => e.Post)
                 .Include(e => e.CheckOutImages)
+                .Include(e => e.User)
                 .FirstOrDefault(e => e.Id == reservationId && e.WorkerId == User.GetUserId() && e.State == ReservationState.ToCheckOut);
             if (reservation == null) return NotFound();
 
             var checkList = reservation.Worker.Manager.CheckLists.FirstOrDefault(e => e.SpaceCategoryId == reservation.Post.SpaceCategoryId);
+
+            var client = GetClient(reservation.UserId);
 
             var model = new CheckOutWorkerInputModel
             {
                 ReservationId = reservation.Id,
                 CheckItems = checkList == null ? new List<string>() : ChecklistsHelper.SplitItems(checkList.CheckOutItems),
                 Files = reservation.CheckOutImages,
+                User = new SimpleUserModel
+                {
+                    UserId = reservation.UserId,
+                    UserName = reservation.User.UserName,
+                    Rating = client == null ? null : client.Rating,
+                    PhoneNumber = reservation.User.PhoneNumber,
+                },
             };
 
             return View(model);

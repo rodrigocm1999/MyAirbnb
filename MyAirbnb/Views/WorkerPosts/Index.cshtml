@@ -1,13 +1,22 @@
-﻿@model IEnumerable<MyAirbnb.Models.Post>
+﻿@model MyAirbnb.Controllers.WorkerPostsController.IndexModel
 
 @{
     ViewData["Title"] = "Index";
+
 }
 
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    @if (Model.WorkerId != null)
+    {
+        <a asp-action="Create" asp-route-workerId="@Model.WorkerId">Create New</a>
+    }
+    else
+    {
+        <a asp-action="Create">Create New</a>
+    }
+
 </p>
 <table class="table">
     <thead>
@@ -22,7 +31,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Posts)
         {
             <tr>
                 <td>

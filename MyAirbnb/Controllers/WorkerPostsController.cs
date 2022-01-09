@@ -44,6 +44,15 @@ namespace MyAirbnb.Controllers
             return _context.Workers.Where(e => e.Id == UserId);
         }
 
+        private IQueryable<Post> WhereThisPost(int id)
+        {
+            //if (workerId == null)
+            //    return _context.Posts.Where(e => e.Id == id && e.WorkerId == UserId);
+
+            var query = _context.Posts.Include(e => e.Worker).Where(e => e.Id == id && (e.WorkerId == UserId || e.Worker.ManagerId == UserId));
+            return query;
+        }
+
         private bool PostExists(int id)
         {
             return _context.Posts.Any(e => e.Id == id);
@@ -61,25 +70,35 @@ namespace MyAirbnb.Controllers
             return editPost;
         }
 
-        // GET: Posts
-        public IActionResult Index(string id)
+        public class IndexModel
         {
-            if (id != null)
+            public string WorkerId { get; set; }
+            public IEnumerable<Post> Posts { get; set; }
+        }
+
+        public IActionResult Index(string workerId)
+        {
+            if (workerId != null)
             {
-                var workerId = id;
                 var worker = _context.Workers
                     .Include(e => e.Posts)
                     .Where(e => e.ManagerId == User.GetUserId() && e.Id == workerId)
                     .FirstOrDefault();
                 if (worker == null) return NotFound();
-                return View(worker.Posts);
+                var model = new IndexModel
+                {
+                    Posts = worker.Posts,
+                    WorkerId = workerId,
+                };
+                return View(model);
             }
             else
             {
                 var postsList = _context.Posts.Where(e => e.WorkerId == UserId);
-                return View(postsList);
+                return View(new IndexModel { Posts = postsList });
             }
         }
+        //TODO fazer cancelamento talvez antes de ser aceite
 
         public async Task<IActionResult> Details(int? id)
         {
@@ -92,7 +111,7 @@ namespace MyAirbnb.Controllers
 
             return View(post);
         }
-        
+
         public IActionResult Create()
         {
             var post = new Post()
@@ -106,86 +125,54 @@ namespace MyAirbnb.Controllers
         }
 
 
-        // POST: Posts/Create
-        //NOT IN USE ANYMORE, Now post is created and inserted into database when entering the Create page ------------------------
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Title,Address,Description,Html,Price,NBeds,NBedrooms,PropertyType,AvailabilityType,Comodities")] ReceivePost post)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        List<Comodity> comodities = null;
-        //        if (post.Comodities != null)
-        //            comodities = _context.Comodities.Where(c => post.Comodities.Contains(c.Id)).ToList();
-
-        //        var finalPost = new Post
-        //        {
-        //            WorkerId = User.GetUserId(),
-        //            Title = post.Title,
-        //            Address = post.Address,
-        //            Description = post.Description,
-        //            Price = post.Price,
-        //            NBeds = post.NBeds,
-        //            NBedrooms = post.NBedrooms,
-        //            AvailabilityType = post.AvailabilityType,
-        //            Comodities = comodities,
-        //        };
-
-        //        _context.Add(finalPost);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(post);
-        //}
-
-        // GET: Posts/Edit/5
         public IActionResult Edit(int? id)
         {
-            if (id == null) return NotFound();
+            if (!id.HasValue) return NotFound();
+            var postId = id.Value;
 
-            var post = _context.Posts
+            var post = WhereThisPost(postId)
                 .Include(e => e.Comodities)
                 .Include(e => e.PostImages)
-                .FirstOrDefault(e => e.Id == id.Value && e.WorkerId == UserId);
-
+                .FirstOrDefault();
             if (post == null) return NotFound();
 
             EditPost editPost = CreateEditPostObject(post);
             return View(editPost);
         }
 
-        // POST: Posts/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Title,Address,Description,Html,Price,NBeds,NBedrooms,PropertyType,AvailabilityType,Comodities,SpaceCategoryId")] ReceivePost post)
+        public async Task<IActionResult> Edit(int id, [Bind(Prefix = "Post")] ReceivePost formPost)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var userId = User.GetUserId();
-                    var dbPost = _context.Posts
+                    var post = WhereThisPost(id)
                         .Include(e => e.Comodities)
                         .Include(e => e.PostImages)
-                        .FirstOrDefault(e => e.Id == id && e.WorkerId == UserId);
-                    if (dbPost == null) return NotFound();
+                        .FirstOrDefault();
+                    if (post == null) return NotFound();
 
                     List<Comodity> comodities = null;
-                    if (post.Comodities != null)
-                        comodities = _context.Comodities.Where(e => post.Comodities.Contains(e.Id)).ToList();
+                    if (formPost.Comodities != null)
+                        comodities = _context.Comodities.Where(e => formPost.Comodities.Contains(e.Id)).ToList();
 
-                    dbPost.Title = post.Title;
-                    dbPost.Address = post.Address;
-                    dbPost.Description = post.Description;
-                    dbPost.Price = post.Price;
-                    dbPost.NBeds = post.NBeds;
-                    dbPost.NBedrooms = post.NBedrooms;
-                    dbPost.SpaceCategoryId = post.SpaceCategoryId;
-                    dbPost.Comodities = comodities;
-                    dbPost.Hidden = false;
+                    post.Title = formPost.Title;
+                    post.Address = formPost.Address;
+                    post.Description = formPost.Description;
+                    post.Price = formPost.Price;
+                    post.NBeds = formPost.NBeds;
+                    post.NBedrooms = formPost.NBedrooms;
+                    post.SpaceCategoryId = formPost.SpaceCategoryId;
+                    post.Comodities = comodities;
+                    post.Hidden = false;
 
-                    _context.Update(dbPost);
+                    _context.Update(post);
                     await _context.SaveChangesAsync();
+
+                    if (post.WorkerId != UserId)
+                        return RedirectToAction(nameof(Index), new { workerId = post.WorkerId });
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
@@ -194,29 +181,26 @@ namespace MyAirbnb.Controllers
                     throw;
                 }
             }
-            return View(post);
+            return View(formPost);
         }
 
-        // GET: Posts/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
-            if (id == null) return NotFound();
+            if (!id.HasValue) return NotFound();
 
-            var post = await _context.Posts
-                .FirstOrDefaultAsync(e => e.Id == id && e.WorkerId == UserId);
+            var post = WhereThisPost(id.Value).FirstOrDefault();
             if (post == null) return NotFound();
 
             return View(post);
         }
 
-        // POST: Posts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var post = await _context.Posts
+            var post = WhereThisPost(id)
                 .Include(e => e.PostImages)
-                .FirstOrDefaultAsync(e => e.Id == id && e.WorkerId == UserId);
+                .FirstOrDefault();
             foreach (var postImage in post.PostImages)
             {
                 var fullPath = _environment.WebRootPath + postImage.FilePath;
@@ -224,6 +208,8 @@ namespace MyAirbnb.Controllers
             }
             _context.Posts.Remove(post);
             await _context.SaveChangesAsync();
+            if (post.WorkerId != UserId)
+                return RedirectToAction(nameof(Index), new { workerId = post.WorkerId });
             return RedirectToAction(nameof(Index));
         }
 
@@ -231,9 +217,9 @@ namespace MyAirbnb.Controllers
         public async Task<IActionResult> RemovePostImage(int id, int fileId)
         {
             var postId = id;
-            var post = await _context.Posts
+            var post = WhereThisPost(postId)
                 .Include(e => e.PostImages)
-                .FirstOrDefaultAsync(e => e.Id == postId && e.WorkerId == UserId);
+                .FirstOrDefault();
             if (post == null) return NotFound();
 
             var postImage = post.PostImages.FirstOrDefault(e => e.Id == fileId);
@@ -251,9 +237,9 @@ namespace MyAirbnb.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadPostImage(int id, IEnumerable<IFormFile> files)
         {
-            var post = await _context.Posts
-                .Include(e => e.PostImages)
-                .FirstOrDefaultAsync(e => e.Id == id && e.WorkerId == UserId);
+            var post = WhereThisPost(id)
+               .Include(e => e.PostImages)
+               .FirstOrDefault();
             if (post == null) return NotFound();
 
             var imagesPath = App.PostImagesFolderName;
