@@ -16,21 +16,13 @@ namespace MyAirbnb.Models
     //TODO index- conseguir fazer pesquisa por endereço, talvez também ter filtros para escolher as camas e 
     //TODO fazer pedir as reservas- tem de verificar a existencia de outras nessas datas e também mostrar as datas disponivies
 
-
-    //Manager
-    //TODO manager criar workers - deixar bonito
-    //TODO manager gerir as checklists - deixar bonito
-
-
     //Worker
     //TODO os workers podem ver os clientes para poder decidir se aceitam a reserva ou não
 
 
     //Admin
     
-    //TODO ver lista de ??????????
-    
-    //TODO gerir SpaceCategories (provavelmente conseguir alterar o nome e adicionar novo, mas apagar so ia dar merda se já existissem posts com essa categoria e reservas também)
+    //TODO ver lista de ??????????   <---- I dont know what this is
 
 
     [Index(nameof(WorkerId))]

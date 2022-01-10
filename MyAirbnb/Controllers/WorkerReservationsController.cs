@@ -90,8 +90,7 @@ namespace MyAirbnb.Controllers
                 ReservationId = reservation.Id,
                 User = reservation.User,
             };
-
-            //TODO deixar pretty, mostrar cenas do user
+            
             return View(model);
         }
 

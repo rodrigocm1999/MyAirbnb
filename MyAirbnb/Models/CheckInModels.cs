@@ -8,16 +8,6 @@ using System.Threading.Tasks;
 
 namespace MyAirbnb.Models
 {
-
-    public class SimpleUserModel
-    {
-        public string UserId { get; set; }
-        public string UserName { get; set; }
-        public float? Rating { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Email { get; set; }
-    }
-
     public class AcceptReservationWorkerInputModel
     {
         public int Id { get; set; }
@@ -58,7 +48,6 @@ namespace MyAirbnb.Models
 
 
     }
-    //TODO fazer upload de imagens no checkout de eventuais danos
     public class CheckOutWorkerOutputModel
     {
         public List<string> CheckItems { get; set; }
