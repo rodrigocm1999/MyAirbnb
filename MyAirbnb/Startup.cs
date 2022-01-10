@@ -37,7 +37,7 @@ namespace MyAirbnb
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<IdentityUser>(options =>
+            services.AddDefaultIdentity<ApplicationUser>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
                 options.SignIn.RequireConfirmedEmail = false;
@@ -89,7 +89,7 @@ namespace MyAirbnb
         {
 
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
             //Check that there is an Administrator role and create if not, etc
 
@@ -107,7 +107,7 @@ namespace MyAirbnb
 
             if (userManager.FindByEmailAsync(emailAdmin).Result == null)
             {
-                IdentityUser administrator = new()
+                ApplicationUser administrator = new()
                 {
                     Email = emailAdmin,
                     UserName = App.AdminRole,

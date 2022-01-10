@@ -19,15 +19,15 @@ namespace MyAirbnb.Controllers
     [Authorize(Roles = "Manager, Admin")]
     public class ManagerWorkersController : Controller
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
         private readonly ILogger<RegisterManagerModel> _logger;
         private readonly IEmailSender _emailSender;
 
         public ManagerWorkersController(
-            UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ILogger<RegisterManagerModel> logger,
+            UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<RegisterManagerModel> logger,
             IEmailSender emailSender, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
         {
             _userManager = userManager;
@@ -103,7 +103,7 @@ namespace MyAirbnb.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync(WorkerModel Input)
         {
-            var user = new IdentityUser { UserName = Input.Name, Email = Input.Email, PhoneNumber = Input.PhoneNumber };
+            var user = new ApplicationUser { UserName = Input.Name, Email = Input.Email, PhoneNumber = Input.PhoneNumber };
             var result = await _userManager.CreateAsync(user, Input.Password);
             if (result.Succeeded)
             {

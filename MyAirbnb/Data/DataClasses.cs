@@ -130,7 +130,7 @@ namespace MyAirbnb.Models
         public int Id { get; set; }
 
         public string UserId { get; set; }
-        public virtual IdentityUser User { get; set; }
+        public virtual ApplicationUser User { get; set; }
 
         public string WorkerId { get; set; }
         public virtual Worker Worker { get; set; }
@@ -187,7 +187,7 @@ namespace MyAirbnb.Models
         public virtual Reservation Reservation { get; set; }
 
         public string UserId { get; set; }
-        public virtual IdentityUser User { get; set; }
+        public virtual ApplicationUser User { get; set; }
 
         [Required]
         public string Text { get; set; }
@@ -217,14 +217,6 @@ namespace MyAirbnb.Models
         public virtual Manager Manager { get; set; }
 
         public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
-    }
-
-    public class Client
-    {
-        [Key]
-        public string Id { get; set; }
-
-        public float Rating { get; set; }
     }
 
 }

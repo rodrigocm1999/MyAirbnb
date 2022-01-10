@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MyAirbnb.Models;
 using System;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace MyAirbnb.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
 
         public DbSet<Post> Posts { get; set; }
@@ -16,7 +17,6 @@ namespace MyAirbnb.Data
 
         public DbSet<Manager> Managers { get; set; }
         public DbSet<Worker> Workers { get; set; }
-        public DbSet<Client> Clients { get; set; }
 
         public DbSet<Reservation> Reservations { get; set; }
 

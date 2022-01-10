@@ -22,7 +22,7 @@
             <h3>@m.Title</h3>
             <h5>@m.Address</h5>
 
-            @{await Html.RenderPartialAsync("RatingPartial", m.Rating); }
+            @{await Html.RenderPartialAsync("_RatingPartial", m.Rating); }
         </div>
 
         <div class="position-absolute" style="min-width:100px;right:0px;">

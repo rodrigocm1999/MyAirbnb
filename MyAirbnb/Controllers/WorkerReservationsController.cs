@@ -27,12 +27,6 @@ namespace MyAirbnb.Controllers
             _environment = environment;
         }
 
-
-        public Client GetClient(string id)
-        {
-            return _context.Clients.FirstOrDefault(e => e.Id == id);
-        }
-
         public async Task<IActionResult> IndexAsync()
         {
             //ViewData["PostId"] = new SelectList(_context.Posts, "Id", "Address", reservation.PostId);
@@ -91,24 +85,10 @@ namespace MyAirbnb.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            //var userRatings = _context.Reservations
-            //    .Where(e => e.UserId == reservation.UserId && e.RatingUser.HasValue);
-
-            //float? userRating = null;
-            //if (userRatings.Any())
-            //    userRating = (float?)userRatings.Average(e => e.RatingUser.Value);
-            var client = GetClient(reservation.UserId);
-
             var model = new AcceptReservationWorkerInputModel
             {
                 ReservationId = reservation.Id,
-                User = new SimpleUserModel
-                {
-                    UserId = reservation.UserId,
-                    UserName = reservation.User.UserName,
-                    Rating = client == null ? null : client.Rating,
-                    PhoneNumber = reservation.User.PhoneNumber,
-                }
+                User = reservation.User,
             };
 
             //TODO deixar pretty, mostrar cenas do user
@@ -128,27 +108,12 @@ namespace MyAirbnb.Controllers
             if (reservation == null) return NotFound();
 
             var checkList = reservation.Worker.Manager.CheckLists.FirstOrDefault(e => e.SpaceCategoryId == reservation.Post.SpaceCategoryId);
-
-            //var userRatings = _context.Reservations
-            //   .Where(e => e.UserId == reservation.UserId && e.RatingUser.HasValue);
-
-            //float? userRating = null;
-            //if (userRatings.Any())
-            //    userRating = (float?)userRatings.Average(e => e.RatingUser.Value);
-
-            var client = GetClient(reservation.UserId);
-
+            
             var model = new CheckInWorkerInputModel
             {
                 ReservationId = reservation.Id,
                 CheckItems = checkList == null ? new List<string>() : ChecklistsHelper.SplitItems(checkList.CheckInItems),
-                User = new SimpleUserModel
-                {
-                    UserId = reservation.UserId,
-                    UserName = reservation.User.UserName,
-                    Rating = client == null ? null : client.Rating,
-                    PhoneNumber = reservation.User.PhoneNumber,
-                },
+                User = reservation.User,
             };
 
             return View(model);
@@ -189,20 +154,12 @@ namespace MyAirbnb.Controllers
 
             var checkList = reservation.Worker.Manager.CheckLists.FirstOrDefault(e => e.SpaceCategoryId == reservation.Post.SpaceCategoryId);
 
-            var client = GetClient(reservation.UserId);
-
             var model = new CheckOutWorkerInputModel
             {
                 ReservationId = reservation.Id,
                 CheckItems = checkList == null ? new List<string>() : ChecklistsHelper.SplitItems(checkList.CheckOutItems),
                 Files = reservation.CheckOutImages,
-                User = new SimpleUserModel
-                {
-                    UserId = reservation.UserId,
-                    UserName = reservation.User.UserName,
-                    Rating = client == null ? null : client.Rating,
-                    PhoneNumber = reservation.User.PhoneNumber,
-                },
+                User = reservation.User,
             };
 
             return View(model);
@@ -231,14 +188,8 @@ namespace MyAirbnb.Controllers
             var average = _context.Reservations.Where(e => e.UserId == userId && e.RatingUser != null).Average(e => e.RatingUser);
             if (average.HasValue)
             {
-                var client = _context.Clients.FirstOrDefault(e => e.Id == userId);
-                if (client == null)
-                {
-                    client = new Client { Id = userId, Rating = (float)average };
-                    _context.Clients.Add(client);
-                }
-                else
-                    client.Rating = (float)average;
+                var client = _context.Users.FirstOrDefault(e => e.Id == userId);
+                client.Rating = (float)average;
             }
             _context.SaveChanges();
             return RedirectToAction("Index");

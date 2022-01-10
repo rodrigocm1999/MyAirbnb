@@ -1,4 +1,4 @@
-﻿@model MyAirbnb.Models.SimpleUserModel
+﻿@model MyAirbnb.Models.ApplicationUser
 
 <div>
     <h3>Client Info</h3>
@@ -8,12 +8,6 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.UserName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Email)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.PhoneNumber)
@@ -38,7 +32,7 @@
             @Html.DisplayNameFor(model => model.Email)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayNameFor(model => model.Email)
+            @Html.DisplayFor(model => model.Email)
         </dd>
     </dl>
 </div>

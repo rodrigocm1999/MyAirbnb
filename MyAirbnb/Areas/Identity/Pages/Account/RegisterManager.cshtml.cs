@@ -22,16 +22,16 @@ namespace MyAirbnb.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class RegisterManagerModel : PageModel
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
         private readonly ILogger<RegisterManagerModel> _logger;
         private readonly IEmailSender _emailSender;
 
         public RegisterManagerModel(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterManagerModel> logger,
             IEmailSender emailSender,
             RoleManager<IdentityRole> roleManager,
@@ -91,7 +91,7 @@ namespace MyAirbnb.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = Input.Name, Email = Input.Email, PhoneNumber = Input.PhoneNumber };
+                var user = new ApplicationUser { UserName = Input.Name, Email = Input.Email, PhoneNumber = Input.PhoneNumber };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

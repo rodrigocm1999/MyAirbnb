@@ -23,7 +23,7 @@ namespace MyAirbnb.Models
         public int Id { get; set; }
         public int ReservationId { get; set; }
 
-        public SimpleUserModel User { get; set; }
+        public ApplicationUser User { get; set; }
     }
 
     public class CheckInWorkerInputModel
@@ -32,7 +32,7 @@ namespace MyAirbnb.Models
         public List<string> CheckItems { get; set; }
         public string Notes { get; set; }
 
-       public SimpleUserModel User { get; set; }
+       public ApplicationUser User { get; set; }
     }
 
     public class CheckInWorkerOutputModel
@@ -54,7 +54,7 @@ namespace MyAirbnb.Models
         public string Notes { get; set; }
         public IEnumerable<CheckOutImage> Files { get; set; }
 
-        public SimpleUserModel User { get; set; }
+        public ApplicationUser User { get; set; }
 
 
     }
