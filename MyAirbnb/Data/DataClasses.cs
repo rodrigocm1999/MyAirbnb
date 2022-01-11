@@ -19,7 +19,6 @@ namespace MyAirbnb.Models
     //Worker
     //TODO os workers podem ver os clientes para poder decidir se aceitam a reserva ou não
 
-    //TODO adicionar primeiro e ultimo nome
     //TODO show spacecategory no index e nos detalhes
 
 
@@ -64,6 +63,7 @@ namespace MyAirbnb.Models
 
         [Display(Name = "Space Category")]
         public int SpaceCategoryId { get; set; }
+        public virtual SpaceCategory SpaceCategory { get; set; }
         public int AvailabilityType { get; set; }
 
         public bool Hidden { get; set; } = false;

@@ -64,7 +64,12 @@ namespace MyAirbnb.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
             [Required]
-            public string Name { get; set; }
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
 
             [Required]
             [DataType(DataType.PhoneNumber)]
@@ -84,7 +89,8 @@ namespace MyAirbnb.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Name, Email = Input.Email , PhoneNumber = Input.PhoneNumber };
+                var userName = Input.FirstName + Input.LastName;
+                var user = new ApplicationUser { UserName = userName, FirstName = Input.FirstName, LastName = Input.LastName, Email = Input.Email , PhoneNumber = Input.PhoneNumber };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

@@ -9,5 +9,9 @@ namespace MyAirbnb.Models
     public class ApplicationUser : IdentityUser
     {
         public float? Rating { get; set; }
+
+        public string FirstName { get; set; }
+        
+        public string LastName { get; set; }
     }
 }

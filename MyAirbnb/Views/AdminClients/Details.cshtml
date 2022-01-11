@@ -38,13 +38,12 @@
                     @Html.DisplayFor(modelItem => reservation.Post.Address)
                 </td>
                 <td>
-                    <a asp-controller="User" asp-action="Reservation">Details</a>
+                    <a asp-action="ClienteReservation" asp-route-id="@reservation.Id">Details</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-<div>
-    @*<a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |*@
+<div class="row">
     <a asp-action="Index">Back to List</a>
 </div>
