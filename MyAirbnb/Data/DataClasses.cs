@@ -25,7 +25,7 @@ namespace MyAirbnb.Models
 
     //TODO recuperar password
     
-
+    
 
     [Index(nameof(WorkerId))]
     public class Post

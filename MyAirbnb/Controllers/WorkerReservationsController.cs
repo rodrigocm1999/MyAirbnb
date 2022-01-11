@@ -57,11 +57,35 @@ namespace MyAirbnb.Controllers
             var reservation = await _context.Reservations
                 .Include(r => r.Post)
                 .Include(r => r.Worker)
+                .Include(r => r.User)
+                .Include(r => r.CheckOutImages)
+                .Include(r => r.Comment)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (reservation == null) return NotFound();
             //TODO make look ok
-            return View(reservation);
+
+            var model = new ReservationDetails
+            {
+                User = reservation.User,
+                Worker = reservation.Worker,
+                Post = reservation.Post,
+                CheckInItems = ChecklistsHelper.SplitIntoCheckedList(reservation.CheckInItems),
+                CheckOutItems = ChecklistsHelper.SplitIntoCheckedList(reservation.CheckOutItems),
+                CheckOutImages = reservation.CheckOutImages,
+                CheckInNotes = reservation.CheckInNotes,
+                CheckOutNotes = reservation.CheckOutNotes,
+                Comment = reservation.Comment,
+                StartDate = reservation.StartDate,
+                EndDate = reservation.EndDate,
+                State = reservation.State,
+                Price = reservation.Price,
+                TotalPrice = reservation.TotalPrice,
+                RatingPost = reservation.RatingPost,
+                RatingUser = reservation.RatingUser,
+            };
+
+            return View(model);
         }
 
         public IActionResult Accept(int? id, bool? accepted)
@@ -90,7 +114,7 @@ namespace MyAirbnb.Controllers
                 ReservationId = reservation.Id,
                 User = reservation.User,
             };
-            
+
             return View(model);
         }
 
@@ -107,7 +131,7 @@ namespace MyAirbnb.Controllers
             if (reservation == null) return NotFound();
 
             var checkList = reservation.Worker.Manager.CheckLists.FirstOrDefault(e => e.SpaceCategoryId == reservation.Post.SpaceCategoryId);
-            
+
             var model = new CheckInWorkerInputModel
             {
                 ReservationId = reservation.Id,
