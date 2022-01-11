@@ -53,6 +53,7 @@ namespace MyAirbnb.Controllers
             var post = _context.Posts
                 .Include(p => p.PostImages)
                 .Include(p => p.Comodities)
+                .Include(p => p.SpaceCategory)
                 .Include(p => p.Comments).ThenInclude(p => p.User)
                 .FirstOrDefault(p => p.Id == id && !p.Hidden);
             if (post == null) return NotFound();
