@@ -47,11 +47,39 @@ namespace MyAirbnb.Controllers
             IQueryable<Reservation> reservations = _context.Reservations.Where(m => m.UserId == id).Include(m => m.Post);
             var clientsAdminView = new ClientsAdminView() { Id = user.Id, Name = user.UserName , Reservations = reservations};
             var count = clientsAdminView.Reservations.Count();
-            //TODO IR BUSCAR AS RESERVAS
             if (clientsAdminView == null)
                 return NotFound();
 
             return View(clientsAdminView);
+        }
+
+        public IActionResult ClienteReservation(int? id)
+        {
+            if (id == null) return NotFound();
+            var reservationId = id.Value;
+
+            var reservation = _context.Reservations.Include(e => e.Post).Include(e => e.Comment).FirstOrDefault(e => e.Id == reservationId && e.WorkerId == User.GetUserId());
+            if (reservation == null) return NotFound();
+
+            //var reservations = _context.Reservations
+            //    .Include(e => e.Post)
+            //    .Include(e => e.Comment)
+            //    .FirstOrDefault(e => e.Id == reservationId && e.UserId == User.GetUserId());
+
+            var model = new ReservationModel
+            {
+                Id = reservation.Id,
+                Post = reservation.Post,
+                TotalPrice = reservation.TotalPrice,
+                RatingUser = reservation.RatingUser,
+                RatingPost = reservation.RatingPost,
+                StartDate = reservation.StartDate,
+                EndDate = reservation.EndDate,
+                State = reservation.State,
+                Comment = reservation.Comment,
+            };
+
+            return View(model);
         }
 
         // GET: AdminClients/Create

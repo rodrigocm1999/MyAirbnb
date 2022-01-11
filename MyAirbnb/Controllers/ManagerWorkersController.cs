@@ -92,7 +92,12 @@ namespace MyAirbnb.Controllers
             public string ConfirmPassword { get; set; }
 
             [Required]
-            public string Name { get; set; }
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
 
 
             [DataType(DataType.PhoneNumber)]
@@ -103,7 +108,8 @@ namespace MyAirbnb.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync(WorkerModel Input)
         {
-            var user = new ApplicationUser { UserName = Input.Name, Email = Input.Email, PhoneNumber = Input.PhoneNumber };
+            var userName = Input.FirstName + Input.LastName;
+            var user = new ApplicationUser { UserName = userName, FirstName = Input.FirstName, LastName = Input.LastName, Email = Input.Email, PhoneNumber = Input.PhoneNumber };
             var result = await _userManager.CreateAsync(user, Input.Password);
             if (result.Succeeded)
             {

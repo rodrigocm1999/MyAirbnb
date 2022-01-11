@@ -33,5 +33,7 @@ namespace MyAirbnb.Data
 
         }
 
+        public DbSet<MyAirbnb.Models.ReservationModel> ReservationModel { get; set; }
+
     }
 }

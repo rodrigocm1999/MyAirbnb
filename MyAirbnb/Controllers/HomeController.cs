@@ -29,6 +29,7 @@ namespace MyAirbnb.Controllers
             var posts = _context.Posts
                 .Include(p => p.Comodities)
                 .Include(p => p.PostImages)
+                .Include(p => p.SpaceCategory)
                 .Skip(amountToSkip)
                 .Take(App.ItemsPerPage)
                 .Where(p => !p.Hidden);
