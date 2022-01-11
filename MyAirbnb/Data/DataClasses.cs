@@ -19,10 +19,12 @@ namespace MyAirbnb.Models
     //Worker
     //TODO os workers podem ver os clientes para poder decidir se aceitam a reserva ou não
 
+    //TODO adicionar primeiro e ultimo nome
+    //TODO show spacecategory no index e nos detalhes
 
-    //Admin
+
+    //TODO recuperar password
     
-    //TODO ver lista de ??????????   <---- I dont know what this is
 
 
     [Index(nameof(WorkerId))]

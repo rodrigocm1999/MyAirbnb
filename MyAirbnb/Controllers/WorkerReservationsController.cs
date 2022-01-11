@@ -60,7 +60,7 @@ namespace MyAirbnb.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (reservation == null) return NotFound();
-
+            //TODO make look ok
             return View(reservation);
         }
 
