@@ -20,11 +20,8 @@ namespace MyAirbnb.Models
     //TODO os workers podem ver os clientes para poder decidir se aceitam a reserva ou não
 
     //TODO show spacecategory no index e nos detalhes
-
-
-    //TODO recuperar password
     
-
+    
 
     [Index(nameof(WorkerId))]
     public class Post
@@ -128,6 +125,8 @@ namespace MyAirbnb.Models
 
         public string WorkerId { get; set; }
         public virtual Worker Worker { get; set; }
+        [ForeignKey(nameof(WorkerId))]
+        public virtual ApplicationUser UserWorker { get; set; }
 
         public int PostId { get; set; }
         public virtual Post Post { get; set; }
@@ -136,19 +135,25 @@ namespace MyAirbnb.Models
         public int? RatingPost { get; set; }
 
         public int Price { get; set; }
+        [Display(Name = "Total Price")]
         public int TotalPrice { get; set; }
 
         public string CheckInItems { get; set; } // Separated by \n, to indicate if was checked contains '*' at the start
         public string CheckOutItems { get; set; } // Separated by \n, to indicate if was checked contains '*' at the start
 
+        [Display(Name = "Check In Notes")]
         public string CheckInNotes { get; set; }
+        [Display(Name = "Check Out Notes")]
         public string CheckOutNotes { get; set; }
         public virtual ICollection<CheckOutImage> CheckOutImages { get; set; }
 
+        [Display(Name = "Reservation State")]
         public ReservationState State { get; set; }
 
+        [Display(Name = "Start Date")]
         [DataType(DataType.Date)]
         public DateTime StartDate { get; set; }
+        [Display(Name = "End Date")]
         [DataType(DataType.Date)]
         public DateTime EndDate { get; set; }
 

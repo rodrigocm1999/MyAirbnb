@@ -10,10 +10,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Post.Address)
+                Post
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RatingUser)
+                @Html.DisplayNameFor(model => model.Post.Address)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.StartDate)
@@ -36,10 +36,10 @@
         {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Post.Address)
+                <a asp-controller="Home" asp-action="Details" asp-route-id="@item.PostId">Link</a>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.RatingUser)
+                @Html.DisplayFor(modelItem => item.Post.Address)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StartDate)

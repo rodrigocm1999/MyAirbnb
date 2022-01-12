@@ -65,4 +65,39 @@ namespace MyAirbnb.Models
         }
     }
 
+
+    public class ReservationDetails
+    {
+        public ApplicationUser User { get; set; }
+        public Worker Worker { get; set; }
+        public Post Post { get; set; }
+        public Comment Comment { get; set; }
+        public ApplicationUser UserWorker { get; set; }
+
+        [Display(Name = "User Rating")]
+        public int? RatingUser { get; set; }
+        [Display(Name = "Post Rating")]
+        public int? RatingPost { get; set; }
+
+        [Display(Name = "Price Per Night")]
+        public int Price { get; set; }
+        [Display(Name = "Total Price")]
+        public int TotalPrice { get; set; }
+
+
+        public List<CheckedText> CheckInItems { get; set; }
+        public List<CheckedText> CheckOutItems { get; set; }
+
+        public string CheckInNotes { get; set; }
+        public string CheckOutNotes { get; set; }
+        public virtual ICollection<CheckOutImage> CheckOutImages { get; set; }
+
+        public ReservationState State { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateTime StartDate { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime EndDate { get; set; }
+
+    }
 }
