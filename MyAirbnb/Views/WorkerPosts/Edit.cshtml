@@ -16,6 +16,10 @@
             <input asp-for="Post.Title" class="form-control" value="@Model.Post.Title" />
             <span asp-validation-for="Post.Title" class="text-danger"></span>
             <br />
+            <label asp-for="Post.City" class="control-label"></label>
+            <input asp-for="Post.City" class="form-control" value="@Model.Post.City" />
+            <span asp-validation-for="Post.City" class="text-danger"></span>
+            <br />
             <label asp-for="Post.Address" class="control-label"></label>
             <input asp-for="Post.Address" class="form-control" value="@Model.Post.Address" />
             <span asp-validation-for="Post.Address" class="text-danger"></span>

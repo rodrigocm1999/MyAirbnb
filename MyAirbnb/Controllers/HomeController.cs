@@ -21,29 +21,34 @@ namespace MyAirbnb.Controllers
             _context = dbContext;
         }
 
-        public IActionResult Index(int? id)
+        public IActionResult Index(int? id, [Bind(Prefix = "Search")] IndexSearch search)
         {
-            var page = id != null ? id.Value : 1;
-            int amountToSkip = amountToSkip = (page - 1) * App.ItemsPerPage;
+            var page = id.HasValue ? id.Value : 1;
+            int amountToSkip = (page - 1) * App.ItemsPerPage;
 
             var posts = _context.Posts
                 .Include(p => p.Comodities)
                 .Include(p => p.PostImages)
                 .Include(p => p.SpaceCategory)
                 .Skip(amountToSkip)
-                .Take(App.ItemsPerPage)
+                .Take(App.ItemsPerPage + 1)
                 .Where(p => !p.Hidden);
 
-            var currentLastPostNumber = posts.Count() + amountToSkip;
+            if (search.City != null)
+                posts = posts.Where(p => p.City.Contains(search.City));
+            if (search.Nbeds.HasValue)
+                posts = posts.Where(p => p.NBeds == search.Nbeds.Value);
+            if (search.NRooms.HasValue)
+                posts = posts.Where(p => p.NBedrooms == search.NRooms.Value);
 
             var model = new IndexModel
             {
-                Posts = posts,
                 CurrentPage = page,
-                HasNextPage = _context.Posts.Count() > currentLastPostNumber,
-                HasPreviousPage = amountToSkip > 0
+                HasNextPage = posts.Count() > App.ItemsPerPage,
+                HasPreviousPage = amountToSkip > 0,
+                Posts = posts.Take(App.ItemsPerPage),
+                Search = search,
             };
-
             return View(model);
         }
 

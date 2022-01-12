@@ -4,6 +4,28 @@
 
 @model IndexModel
 
+
+<form asp-action="Index" class="mb-4" method="get" style="display: table; margin: auto;">
+    <div>
+        <div class="d-inline-block search-container">
+            <input id="citysearch" value="@Model.Search.City" type="text" asp-for="Search.City" placeholder="City" />
+        </div>
+        <div class="ml-3 d-inline-block search-numbers">
+            <p class="d-inline-block">
+                <img src="/icon/room-icon.png" class="icon-m" />
+                <input class="mr-1" asp-for="Search.NRooms" value="@Model.Search.NRooms" min="1" max="99" />
+            </p>
+            <span class="mx-1">&#124;</span>
+            <p class="d-inline-block">
+                <input class="mr-1" asp-for="Search.Nbeds" value="@Model.Search.Nbeds" min="1" max="99" />
+                <img src="/icon/bed-icon.png" class="icon-m" />
+            </p>
+        </div>
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+</form>
+
+
 <div class="container">
 
     @foreach (var m in Model.Posts)
@@ -46,7 +68,7 @@
 
             <div class="mx-3 position-relative">
                 <h3><a href="/Home/Details/@m.Id" class="text-dark">@m.Title</a></h3>
-                <h5>@m.Address</h5>
+                <h5>@m.City - @m.Address</h5>
 
                 @{await Html.RenderPartialAsync("_RatingPartial", m.Rating); }
 
@@ -84,7 +106,7 @@
 
 </div>
 
-<div class="w-auto d-inline-block align-baseline w-auto mx-auto">
+<div class="align-baseline mx-auto" style="width:fit-content;">
     <style>
         .index-arrow {
             font-size: 1.5em;
@@ -96,7 +118,7 @@
     {
         <a class="btn btn-sm index-arrow" asp-area="" asp-controller="Home" asp-action="Index" asp-route-id="@(Model.CurrentPage-1)">&#60;</a>
     }
-    
+
     <span class="index-arrow">@Model.CurrentPage</span>
 
     @if (Model.HasNextPage)

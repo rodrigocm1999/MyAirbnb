@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,9 +11,18 @@ namespace MyAirbnb.Models
 
         public IEnumerable<Post> Posts { get; set; }
 
-
         public int CurrentPage { get; set; }
         public bool HasPreviousPage { get; set; }
         public bool HasNextPage { get; set; }
+
+        public IndexSearch Search { get; set; }
+    }
+
+    public class IndexSearch
+    {
+        public string City { get; set; }
+        public int? Nbeds { get; set; }
+        public int? NRooms { get; set; }
+
     }
 }

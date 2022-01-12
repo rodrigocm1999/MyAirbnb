@@ -73,7 +73,7 @@ body {
     line-height: 60px; /* Vertically center the text there */
 }
 
-
+/* -------------------------------------------------- */
 .car-img {
     width: 200px;
     height: 200px;
@@ -109,4 +109,31 @@ body {
 
 .pre-wrap {
     white-space: pre-wrap;
+}
+
+
+.search-container input[type=text] {
+    margin: 5px 0px;
+    font-size: 17px;
+    border: 1px solid black;
+}
+
+.search-container label {
+    font-size: 1.2em;
+}
+
+.search-container button {
+    background: #ddd;
+    font-size: 1.2em;
+    border: none;
+    cursor: pointer;
+}
+
+    .search-container button:hover {
+        background: #ccc;
+    }
+
+
+.search-numbers input{
+    width: 3em;
 }

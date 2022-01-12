@@ -8,19 +8,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace MyAirbnb.Models
 {
 
-    /*Random thoughts--------------------------------------------------
 
-    ------------------------------------------------------------------- */
-
-    //Non Specific
-    //TODO index- conseguir fazer pesquisa por endereço, talvez também ter filtros para escolher as camas e 
-    //TODO fazer pedir as reservas- tem de verificar a existencia de outras nessas datas e também mostrar as datas disponivies
-
-    //Worker
-    //TODO os workers podem ver os clientes para poder decidir se aceitam a reserva ou não
-    
-
-    [Index(nameof(WorkerId))]
+    [Index(nameof(City))]
     public class Post
     {
         [Key]
@@ -34,6 +23,9 @@ namespace MyAirbnb.Models
         public string Title { get; set; } = "";
         [Required]
         public string Address { get; set; } = "";
+
+        [Required]
+        public string City { get; set; } = "";
 
         [DataType(DataType.MultilineText)]
         public string Description { get; set; } = "";
@@ -58,7 +50,6 @@ namespace MyAirbnb.Models
         [Display(Name = "Space Category")]
         public int SpaceCategoryId { get; set; }
         public virtual SpaceCategory SpaceCategory { get; set; }
-        public int AvailabilityType { get; set; }
 
         public bool Hidden { get; set; } = false;
 

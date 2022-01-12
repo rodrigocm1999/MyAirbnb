@@ -160,6 +160,7 @@ namespace MyAirbnb.Controllers
 
                     post.Title = formPost.Title;
                     post.Address = formPost.Address;
+                    post.City = formPost.City;
                     post.Description = formPost.Description;
                     post.Price = formPost.Price;
                     post.NBeds = formPost.NBeds;

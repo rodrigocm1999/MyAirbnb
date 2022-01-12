@@ -12,7 +12,7 @@
 
         <div class="mx-3 position-relative w-75">
             <h3>@m.Title</h3>
-            <h5>@m.Address</h5>
+            <h5>@m.City - @m.Address</h5>
 
             @{await Html.RenderPartialAsync("_RatingPartial", m.Rating); }
         </div>
