@@ -58,9 +58,6 @@ namespace MyAirbnb.Controllers
             if (id == null) return NotFound();
             var reservationId = id.Value;
 
-            var post = _context.Reservations.FirstOrDefault(e => e.Id == reservationId && e.WorkerId == User.GetUserId());
-            if (post == null) return NotFound();
-
             var reservation = _context.Reservations
                 .Include(e => e.Post)
                 .Include(e => e.Comment)
@@ -68,6 +65,8 @@ namespace MyAirbnb.Controllers
                 .Include(e => e.Worker)
                 .Include(e => e.UserWorker)
                 .FirstOrDefault(e => e.Id == reservationId && e.UserId == User.GetUserId());
+
+            if (reservation == null) return NotFound();
 
             reservation.CheckInItems = null;
             reservation.CheckOutItems = null;

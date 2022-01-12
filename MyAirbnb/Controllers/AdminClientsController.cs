@@ -53,56 +53,23 @@ namespace MyAirbnb.Controllers
             return View(clientsAdminView);
         }
 
-        public IActionResult ClienteReservation(int? id)
+        public async Task<IActionResult> ClienteReservationAsync(int? id)
         {
             if (id == null) return NotFound();
-            var reservationId = id.Value;
 
-            var reservation = _context.Reservations.Include(e => e.Post).Include(e => e.Comment).FirstOrDefault(e => e.Id == reservationId && e.WorkerId == User.GetUserId());
+            var reservation = await _context.Reservations
+                .Include(r => r.Post)
+                .Include(r => r.Worker)
+                .Include(r => r.User)
+                .Include(r => r.CheckOutImages)
+                .Include(r => r.Comment)
+                .Include(r => r.UserWorker)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
             if (reservation == null) return NotFound();
 
-            //var reservations = _context.Reservations
-            //    .Include(e => e.Post)
-            //    .Include(e => e.Comment)
-            //    .FirstOrDefault(e => e.Id == reservationId && e.UserId == User.GetUserId());
-
-            var model = new ReservationModel
-            {
-                Id = reservation.Id,
-                Post = reservation.Post,
-                TotalPrice = reservation.TotalPrice,
-                RatingUser = reservation.RatingUser,
-                RatingPost = reservation.RatingPost,
-                StartDate = reservation.StartDate,
-                EndDate = reservation.EndDate,
-                State = reservation.State,
-                Comment = reservation.Comment,
-            };
-
-            return View(model);
+            return View(reservation);
         }
-
-        // GET: AdminClients/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
-
-        // POST: AdminClients/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id,Name")] ClientsAdminView clientsAdminView)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(clientsAdminView);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(clientsAdminView);
-        //}
 
         //// GET: AdminClients/Edit/5
         //public async Task<IActionResult> Edit(string id)
