@@ -59,7 +59,12 @@ namespace MyAirbnb.Models
 
             var list = str.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
             foreach (var l in list)
-                checkList.Add(new CheckedText { Checked = true, Text = l.StartsWith("*") ? l[1..] : l });
+            {
+                if (l.StartsWith("*"))
+                    checkList.Add(new CheckedText { Checked = true, Text = l[1..] });
+                else
+                    checkList.Add(new CheckedText { Checked = false, Text = l });
+            }
             return checkList;
         }
     }

@@ -61,25 +61,21 @@ namespace MyAirbnb.Controllers
             var post = _context.Reservations.FirstOrDefault(e => e.Id == reservationId && e.WorkerId == User.GetUserId());
             if (post == null) return NotFound();
 
-            var reservations = _context.Reservations
+            var reservation = _context.Reservations
                 .Include(e => e.Post)
                 .Include(e => e.Comment)
+                .Include(e => e.User)
+                .Include(e => e.Worker)
+                .Include(e => e.UserWorker)
                 .FirstOrDefault(e => e.Id == reservationId && e.UserId == User.GetUserId());
 
-            var model = new ReservationModel
-            {
-                Id = reservations.Id,
-                Post = reservations.Post,
-                TotalPrice = reservations.TotalPrice,
-                RatingUser = reservations.RatingUser,
-                RatingPost = reservations.RatingPost,
-                StartDate = reservations.StartDate,
-                EndDate = reservations.EndDate,
-                State = reservations.State,
-                Comment = reservations.Comment,
-            };
+            reservation.CheckInItems = null;
+            reservation.CheckOutItems = null;
+            reservation.CheckInNotes = null;
+            reservation.CheckOutNotes = null;
+            reservation.CheckOutImages = null;
 
-            return View(model);
+            return View(reservation);
         }
 
         public IActionResult Comment(int? id)
@@ -128,7 +124,7 @@ namespace MyAirbnb.Controllers
                 };
             }
             _context.SaveChanges();
-            
+
             var avg = _context.Reservations
                 .Where(e => e.PostId == reservation.PostId && e.State == ReservationState.Finished && e.RatingPost != null)
                 .Average(e => e.RatingPost);

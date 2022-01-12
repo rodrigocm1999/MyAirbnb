@@ -72,6 +72,7 @@ namespace MyAirbnb.Models
         public Worker Worker { get; set; }
         public Post Post { get; set; }
         public Comment Comment { get; set; }
+        public ApplicationUser UserWorker { get; set; }
 
         [Display(Name = "User Rating")]
         public int? RatingUser { get; set; }

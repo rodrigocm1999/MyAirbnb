@@ -53,21 +53,23 @@
         </div>
     </div>
 
-    <div class="position-absolute" style="min-width:100px;right:0px;">
-        <span class="w-auto">@m.Price€/night</span>
+    <div class="position-absolute" style="text-align: right; min-width: 100px; right: 0px;">
+        <span>@m.Price€/night</span>
+        <br />
+        <div class="d-inline-block mt-3">
+            <p class="d-inline-block">
+                <img src="/icon/room-icon.png" class="icon-m" />
+                <span class="ml-1">@m.NBedrooms</span>
+            </p>
+            <span class="mx-1">&#124;</span>
+            <p class="d-inline-block">
+                <span class="mr-1">@m.NBeds</span>
+                <img src="/icon/bed-icon.png" class="icon-m" />
+            </p>
+        </div>
         <br />
         <p class="d-inline-block">
-            <img src="/icon/room-icon.png" class="icon-m" />
-            <span class="ml-1">@m.NBedrooms</span>
-        </p>
-        <span class="mx-1">&#124;</span>
-        <p class="d-inline-block">
-            <span class="mr-1">@m.NBeds</span>
-            <img src="/icon/bed-icon.png" class="icon-m" />
-        </p>
-        <br />
-        <p class="d-inline-block">
-            <span class="mr-1">@m.SpaceCategory.Name</span>
+            <span>@m.SpaceCategory.Name</span>
         </p>
 
     </div>

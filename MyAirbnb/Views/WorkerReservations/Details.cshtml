@@ -1,4 +1,4 @@
-﻿@model MyAirbnb.Models.ReservationDetails
+﻿@model MyAirbnb.Models.Reservation
 
 @{
     ViewData["Title"] = "Details";
@@ -8,74 +8,7 @@
 <hr />
 
 <div>
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Worker)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Worker.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Post)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Post.Address)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.RatingUser)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.RatingUser)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.RatingPost)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.RatingPost)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CheckInItems)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CheckInItems)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CheckOutItems)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CheckOutItems)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.State)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.State)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalPrice)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TotalPrice)
-        </dd>
-    </dl>
+    @{ await Html.RenderPartialAsync("_ReservationDetails",Model);}
 </div>
 
 <div>

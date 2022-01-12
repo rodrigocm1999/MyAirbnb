@@ -1,0 +1,155 @@
+﻿@model MyAirbnb.Models.Reservation
+
+<dl class="row">
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Post.Address)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Post.Address)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Price)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Price)
+    </dd>
+    <dt class="col-sm-2">
+        Total Price
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.TotalPrice)
+    </dd>
+    <dt class="col-sm-2">
+        Post Details
+    </dt>
+    <dd class="col-sm-10">
+        <a asp-controller="Home" asp-action="Details" asp-route-id="@Model.Post.Id">Post Link</a>
+    </dd>
+    @if (Model.RatingUser != null)
+    {
+        <dt class="col-sm-2">
+            Rating User
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RatingUser)
+        </dd>
+    }
+    @if (Model.RatingPost != null)
+    {
+        <dt class="col-sm-2">
+            Rating Post
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RatingPost)
+        </dd>
+    }
+    @if (Model.Comment != null)
+    {
+        <dt class="col-sm-2">
+            User Comment
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Comment.Text)
+        </dd>
+    }
+    <dt class="col-sm-2">
+        Reservation State
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.State)
+    </dd>
+    @if (Model.State != ReservationState.Finished)
+    {
+        @if (Model.UserWorker.FirstName != null || Model.UserWorker.LastName != null)
+        {
+            <dt class="col-sm-2">
+                Handler Name
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.UserWorker.FirstName)
+                @Html.DisplayFor(model => model.UserWorker.LastName)
+            </dd>
+        }
+        <dt class="col-sm-2">
+            Handler Email
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.UserWorker.Email)
+        </dd>
+
+        <dt class="col-sm-2">
+            Handler Phonenumber
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.UserWorker.PhoneNumber)
+        </dd>
+    }
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.StartDate)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.StartDate)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.EndDate)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.EndDate)
+    </dd>
+    @if (Model.CheckInItems != null)
+    {
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CheckInItems)
+        </dt>
+        <dd class="col-sm-10">
+            @foreach (var e in ChecklistsHelper.SplitIntoCheckedList(Model.CheckInItems))
+            {
+                @Html.CheckBox(e.Text, e.Checked, new { disabled = true }) <span>@e.Text</span>
+                <br />
+            }
+        </dd>
+    }
+    @if (Model.CheckInNotes != null)
+    {
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CheckInNotes)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CheckInNotes)
+        </dd>
+    }
+    @if (Model.CheckOutItems != null)
+    {
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CheckOutItems)
+        </dt>
+        <dd class="col-sm-10">
+            @foreach (var e in ChecklistsHelper.SplitIntoCheckedList(Model.CheckOutItems))
+            {
+                @Html.CheckBox(e.Text, e.Checked, new { disabled = true }) <span>@e.Text</span>
+                <br />
+            }
+        </dd>
+    }
+    @if (Model.CheckOutNotes != null)
+    {
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CheckOutNotes)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CheckOutNotes)
+        </dd>
+    }
+    @if (Model.CheckOutImages != null && Model.CheckOutImages.Count > 0)
+    {
+        <dt class="col-sm-2">
+            Check Out Images
+        </dt>
+        <dd class="col-sm-10 d-flex">
+            @foreach (var e in Model.CheckOutImages)
+            {
+                <img src="@e.FilePath" class="car-img" />
+            }
+        </dd>
+    }
+</dl>
