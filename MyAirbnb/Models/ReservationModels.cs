@@ -45,7 +45,18 @@ namespace MyAirbnb.Models
 
     public class ReservationCreationModel : IValidatableObject
     {
+        public int Id { get; set; }
+
         public int PostId { get; set; }
+
+        [Display(Name = "Title")]
+        public string PostTitle { get; set; }
+
+        [Display(Name = "Description")]
+        public string PostDescription { get; set; }
+
+        [Display(Name = "Post Rating")]
+        public int PostRating { get; set; }
 
         [DataType(DataType.Currency)]
         public int Price { get; set; }
@@ -56,6 +67,11 @@ namespace MyAirbnb.Models
         [DataType(DataType.Date)]
         [Display(Name = "End of Reservation")]
         public DateTime EndDate { get; set; } = DateTime.Today.AddDays(5);
+
+        [Display(Name = "Card Number")]
+        public int CardNumber { get; set; }
+
+
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

@@ -59,8 +59,12 @@ namespace MyAirbnb.Controllers
                 IdentityUserRole<string> userHasAdminRole = _context.UserRoles.FirstOrDefault(x => x.RoleId == adminRoleId && x.UserId == user.Id);
                 if (userHasAdminRole == null)
                 {
-                    WorkerViewModel workerModel = new WorkerViewModel { Id = user.Id, Name = user.UserName, Posts = a.Posts };
-                    workerList.Add(workerModel);
+                    if(manager.Id != user.Id)
+                    {
+                        WorkerViewModel workerModel = new WorkerViewModel { Id = user.Id, Name = user.UserName, Posts = a.Posts };
+                        workerList.Add(workerModel);
+                    }
+                   
                 }
             }
 

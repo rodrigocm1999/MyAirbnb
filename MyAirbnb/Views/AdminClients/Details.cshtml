@@ -30,7 +30,80 @@
         
     </thead>
     <tbody>
-        @foreach (var reservation in Model.Reservations)
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Post
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Reservations.FirstOrDefault().Post.Address)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Reservations.FirstOrDefault().StartDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Reservations.FirstOrDefault().EndDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Reservations.FirstOrDefault().TotalPrice)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Reservations.FirstOrDefault().State)
+                    </th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Reservations)
+                {
+                    <tr>
+                        <td>
+                            <a asp-controller="Home" asp-action="Details" asp-route-id="@item.PostId">Link</a>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Post.Address)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StartDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EndDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TotalPrice)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.State)
+                        </td>
+                        <td>
+                            <a asp-action="ClienteReservation" asp-route-id="@item.Id">Details</a>
+                        </td>
+                        @*<td>
+                            @switch (item.State)
+                            {
+                                case ReservationState.Pending:
+                                    <a asp-action="Accept" asp-route-id="@item.Id">Pending</a>
+                                    break;
+                                case ReservationState.ToCheckIn:
+                                    <a asp-action="CheckIn" asp-route-id="@item.Id">CheckIn</a>
+                                    break;
+                                case ReservationState.OnGoing:
+                                    <a asp-action="DebugChangeEndDate" asp-route-id="@item.Id">//change end date</a>
+                                    break;
+                                case ReservationState.ToCheckOut:
+                                    <a asp-action="CheckOut" asp-route-id="@item.Id">CheckOut</a>
+                                    break;
+                                default:
+                                    break;
+                            }
+                        </td>*@
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @*@foreach (var reservation in Model.Reservations)
         {
             <tr>
                 <td>
@@ -41,7 +114,7 @@
                     <a asp-action="ClienteReservation" asp-route-id="@reservation.Id">Details</a>
                 </td>
             </tr>
-        }
+        }*@
     </tbody>
 </table>
 <div class="row">
