@@ -142,8 +142,9 @@ namespace MyAirbnb.Controllers
 
             var post = _context.Posts.FirstOrDefault(e => e.Id == postId);
             if (post == null) return NotFound();
+            
 
-            var model = new ReservationCreationModel { PostId = postId, Price = post.Price };
+            var model = new ReservationCreationModel { PostId = postId, Price = post.Price , PostTitle = post.Title, PostDescription = post.Description, PostRating = (int)post.Rating};
             //TODO atualizar preço ao mudar as datas
             return View(model);
         }

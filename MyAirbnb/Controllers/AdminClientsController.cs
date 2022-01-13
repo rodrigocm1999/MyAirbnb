@@ -45,7 +45,8 @@ namespace MyAirbnb.Controllers
 
             var user = _context.Users.FirstOrDefault(m => m.Id == id);
             IQueryable<Reservation> reservations = _context.Reservations.Where(m => m.UserId == id).Include(m => m.Post);
-            var clientsAdminView = new ClientsAdminView() { Id = user.Id, Name = user.UserName , Reservations = reservations};
+            var name = user.FirstName + " " + user.LastName;
+            var clientsAdminView = new ClientsAdminView() { Id = user.Id, Name = name , Reservations = reservations};
             var count = clientsAdminView.Reservations.Count();
             if (clientsAdminView == null)
                 return NotFound();
@@ -122,23 +123,32 @@ namespace MyAirbnb.Controllers
         //    return View(clientsAdminView);
         //}
 
-        // GET: AdminClients/Delete/5
-        //public async Task<IActionResult> Delete(string id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        //GET: AdminClients/Delete/5
+        public async Task<IActionResult> Delete(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            
+            var user = await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
+            if (user == null)
+            {
+                return NotFound();
+            }
 
-        //    var clientsAdminView = clients.FirstOrDefault(m => m.Id == id);
-        //    if (clientsAdminView == null)
-        //    {
-        //        return NotFound();
-        //    }
+            return View(user);
+        }
 
-        //    return View(clientsAdminView);
-        //}
-
-
+        // POST: AdminManager/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var client = await _context.Users.FindAsync(id);
+            _context.Users.Remove(client);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
