@@ -99,7 +99,10 @@
         {
             @foreach (var c in m.Comments)
             {
-                <p>@c.User.UserName : @c.Text</p>
+                <div class="d-table">
+                    <span class="col-2 font-weight-bold">@c.User.FirstName @c.User.LastName:</span> 
+                    <span style="white-space:pre-wrap" class="col-10">@c.Text</span>
+                </div>
             }
         }
         else
