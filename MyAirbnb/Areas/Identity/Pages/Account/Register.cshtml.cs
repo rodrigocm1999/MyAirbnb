@@ -24,18 +24,15 @@ namespace MyAirbnb.Areas.Identity.Pages.Account
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterManagerModel> _logger;
-        private readonly IEmailSender _emailSender;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterManagerModel> logger,
-            IEmailSender emailSender)
+            ILogger<RegisterManagerModel> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
         }
 
         [BindProperty]
@@ -89,19 +86,18 @@ namespace MyAirbnb.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var userName = Input.FirstName + Input.LastName;
-                var user = new ApplicationUser { UserName = userName, FirstName = Input.FirstName, LastName = Input.LastName, Email = Input.Email , PhoneNumber = Input.PhoneNumber };
+                var user = new ApplicationUser { UserName = Input.Email, FirstName = Input.FirstName, LastName = Input.LastName, Email = Input.Email, PhoneNumber = Input.PhoneNumber };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                   
+
                     await _userManager.AddToRoleAsync(user, App.ClientRole);
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    
+                    return LocalRedirect(returnUrl);
+
                 }
                 foreach (var error in result.Errors)
                 {

@@ -32,7 +32,7 @@ namespace MyAirbnb.Controllers
             var result = await _userManager.GetUsersInRoleAsync(App.ClientRole);
             List<ClientsAdminView> clients = new ();
             foreach (var user in result)
-                clients.Add(new ClientsAdminView() { Id = user.Id, Name = user.UserName });
+                clients.Add(new ClientsAdminView() { Id = user.Id, Name = user.FirstName + " " + user.LastName });
 
             return View(clients);
         }
