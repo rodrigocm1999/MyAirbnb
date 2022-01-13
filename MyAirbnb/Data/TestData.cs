@@ -86,7 +86,7 @@ namespace MyAirbnb.Data
                     NBedrooms=1,NBeds=1,Price=299,SpaceCategoryId = apartementId, WorkerId = workerId,City ="Porto"},
                  new Post{Address="Local da merenda",Description="Paredes de esferotive!",Title="Casa apresentável para 2 pessoas",
                     NBedrooms=1,NBeds=2,Price=299,SpaceCategoryId = apartementId, WorkerId = workerId,City ="Coimbra"},
-                 new Post{Address="Rua das Garagens",Description="cabem 12 pessoas deitadas encostadas, mas bem compactadas leva 18\n e em pé até dá para 30",Title="Garagem para dormir no chão, cabem 12 pessoas deitadas encostadas",
+                 new Post{Address="Rua das Garagens",Description="cabem 12 pessoas deitadas encostadas, mas bem compactadas leva 18\n e em pé até dá para 30",Title="Garagem para dormir no chão, cabem 12 pessoas",
                     NBedrooms=1,NBeds=12,Price=299,SpaceCategoryId = garageId, WorkerId = workerId,City ="Cantanhede"},
                  new Post{Address="BigHouse Street",Description="Este apartamente tem aço",Title="Casa apresentável para 2 pessoas",
                     NBedrooms=2,NBeds=2,Price=299,SpaceCategoryId = sharedHouseId, WorkerId = workerId,City ="Cantanhede"},
