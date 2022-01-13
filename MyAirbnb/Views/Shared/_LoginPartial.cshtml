@@ -6,7 +6,8 @@
 @if (SignInManager.IsSignedIn(User))
 {
     var user = await UserManager.GetUserAsync(User);
-
+    if(user == null)
+        user = new ApplicationUser {FirstName = "Please Log out Right now",LastName= ""};
     <li class="nav-item">
         <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @user.FirstName @user.LastName!</a>
     </li>

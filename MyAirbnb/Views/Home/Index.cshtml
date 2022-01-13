@@ -33,7 +33,7 @@
         string id = "carousel" + m.Id;
         int maxImages = 3;
 
-        <div class="container border-bottom py-2 d-flex position-relative">
+        <div class="container border-bottom py-2 d-flex flex position-relative">
 
             <div id="@id" class="carousel slide car-img" data-ride="carousel">
                 @if (m.PostImages != null)
@@ -66,23 +66,25 @@
                 }
             </div>
 
-            <div class="mx-3 position-relative">
+            <div class="ml-3 w-100">
                 <h3><a href="/Home/Details/@m.Id" class="text-dark">@m.Title</a></h3>
                 <h5>@m.City - @m.Address</h5>
 
-                @{await Html.RenderPartialAsync("_RatingPartial", m.Rating); }
+                <div>
+                    @{await Html.RenderPartialAsync("_RatingPartial", m.Rating); }
+                </div>
 
-                <div class="my-2 position-absolute overflow-hidden d-flex" style="bottom: 0; left: 0;">
-                    @foreach (var c in m.Comodities)
+                <div class="d-flex flex-wrap mt-2 ">
+                    @for (var i = 0; i < m.Comodities.Count && i < 8; i++)
                     {
-                        <span class="rounded btn-sm btn-info mr-1">@c.Name</span>
+                        var c = m.Comodities[i];
+                        <span class="rounded btn-sm btn-info mr-1 mt-1">@c.Name</span>
                     }
                 </div>
             </div>
 
-            <div class="position-absolute" style="text-align: right; min-width: 100px; right: 0px;">
+            <div class="ml-auto d-flex flex-column" style="width:170px;">
                 <span>@m.Price€/night</span>
-                <br />
                 <div class="d-inline-block mt-3">
                     <p class="d-inline-block">
                         <img src="/icon/room-icon.png" class="icon-m" />
@@ -94,7 +96,6 @@
                         <img src="/icon/bed-icon.png" class="icon-m" />
                     </p>
                 </div>
-                <br />
                 <p class="d-inline-block">
                     <span>@m.SpaceCategory.Name</span>
                 </p>
