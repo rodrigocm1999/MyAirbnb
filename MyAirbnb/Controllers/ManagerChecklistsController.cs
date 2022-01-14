@@ -6,6 +6,7 @@ using MyAirbnb.Models;
 using MyAirbnb.Other;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -87,8 +88,10 @@ namespace MyAirbnb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SpaceCategoryId,CheckInItems,CheckOutItems")] EditCheckLists editCheckLists)
+        public async Task<IActionResult> Edit(int id, EditCheckLists editCheckLists)
         {
+            if (!ModelState.IsValid) return View(editCheckLists);
+
             var spaceCategoryId = id;
             var manager = WhereManager().Include(e => e.CheckLists).FirstOrDefault();
 
@@ -128,7 +131,10 @@ namespace MyAirbnb.Controllers
             public int SpaceCategoryId { get; set; }
 
             public string SpaceCategoryName { get; set; }
+
+            [RegularExpression(@"^[^*]+$", ErrorMessage = "The character '*' is not allowed")]
             public string CheckInItems { get; set; } = "";
+            [RegularExpression(@"^[^*]+$", ErrorMessage = "The character '*' is not allowed")]
             public string CheckOutItems { get; set; } = "";
         }
     }
