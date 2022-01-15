@@ -121,10 +121,12 @@ namespace MyAirbnb.Controllers
 
         public IActionResult Create()
         {
+            var cat = _context.SpaceCategories.FirstOrDefault();
             var post = new Post()
             {
                 WorkerId = User.GetUserId(),
                 Hidden = true,
+                SpaceCategoryId = cat.Id,
             };
             _context.Posts.Add(post);
             _context.SaveChanges();
