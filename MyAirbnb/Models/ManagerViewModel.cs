@@ -8,10 +8,7 @@ namespace MyAirbnb.Models
 {
     public class ManagerViewModel
     {
-        public string Id { get; set; }
-
-        [Display(Name = "Name")]
-        public string Name { get; set; }
+        public ApplicationUser Manager { get; set; }
 
         public virtual ICollection<Worker> Workers { get; set; } = new List<Worker>();
     }

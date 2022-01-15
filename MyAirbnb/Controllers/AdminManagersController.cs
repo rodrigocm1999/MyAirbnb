@@ -33,7 +33,7 @@ namespace MyAirbnb.Controllers
             List<ManagerViewModel> managers = new();
             foreach (var manager in result)
             {
-                managers.Add(new ManagerViewModel() { Id = manager.Id, Name = manager.FirstName + " " + manager.LastName });
+                managers.Add(new ManagerViewModel() { Manager = manager });
             }
             return View(managers);
         }
@@ -52,8 +52,8 @@ namespace MyAirbnb.Controllers
             {
                 return NotFound();
             }
-            var user =  _context.Users.FirstOrDefault(m => m.Id == id);
-            var viewModel = new ManagerViewModel() { Id = manager.Id, Workers = manager.Workers, Name = user.FirstName + " " + user.LastName };
+            var user =  _context.Users.FirstOrDefault(m => m.Id == manager.Id);
+            var viewModel = new ManagerViewModel() { Manager = user };
             return View(viewModel);
         }
 
@@ -131,33 +131,49 @@ namespace MyAirbnb.Controllers
         //}
 
         // GET: AdminManager/Delete/5
-        //public async Task<IActionResult> Delete(string id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        public async Task<IActionResult> Delete(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-        //    var manager = await _context.Managers
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (manager == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var manager = await _context.Managers
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (manager == null)
+            {
+                return NotFound();
+            }
+            var user = _context.Users.FirstOrDefault(m => m.Id == manager.Id);
+            var viewModel = new ManagerViewModel() { Manager = user };
 
-        //    return View(manager);
-        //}
+            return View(viewModel);
+        }
 
         // POST: AdminManager/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(string id)
-        //{
-        //    var manager = await _context.Managers.FindAsync(id);
-        //    _context.Managers.Remove(manager);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var manager = await _context.Managers.FindAsync(id);
+            var userManager = await _context.Users.FindAsync(manager.Id);
+            foreach (var worker in manager.Workers)
+            {
+                //foreach (var post in worker.Posts)
+                //{
+                //    await _context.Posts.FindAsync(post.Id);
+                //}
+                Worker workerToRemove = await _context.Workers.FindAsync(worker.Id);
+                var userWorkerToRemove = await _context.Users.FindAsync(worker.Id);
+                _context.Users.Remove(userWorkerToRemove);
+                _context.Workers.Remove(workerToRemove);
+                await _context.SaveChangesAsync();
+            }
+            _context.Users.Remove(userManager);
+            _context.Managers.Remove(manager);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
 
         //private bool ManagerExists(string id)
         //{
