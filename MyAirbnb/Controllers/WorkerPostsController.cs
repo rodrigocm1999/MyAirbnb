@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using MyAirbnb.Data;
 using MyAirbnb.Other;
 using MyAirbnb.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace MyAirbnb.Controllers
 {
@@ -21,11 +22,13 @@ namespace MyAirbnb.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _environment;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public WorkerPostsController(ApplicationDbContext context, IWebHostEnvironment environment)
+        public WorkerPostsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment environment)
         {
             _context = context;
             _environment = environment;
+            _userManager = userManager;
         }
 
         private string _userId = null;
@@ -77,14 +80,25 @@ namespace MyAirbnb.Controllers
             public IEnumerable<Post> Posts { get; set; }
         }
 
-        public IActionResult Index(string workerId)
+        public async Task<IActionResult> IndexAsync(string workerId)
         {
             if (workerId != null)
             {
-                var worker = _context.Workers
+                bool isAdmin = User.IsInRole(App.AdminRole);
+                Worker worker;
+                if (isAdmin)
+                {
+                    worker = _context.Workers
                     .Include(e => e.Posts)
-                    .Where(e => e.ManagerId == User.GetUserId() && e.Id == workerId)
-                    .FirstOrDefault();
+                    .FirstOrDefault(e => e.Id == workerId);
+                }
+                else
+                {
+                    worker = _context.Workers
+                   .Include(e => e.Posts)
+                   .FirstOrDefault(e => e.ManagerId == User.GetUserId() && e.Id == workerId);
+                }
+
                 if (worker == null) return NotFound();
                 var model = new IndexModel
                 {
@@ -182,8 +196,8 @@ namespace MyAirbnb.Controllers
                     await _context.SaveChangesAsync();
 
                     if (post.WorkerId != UserId)
-                        return RedirectToAction(nameof(Index), new { workerId = post.WorkerId });
-                    return RedirectToAction(nameof(Index));
+                        return RedirectToAction(nameof(IndexAsync), new { workerId = post.WorkerId });
+                    return RedirectToAction(nameof(IndexAsync));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -219,8 +233,8 @@ namespace MyAirbnb.Controllers
             _context.Posts.Remove(post);
             await _context.SaveChangesAsync();
             if (post.WorkerId != UserId)
-                return RedirectToAction(nameof(Index), new { workerId = post.WorkerId });
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(IndexAsync), new { workerId = post.WorkerId });
+            return RedirectToAction(nameof(IndexAsync));
         }
 
         [HttpPost]

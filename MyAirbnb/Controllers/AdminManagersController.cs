@@ -155,7 +155,7 @@ namespace MyAirbnb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var manager = await _context.Managers.FindAsync(id);
+            var manager = _context.Managers.Include(e => e.Workers).FirstOrDefault(e => e.Id == id);
             var userManager = await _context.Users.FindAsync(manager.Id);
             foreach (var worker in manager.Workers)
             {
@@ -167,7 +167,7 @@ namespace MyAirbnb.Controllers
                 var userWorkerToRemove = await _context.Users.FindAsync(worker.Id);
                 _context.Users.Remove(userWorkerToRemove);
                 _context.Workers.Remove(workerToRemove);
-                await _context.SaveChangesAsync();
+
             }
             _context.Users.Remove(userManager);
             _context.Managers.Remove(manager);

@@ -148,9 +148,9 @@ namespace MyAirbnb.Data
                     var worker2 = new ApplicationUser { FirstName = "worker numbeeer", LastName = "2", Email = "worker2@worker.worker", PhoneNumber = "921222922" };
                     var worker3 = new ApplicationUser { FirstName = "workerino", LastName = "is number 3", Email = "worker3@worker.worker", PhoneNumber = "921222922" };
                     await CreateManagerAsync(manager1);
-                    await CreateUserAsync(worker1, manager1.Id);
-                    await CreateUserAsync(worker2, manager1.Id);
-                    await CreateUserAsync(worker3, manager1.Id);
+                    await CreateWorkerAsync(worker1, manager1.Id);
+                    await CreateWorkerAsync(worker2, manager1.Id);
+                    await CreateWorkerAsync(worker3, manager1.Id);
                     await _context.SaveChangesAsync();
                 }
                 {
@@ -159,9 +159,9 @@ namespace MyAirbnb.Data
                     var worker2 = new ApplicationUser { FirstName = "worker ", LastName = "123", Email = "worker6@worker.worker", PhoneNumber = "921222922" };
                     var worker3 = new ApplicationUser { FirstName = "workerino", LastName = "is ssss3", Email = "worker8@worker.worker", PhoneNumber = "921222922" };
                     await CreateManagerAsync(manager1);
-                    await CreateUserAsync(worker1, manager1.Id);
-                    await CreateUserAsync(worker2, manager1.Id);
-                    await CreateUserAsync(worker3, manager1.Id);
+                    await CreateWorkerAsync(worker1, manager1.Id);
+                    await CreateWorkerAsync(worker2, manager1.Id);
+                    await CreateWorkerAsync(worker3, manager1.Id);
                     await _context.SaveChangesAsync();
                 }
             }
@@ -198,7 +198,7 @@ namespace MyAirbnb.Data
             _context.Managers.Add(new Manager { Id = user.Id });
         }
 
-        public async Task CreateUserAsync(ApplicationUser user, string managerId)
+        public async Task CreateWorkerAsync(ApplicationUser user, string managerId)
         {
             user.UserName = user.Email;
             await _userManager.CreateAsync(user, user.Email);
