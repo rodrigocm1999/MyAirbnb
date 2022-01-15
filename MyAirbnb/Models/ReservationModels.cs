@@ -41,6 +41,8 @@ namespace MyAirbnb.Models
 
         [MaxLength(250, ErrorMessage = "Max comment length is 250")]
         public string Comment { get; set; }
+
+        public Reservation Reservation { get; set; }
     }
 
     public class ReservationCreationModel : IValidatableObject
@@ -56,7 +58,10 @@ namespace MyAirbnb.Models
         public string PostDescription { get; set; }
 
         [Display(Name = "Post Rating")]
-        public int PostRating { get; set; }
+        public float? PostRating { get; set; }
+
+        [Display(Name = "Post Address")]
+        public string PostAddress{ get; set; }
 
         [DataType(DataType.Currency)]
         public int Price { get; set; }
@@ -70,8 +75,6 @@ namespace MyAirbnb.Models
 
         [Display(Name = "Card Number")]
         public int CardNumber { get; set; }
-
-
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

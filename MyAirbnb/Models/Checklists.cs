@@ -33,6 +33,7 @@ namespace MyAirbnb.Models
 
         public static string JoinForDatabase(List<string> items, List<int> checkedItemsIndeces)
         {
+            if (items == null) return null;
             if (checkedItemsIndeces == null) checkedItemsIndeces = new List<int>(0);
 
             var checkInItems = new List<string>();

@@ -88,8 +88,15 @@ namespace MyAirbnb.Controllers
                     && e.State == ReservationState.Finished && e.RatingPost == null);
             if (reservation == null) return NotFound();
 
+            reservation.CheckInItems = null;
+            reservation.CheckOutItems = null;
+            reservation.CheckInNotes = null;
+            reservation.CheckOutNotes = null;
+            reservation.CheckOutImages = null;
+
             var model = new ReservationCommentModel
             {
+                Reservation = reservation,
                 Id = reservation.Id,
                 Post = reservation.Post,
                 TotalPrice = reservation.TotalPrice,
@@ -142,10 +149,17 @@ namespace MyAirbnb.Controllers
 
             var post = _context.Posts.FirstOrDefault(e => e.Id == postId);
             if (post == null) return NotFound();
-            
 
-            var model = new ReservationCreationModel { PostId = postId, Price = post.Price , PostTitle = post.Title, PostDescription = post.Description, PostRating = (int)post.Rating};
-            //TODO atualizar preço ao mudar as datas
+
+            var model = new ReservationCreationModel
+            {
+                PostId = postId,
+                Price = post.Price,
+                PostTitle = post.Title,
+                PostDescription = post.Description,
+                PostRating = (int)post.Rating,
+                PostAddress = post.City + " - " + post.Address,
+            };
             return View(model);
         }
 
