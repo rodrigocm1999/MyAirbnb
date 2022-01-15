@@ -11,7 +11,11 @@ namespace MyAirbnb.Models
         public float? Rating { get; set; }
 
         public string FirstName { get; set; }
-        
+
         public string LastName { get; set; }
+
+
+        public virtual List<Reservation> Reservations { get; set; }
+        public virtual List<Comment> Comments { get; set; }
     }
 }

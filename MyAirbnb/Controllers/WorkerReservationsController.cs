@@ -60,10 +60,13 @@ namespace MyAirbnb.Controllers
                 .Include(r => r.User)
                 .Include(r => r.CheckOutImages)
                 .Include(r => r.Comment)
-                .Include(r => r.UserWorker)
+                //.Include(r => r.UserWorker)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (reservation == null) return NotFound();
+
+
+            reservation.UserWorker = _context.Users.FirstOrDefault(e => e.Id == reservation.WorkerId);
 
             return View(reservation);
         }

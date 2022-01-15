@@ -18,7 +18,7 @@ namespace MyAirbnb.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-       
+
 
         public AdminClientsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
@@ -30,7 +30,7 @@ namespace MyAirbnb.Controllers
         public async Task<IActionResult> Index()
         {
             var result = await _userManager.GetUsersInRoleAsync(App.ClientRole);
-            List<ClientsAdminView> clients = new ();
+            List<ClientsAdminView> clients = new();
             foreach (var user in result)
                 clients.Add(new ClientsAdminView() { Id = user.Id, Name = user.FirstName + " " + user.LastName });
 
@@ -46,7 +46,7 @@ namespace MyAirbnb.Controllers
             var user = _context.Users.FirstOrDefault(m => m.Id == id);
             IQueryable<Reservation> reservations = _context.Reservations.Where(m => m.UserId == id).Include(m => m.Post);
             var name = user.FirstName + " " + user.LastName;
-            var clientsAdminView = new ClientsAdminView() { Id = user.Id, Name = name , Reservations = reservations};
+            var clientsAdminView = new ClientsAdminView() { Id = user.Id, Name = name, Reservations = reservations };
             var count = clientsAdminView.Reservations.Count();
             if (clientsAdminView == null)
                 return NotFound();
@@ -64,10 +64,12 @@ namespace MyAirbnb.Controllers
                 .Include(r => r.User)
                 .Include(r => r.CheckOutImages)
                 .Include(r => r.Comment)
-                .Include(r => r.UserWorker)
+                //.Include(r => r.UserWorker)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (reservation == null) return NotFound();
+
+            reservation.UserWorker = _context.Users.FirstOrDefault(e => e.Id == reservation.WorkerId);
 
             return View(reservation);
         }
@@ -130,8 +132,9 @@ namespace MyAirbnb.Controllers
             {
                 return NotFound();
             }
-            
-            var user = await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
+
+            var user = await _context.Users
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (user == null)
             {
                 return NotFound();
@@ -145,7 +148,10 @@ namespace MyAirbnb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var client = await _context.Users.FindAsync(id);
+            var client = _context.Users
+                .Include(e => e.Comments)
+                .Include(e => e.Reservations).ThenInclude(e => e.CheckOutImages)
+                .FirstOrDefault(e => e.Id == id);
             _context.Users.Remove(client);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

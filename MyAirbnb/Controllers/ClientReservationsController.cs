@@ -63,10 +63,12 @@ namespace MyAirbnb.Controllers
                 .Include(e => e.Comment)
                 .Include(e => e.User)
                 .Include(e => e.Worker)
-                .Include(e => e.UserWorker)
+                //.Include(e => e.UserWorker)
                 .FirstOrDefault(e => e.Id == reservationId && e.UserId == User.GetUserId());
 
             if (reservation == null) return NotFound();
+
+            reservation.UserWorker = _context.Users.FirstOrDefault(e => e.Id == reservation.WorkerId);
 
             reservation.CheckInItems = null;
             reservation.CheckOutItems = null;

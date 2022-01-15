@@ -32,6 +32,6 @@ namespace MyAirbnb.Data
                .OnDelete(DeleteBehavior.NoAction);
 
         }
-        
+
     }
 }
