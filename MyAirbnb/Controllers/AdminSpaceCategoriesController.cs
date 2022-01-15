@@ -118,6 +118,12 @@ namespace MyAirbnb.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var spaceCategory = await _context.SpaceCategories.FindAsync(id);
+            //Remove todos os posts com esta categoria
+            var posts = _context.Posts.Where(e => e.SpaceCategoryId == spaceCategory.Id);
+            foreach(var post in posts)
+            {
+                _context.Posts.Remove(post);
+            }
             _context.SpaceCategories.Remove(spaceCategory);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
