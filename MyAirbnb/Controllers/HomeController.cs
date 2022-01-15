@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MyAirbnb.Data;
@@ -15,12 +16,12 @@ namespace MyAirbnb.Controllers
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public HomeController(ApplicationDbContext dbContext)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public HomeController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
-            _context = dbContext;
+            _userManager = userManager;
+            _context = context;
         }
-
         public IActionResult Index(int? id, [Bind(Prefix = "Search")] IndexSearch search)
         {
             var page = id.HasValue ? id.Value : 1;
@@ -68,7 +69,8 @@ namespace MyAirbnb.Controllers
 
         public async Task<IActionResult> FillAsync()
         {
-            await TestData.FillTestDataAsync(_context);
+            var filler = new TestData(_userManager, _context);
+            await filler.FillTestDataAsync();
             return RedirectToAction(nameof(Index));
         }
 
