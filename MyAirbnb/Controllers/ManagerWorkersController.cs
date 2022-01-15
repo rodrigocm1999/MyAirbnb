@@ -59,12 +59,11 @@ namespace MyAirbnb.Controllers
                 IdentityUserRole<string> userHasAdminRole = _context.UserRoles.FirstOrDefault(x => x.RoleId == adminRoleId && x.UserId == user.Id);
                 if (userHasAdminRole == null)
                 {
-                    if(manager.Id != user.Id)
+                    if (manager.Id != user.Id)
                     {
-                        WorkerViewModel workerModel = new WorkerViewModel { Id = user.Id, Name = user.UserName, Posts = a.Posts };
+                        WorkerViewModel workerModel = new WorkerViewModel { Id = user.Id, Name = user.FirstName + " " + user.LastName, Posts = a.Posts };
                         workerList.Add(workerModel);
                     }
-                   
                 }
             }
 
@@ -112,8 +111,8 @@ namespace MyAirbnb.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync(WorkerModel Input)
         {
-            var userName = Input.FirstName + Input.LastName;
-            var user = new ApplicationUser { UserName = userName, FirstName = Input.FirstName, LastName = Input.LastName, Email = Input.Email, PhoneNumber = Input.PhoneNumber };
+
+            var user = new ApplicationUser { UserName = Input.Email, FirstName = Input.FirstName, LastName = Input.LastName, Email = Input.Email, PhoneNumber = Input.PhoneNumber };
             var result = await _userManager.CreateAsync(user, Input.Password);
             if (result.Succeeded)
             {
@@ -137,7 +136,7 @@ namespace MyAirbnb.Controllers
         public IActionResult Delete(string id)
         {
             var worker = _context.Users.FirstOrDefault(e => e.Id == id);
-            var workerModel = new WorkerViewModel { Id = worker.Id, Name = worker.UserName };
+            var workerModel = new WorkerViewModel { Id = worker.Id, Name = worker.FirstName + " " + worker.LastName };
             if (worker == null) return NotFound();
 
             return View(workerModel);

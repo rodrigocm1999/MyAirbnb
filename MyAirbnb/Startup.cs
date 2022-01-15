@@ -110,8 +110,10 @@ namespace MyAirbnb
                 ApplicationUser administrator = new()
                 {
                     Email = emailAdmin,
-                    UserName = App.AdminRole,
+                    UserName = emailAdmin,
                     EmailConfirmed = true,
+                    FirstName = "Admin",
+                    LastName = "Person"
                 };
 
                 if (userManager.CreateAsync(administrator, passwordAdmin).Result.Succeeded)

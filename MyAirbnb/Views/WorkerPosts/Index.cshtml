@@ -1,11 +1,40 @@
 ﻿@model MyAirbnb.Controllers.WorkerPostsController.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Worker Posts";
 
 }
 
-<h1>Index</h1>
+@if (Model.User != null)
+{
+
+    <h1>Worker Details</h1>
+    <dl class="row">
+        <dt class="col-sm-2">
+            Name
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.FirstName)
+            @Html.DisplayFor(model => model.User.LastName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Email)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Email)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.PhoneNumber)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.PhoneNumber)
+        </dd>
+    </dl>
+
+    <hr />
+}
+
+<h4>Worker Posts</h4>
 
 <p>
     @if (Model.WorkerId != null)

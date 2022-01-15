@@ -112,6 +112,7 @@ namespace MyAirbnb.Models
         public virtual ApplicationUser User { get; set; }
 
         public string WorkerId { get; set; }
+        [ForeignKey(nameof(WorkerId))]
         public virtual Worker Worker { get; set; }
         [ForeignKey(nameof(WorkerId))]
         public virtual ApplicationUser UserWorker { get; set; }

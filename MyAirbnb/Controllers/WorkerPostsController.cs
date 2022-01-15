@@ -72,6 +72,7 @@ namespace MyAirbnb.Controllers
 
         public class IndexModel
         {
+            public ApplicationUser User { get; set; }
             public string WorkerId { get; set; }
             public IEnumerable<Post> Posts { get; set; }
         }
@@ -87,6 +88,7 @@ namespace MyAirbnb.Controllers
                 if (worker == null) return NotFound();
                 var model = new IndexModel
                 {
+                    User = _context.Users.FirstOrDefault(e => e.Id == workerId),
                     Posts = worker.Posts,
                     WorkerId = workerId,
                 };
@@ -95,7 +97,12 @@ namespace MyAirbnb.Controllers
             else
             {
                 var postsList = _context.Posts.Where(e => e.WorkerId == UserId);
-                return View(new IndexModel { Posts = postsList });
+                var model = new IndexModel
+                {
+                    User = _context.Users.FirstOrDefault(e => e.Id == workerId),
+                    Posts = postsList
+                };
+                return View(model);
             }
         }
         //TODO fazer cancelamento talvez antes de ser aceite

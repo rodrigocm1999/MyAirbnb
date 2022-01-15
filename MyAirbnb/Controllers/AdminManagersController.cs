@@ -33,7 +33,7 @@ namespace MyAirbnb.Controllers
             List<ManagerViewModel> managers = new();
             foreach (var manager in result)
             {
-                managers.Add(new ManagerViewModel() { Id = manager.Id, Name = manager.UserName });
+                managers.Add(new ManagerViewModel() { Id = manager.Id, Name = manager.FirstName + " " + manager.LastName });
             }
             return View(managers);
         }
@@ -52,9 +52,8 @@ namespace MyAirbnb.Controllers
             {
                 return NotFound();
             }
-            var name =  _context.Users
-                .FirstOrDefaultAsync(m => m.Id == id).Result.UserName;
-            var viewModel = new ManagerViewModel() { Id = manager.Id, Workers = manager.Workers, Name = name };
+            var user =  _context.Users.FirstOrDefault(m => m.Id == id);
+            var viewModel = new ManagerViewModel() { Id = manager.Id, Workers = manager.Workers, Name = user.FirstName + " " + user.LastName };
             return View(viewModel);
         }
 

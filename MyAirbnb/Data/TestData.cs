@@ -16,7 +16,9 @@ namespace MyAirbnb.Data
         {
             var spaceCategories = new List<SpaceCategory>(){
                 new SpaceCategory{Name = "Apartment" },
-                new SpaceCategory{Name = "Home" }
+                new SpaceCategory{Name = "Home" },
+                new SpaceCategory{Name = "Garage" },
+                new SpaceCategory{Name = "Shared House" },
             };
 
             if (context.SpaceCategories.FirstOrDefault() == null)
@@ -31,13 +33,16 @@ namespace MyAirbnb.Data
 
             var apartementId = spaceCategories[0].Id;
             var homeId = spaceCategories[1].Id;
+            var garageId = spaceCategories[2].Id;
+            var sharedHouseId = spaceCategories[3].Id;
+
 
 
             var manager = context.Managers.Include(e => e.CheckLists).FirstOrDefault();
             if (manager.CheckLists.Count == 0)
             {
-                manager.CheckLists.Add(new CheckList { SpaceCategoryId = apartementId, CheckInItems = "Clean\nGive keys to the home", CheckOutItems = "Check rooms state\nCall neighbor\nGet the keys back" });
-                manager.CheckLists.Add(new CheckList { SpaceCategoryId = homeId, CheckInItems = "Clean\nGive keys to the apartment", CheckOutItems = "Check rooms state\nCall neighbor\nGet the keys back" });
+                manager.CheckLists.Add(new CheckList { SpaceCategoryId = apartementId, CheckInItems = "Clean\nGive keys to the home", CheckOutItems = "Check rooms state\nCall neighbor to verify existence of trouble\nGet the keys back" });
+                manager.CheckLists.Add(new CheckList { SpaceCategoryId = homeId, CheckInItems = "Clean\nGive keys to the apartment", CheckOutItems = "Check bathroom state\nCall neighbor to verify existence of trouble\nGet the keys back" });
                 await context.SaveChangesAsync();
             }
 
@@ -69,21 +74,25 @@ namespace MyAirbnb.Data
 
             var posts = new List<Post>
             {
-                new Post{Address="Rua do aço",Description="Este apartamente tem aço",Title="Casa para 3 nabos",
+                new Post{Address="Rua nº3",Description="Este apartamente é indicado para pessoas sem filhos",Title="Casa do precipício",
                     NBedrooms=1,NBeds=3,Price=400,SpaceCategoryId = apartementId,WorkerId = workerId,City ="Lisboa"},
-                new Post{Address="Rua ao lado da rua do aço",Description="Esta casa não vale nada",Title="Casa a cair aos bocados",
+                new Post{Address="Rua da esquina de baixo",Description="Este apartamento não vale nada\nE chega bem",Title="Casa a cair aos bocados",
                     NBedrooms=2,NBeds=1,Price=20,SpaceCategoryId=apartementId,WorkerId = workerId,City ="Coimbra"},
-                new Post{Address="Teste 25 do dia 32",Description="Nem sei o que dizer",Title="Titulo não",
+                new Post{Address="Rua da esquina da esquerda",Description="Nem sei o que dizer, é uma casa razoável\n\tE chega bem",Title="Título representador da casa",
                     NBedrooms=5,NBeds=10,Price=300,SpaceCategoryId=homeId,WorkerId = workerId,City ="Lisboa"},
-                new Post{Address="Rua do aço",Description="Este apartamente tem aço",Title="Casa para 3 nabos",
+                new Post{Address="Rua da estátua caida",Description="Esta casa",Title="Casa para 3.5",
                     NBedrooms=10,NBeds=3,Price=400,SpaceCategoryId = homeId,WorkerId = workerId,City ="Coimbra"},
-                new Post{Address="Rua do aço",Description="Este apartamente tem aço",Title="Somewenfsvdomo",
+                new Post{Address="Rua do sinal de STOP",Description="Este apartamente tem aço",Title="Somewenfsvdomo",
                     NBedrooms=1,NBeds=1,Price=299,SpaceCategoryId = apartementId, WorkerId = workerId,City ="Porto"},
-                 new Post{Address="Rua do aço",Description="Este apartamente tem aço",Title="Ca",
-                    NBedrooms=1,NBeds=1,Price=299,SpaceCategoryId = apartementId, WorkerId = workerId,City ="Porto"},
+                 new Post{Address="Local da merenda",Description="Paredes de esferotive!",Title="Casa apresentável para 2 pessoas",
+                    NBedrooms=1,NBeds=2,Price=299,SpaceCategoryId = apartementId, WorkerId = workerId,City ="Coimbra"},
+                 new Post{Address="Rua das Garagens",Description="cabem 12 pessoas deitadas encostadas, mas bem compactadas leva 18\n e em pé até dá para 30",Title="Garagem para dormir no chão, cabem 12 pessoas",
+                    NBedrooms=1,NBeds=12,Price=299,SpaceCategoryId = garageId, WorkerId = workerId,City ="Cantanhede"},
+                 new Post{Address="BigHouse Street",Description="Este apartamente tem aço",Title="Casa apresentável para 2 pessoas",
+                    NBedrooms=2,NBeds=2,Price=299,SpaceCategoryId = sharedHouseId, WorkerId = workerId,City ="Cantanhede"},
             };
 
-            Random rand = new Random(4321);
+            var rand = new Random(4321);
 
             var d = new DirectoryInfo(Path.Combine("wwwroot", App.PostImagesFolderName));
             var files = d.GetFiles();
