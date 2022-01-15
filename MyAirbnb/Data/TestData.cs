@@ -193,7 +193,7 @@ namespace MyAirbnb.Data
             user.UserName = user.Email;
             await _userManager.CreateAsync(user, user.Email);
             await _userManager.AddToRoleAsync(user, App.WorkerRole);
-            await _userManager.AddToRoleAsync(user, App.AdminRole);
+            await _userManager.AddToRoleAsync(user, App.ManagerRole);
             _context.Workers.Add(new Worker { Id = user.Id, ManagerId = user.Id });
             _context.Managers.Add(new Manager { Id = user.Id });
         }

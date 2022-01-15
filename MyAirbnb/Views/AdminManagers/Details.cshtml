@@ -7,15 +7,12 @@
 <h1>Manager Details</h1>
 
 <div>
-    <h4>@Html.DisplayFor(modelItem => Model.Name)</h4>
-    <hr />
-    <dl class="row">
-    </dl>
+    @{ await Html.RenderPartialAsync("_UserInfo", Model.Manager); }
 </div>
 <div>
    
     @*<a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |*@
-    <a asp-controller="Manager" asp-action="Workers" asp-route-id="@Model.Id">Workers list</a><br />
-    <a asp-controller="Manager" asp-action="Checklists" asp-route-id="@Model.Id">Checklists</a><br />
+    <a asp-controller="ManagerWorkers" asp-action="Index" asp-route-id="@Model.Manager.Id">Workers list</a><br />
+    <a asp-controller="ManagerChecklists" asp-action="Index" asp-route-id="@Model.Manager.Id">Checklists</a><br />
     <a asp-action="Index">Back to List</a>
 </div>
