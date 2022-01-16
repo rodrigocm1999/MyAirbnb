@@ -267,6 +267,12 @@ namespace MyAirbnb.Controllers
             if (post == null) return NotFound();
 
             var imagesPath = App.PostImagesFolderName;
+            var path = _environment.WebRootPath + "/" + imagesPath;
+            bool exists = Directory.Exists(path);
+            if (!exists)
+                Directory.CreateDirectory(path);
+
+
             var newImages = new List<PostImage>();
 
             foreach (var formFile in files)

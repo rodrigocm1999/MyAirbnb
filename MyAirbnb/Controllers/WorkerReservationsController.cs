@@ -233,6 +233,10 @@ namespace MyAirbnb.Controllers
             if (reservation == null) return NotFound();
 
             var imagesPath = App.ReservationImagesFolderName;
+            var path = _environment.WebRootPath + "/" + imagesPath;
+            bool exists = Directory.Exists(path);
+            if (!exists)
+                Directory.CreateDirectory(path);
             var newImages = new List<CheckOutImage>();
 
             foreach (var formFile in files)
