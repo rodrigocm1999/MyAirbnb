@@ -10,6 +10,12 @@
         <div class="d-inline-block search-container">
             <input id="citysearch" value="@Model.Search.City" type="text" asp-for="Search.City" placeholder="City" />
         </div>
+        <div class="search-container d-inline-block ml-3">
+            <select asp-for="Search.SpaceCategory.Id" asp-items="Model.SpaceCategories" class="form-control w-auto">
+                <option value=""></option>
+            </select>
+            <span  class="text-danger"></span>
+        </div>
         <div class="ml-3 d-inline-block search-numbers">
             <p class="d-inline-block">
                 <img src="/icon/room-icon.png" class="icon-m" />

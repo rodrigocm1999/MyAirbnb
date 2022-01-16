@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MyAirbnb.Data;
@@ -35,12 +36,22 @@ namespace MyAirbnb.Controllers
                 .Take(App.ItemsPerPage + 1)
                 .Where(p => !p.Hidden);
 
+            var spaceCategories = _context.SpaceCategories.ToList();
+            //var empety = new SpaceCategory { Name = " " };
+            //spaceCategories.Add(empety);
+            var listSpaceCategories = new SelectList(spaceCategories, nameof(SpaceCategory.Id), nameof(SpaceCategory.Name));
+
+            var ve = search.SpaceCategory;
+
             if (search.City != null)
                 posts = posts.Where(p => p.City.Contains(search.City));
             if (search.Nbeds.HasValue)
                 posts = posts.Where(p => p.NBeds == search.Nbeds.Value);
             if (search.NRooms.HasValue)
                 posts = posts.Where(p => p.NBedrooms == search.NRooms.Value);
+            if(search.SpaceCategory != null)
+                if(search.SpaceCategory.Name != null)
+                    posts = posts.Where(p => p.SpaceCategoryId == search.SpaceCategory.Id);
 
             var model = new IndexModel
             {
@@ -49,6 +60,7 @@ namespace MyAirbnb.Controllers
                 HasPreviousPage = amountToSkip > 0,
                 Posts = posts.Take(App.ItemsPerPage),
                 Search = search,
+                SpaceCategories = listSpaceCategories
             };
             return View(model);
         }
