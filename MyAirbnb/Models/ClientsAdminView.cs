@@ -8,10 +8,7 @@ namespace MyAirbnb.Models
 {
     public class ClientsAdminView
     {
-        public string Id { get; set; }
-
-        [Display(Name = "Name")]
-        public string Name { get; set; }
+        public ApplicationUser Client { get; set; }
 
         [Display(Name = "Reservations")]
         public virtual IQueryable<Reservation> Reservations { get; set; }

@@ -91,9 +91,16 @@
         <select asp-for="Post.SpaceCategoryId" asp-items="Model.SpaceCategories" class="form-control w-auto"></select>
         <span asp-validation-for="Post.SpaceCategoryId" class="text-danger"></span>
     </div>
+    
+
 
     <div class="container mt-3">
         <input type="submit" value="Save" class="btn btn-primary" />
+        @if (Model.Post.Hidden)
+        {
+            <a asp-action="Discard" asp-route-id="@Model.Post.Id" class="btn btn-outline-danger ml-3">Discard</a>
+            
+        }
     </div>
 </form>
 

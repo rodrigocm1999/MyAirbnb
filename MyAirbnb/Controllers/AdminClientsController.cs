@@ -32,7 +32,7 @@ namespace MyAirbnb.Controllers
             var result = await _userManager.GetUsersInRoleAsync(App.ClientRole);
             List<ClientsAdminView> clients = new();
             foreach (var user in result)
-                clients.Add(new ClientsAdminView() { Id = user.Id, Name = user.FirstName + " " + user.LastName });
+                clients.Add(new ClientsAdminView() { Client = user });
 
             return View(clients);
         }
@@ -45,8 +45,8 @@ namespace MyAirbnb.Controllers
 
             var user = _context.Users.FirstOrDefault(m => m.Id == id);
             IQueryable<Reservation> reservations = _context.Reservations.Where(m => m.UserId == id).Include(m => m.Post);
-            var name = user.FirstName + " " + user.LastName;
-            var clientsAdminView = new ClientsAdminView() { Id = user.Id, Name = name, Reservations = reservations };
+            
+            var clientsAdminView = new ClientsAdminView() { Client = user, Reservations = reservations };
             var count = clientsAdminView.Reservations.Count();
             if (clientsAdminView == null)
                 return NotFound();

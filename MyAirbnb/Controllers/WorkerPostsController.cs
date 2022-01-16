@@ -80,7 +80,7 @@ namespace MyAirbnb.Controllers
             public IEnumerable<Post> Posts { get; set; }
         }
 
-        public async Task<IActionResult> IndexAsync(string workerId)
+        public async Task<IActionResult> Index(string workerId)
         {
             if (workerId != null)
             {
@@ -196,8 +196,8 @@ namespace MyAirbnb.Controllers
                     await _context.SaveChangesAsync();
 
                     if (post.WorkerId != UserId)
-                        return RedirectToAction(nameof(IndexAsync), new { workerId = post.WorkerId });
-                    return RedirectToAction(nameof(IndexAsync));
+                        return RedirectToAction(nameof(Index), new { workerId = post.WorkerId });
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -206,6 +206,24 @@ namespace MyAirbnb.Controllers
                 }
             }
             return View(formPost);
+        }
+
+        public async Task<IActionResult> Discard(int? id)
+        {
+            if (!id.HasValue) return NotFound();
+
+            var post = WhereThisPost(id.Value).Include(e => e.PostImages).FirstOrDefault();
+            if (post == null) return NotFound();
+            foreach (var postImage in post.PostImages)
+            {
+                var fullPath = _environment.WebRootPath + postImage.FilePath;
+                new FileInfo(fullPath).Delete();
+            }
+            _context.Posts.Remove(post);
+            await _context.SaveChangesAsync();
+            if (post.WorkerId != UserId)
+                return RedirectToAction(nameof(Index), new { workerId = post.WorkerId });
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Delete(int? id)
@@ -233,8 +251,8 @@ namespace MyAirbnb.Controllers
             _context.Posts.Remove(post);
             await _context.SaveChangesAsync();
             if (post.WorkerId != UserId)
-                return RedirectToAction(nameof(IndexAsync), new { workerId = post.WorkerId });
-            return RedirectToAction(nameof(IndexAsync));
+                return RedirectToAction(nameof(Index), new { workerId = post.WorkerId });
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
