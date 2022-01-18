@@ -10,7 +10,8 @@
 @{ await Html.RenderPartialAsync("_UserInfo", Model.User); }
 
 <div>
-    <a asp-action="Accept" asp-route-id="@Model.ReservationId" asp-route-accepted="true">Accept</a> |
-    <a asp-action="Accept" asp-route-id="@Model.ReservationId" asp-route-accepted="false">Reject</a> |
+    <a asp-action="Accept" asp-route-id="@Model.ReservationId" asp-route-accepted="true" class="btn btn-primary">Accept</a> |
+    <a asp-action="Accept" asp-route-id="@Model.ReservationId" asp-route-accepted="false" class="btn btn-danger">Reject</a>
+    <br />
     <a asp-action="Index">Back to List</a>
 </div>
